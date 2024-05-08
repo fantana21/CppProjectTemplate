@@ -17,7 +17,7 @@ if(ENABLE_COVERAGE)
   include(CMake/Coverage.cmake)
 endif()
 
-include(CMake/LintTargets.cmake)
+include(CMake/FormatTargets.cmake)
 include(CMake/SpellTargets.cmake)
 
 add_folders(Project)

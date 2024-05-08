@@ -1,3 +1,5 @@
+# TODO: Exclude source files in Tests/
+
 # ---- Variables ----
 
 # We use variables separate from what CTest uses, because those have
