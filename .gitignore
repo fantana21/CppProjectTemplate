@@ -1,0 +1,6 @@
+.vscode/
+.cache/
+[Bb]uild/
+
+compile_commands.json
+CMakeUserPresets.json
