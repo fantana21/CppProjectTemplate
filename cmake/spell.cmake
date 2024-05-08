@@ -6,7 +6,6 @@ macro(default name)
   endif()
 endmacro()
 
-default(SPELL_COMMAND codespell)
 default(FIX NO)
 
 set(flag "")
@@ -15,7 +14,7 @@ if(FIX)
 endif()
 
 execute_process(
-    COMMAND "${SPELL_COMMAND}" ${flag}
+    COMMAND codespell ${flag}
     WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
     RESULT_VARIABLE result
 )
