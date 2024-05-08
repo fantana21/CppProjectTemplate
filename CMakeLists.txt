@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.14)
 
-include(cmake/prelude.cmake)
+include(CMake/Prelude.cmake)
 
 project(
     BullseyeFireControlSystem
@@ -10,8 +10,8 @@ project(
     LANGUAGES CXX
 )
 
-include(cmake/project-is-top-level.cmake)
-include(cmake/variables.cmake)
+include(CMake/ProjectIsTopLevel.cmake)
+include(CMake/Variables.cmake)
 
 # ---- Declare library ----
 
@@ -45,7 +45,7 @@ target_link_libraries(BullseyeFireControlSystem_exe PRIVATE BullseyeFireControlS
 # ---- Install rules ----
 
 if(NOT CMAKE_SKIP_INSTALL_RULES)
-  include(cmake/install-rules.cmake)
+  include(CMake/InstallationRules.cmake)
 endif()
 
 # ---- Developer mode ----
@@ -59,4 +59,4 @@ elseif(NOT PROJECT_IS_TOP_LEVEL)
   )
 endif()
 
-include(cmake/dev-mode.cmake)
+include(CMake/DevMode.cmake)

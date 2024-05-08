@@ -26,11 +26,11 @@ jobs:
       run: pip3 install codespell
 
     - name: Lint
-      run: cmake -D FORMAT_COMMAND=clang-format-14 -P cmake/lint.cmake
+      run: cmake -D FORMAT_COMMAND=clang-format-14 -P CMake/Lint.cmake
 
     - name: Spell check
       if: always()
-      run: cmake -P cmake/spell.cmake
+      run: cmake -P CMake/Spell.cmake
 
   coverage:
     needs: [lint]
@@ -189,7 +189,7 @@ jobs:
 
     - name: Build docs
       run: cmake "-DPROJECT_SOURCE_DIR=$PWD" "-DPROJECT_BINARY_DIR=$PWD/build"
-        -P cmake/docs-ci.cmake
+        -P CMake/DocsCi.cmake
 
     - name: Deploy docs
       uses: peaceiris/actions-gh-pages@v4

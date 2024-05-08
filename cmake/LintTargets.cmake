@@ -14,7 +14,7 @@ add_custom_target(
     COMMAND "${CMAKE_COMMAND}"
     -D "FORMAT_COMMAND=${FORMAT_COMMAND}"
     -D "PATTERNS=${FORMAT_PATTERNS}"
-    -P "${PROJECT_SOURCE_DIR}/cmake/lint.cmake"
+    -P "${PROJECT_SOURCE_DIR}/CMake/Lint.cmake"
     WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
     COMMENT "Linting the code"
     VERBATIM
@@ -26,7 +26,7 @@ add_custom_target(
     -D "FORMAT_COMMAND=${FORMAT_COMMAND}"
     -D "PATTERNS=${FORMAT_PATTERNS}"
     -D FIX=YES
-    -P "${PROJECT_SOURCE_DIR}/cmake/lint.cmake"
+    -P "${PROJECT_SOURCE_DIR}/CMake/Lint.cmake"
     WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
     COMMENT "Fixing the code"
     VERBATIM
