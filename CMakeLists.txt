@@ -21,6 +21,7 @@ find_package(fmt REQUIRED)
 # ---- Declare targets ----
 
 add_library(BullseyeFireControlSystem_Lib OBJECT)
+add_library(BullseyeFireControlSystem::Lib ALIAS BullseyeFireControlSystem_Lib)
 add_executable(BullseyeFireControlSystem_Exe)
 
 all_targets_compile_features(cxx_std_20)
