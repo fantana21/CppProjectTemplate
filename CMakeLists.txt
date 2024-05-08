@@ -12,34 +12,19 @@ project(
 
 include(CMake/ProjectIsTopLevel.cmake)
 include(CMake/Variables.cmake)
+include(CMake/PropertiesForAllTargets.cmake)
 
 # ---- Find dependencies ----
 
 find_package(fmt REQUIRED)
 
-# ---- Declare library ----
+# ---- Declare targets ----
 
-add_library(
-    BullseyeFireControlSystem_Lib OBJECT
-    BullseyeFireControlSystem/Lib.cpp
-)
+add_library(BullseyeFireControlSystem_Lib OBJECT)
+add_executable(BullseyeFireControlSystem_Exe)
 
-target_include_directories(
-    BullseyeFireControlSystem_Lib ${warning_guard}
-    PUBLIC
-    "\$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>"
-)
-
-target_compile_features(BullseyeFireControlSystem_Lib PUBLIC cxx_std_20)
-
-target_link_libraries(BullseyeFireControlSystem_Lib PRIVATE fmt::fmt)
-
-# ---- Declare executable ----
-
-add_executable(BullseyeFireControlSystem_Exe BullseyeFireControlSystem/main.cpp)
-set_property(TARGET BullseyeFireControlSystem_Exe PROPERTY OUTPUT_NAME BullseyeFireControlSystem)
-target_compile_features(BullseyeFireControlSystem_Exe PRIVATE cxx_std_20)
-target_link_libraries(BullseyeFireControlSystem_Exe PRIVATE BullseyeFireControlSystem_Lib)
+all_targets_compile_features(cxx_std_20)
+all_targets_include_directories("$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>")
 
 # ---- Installation rules ----
 

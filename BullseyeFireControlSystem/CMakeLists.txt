@@ -1,0 +1,6 @@
+target_sources(BullseyeFireControlSystem_Lib PRIVATE Lib.cpp)
+target_link_libraries(BullseyeFireControlSystem_Lib PRIVATE fmt::fmt)
+
+target_sources(BullseyeFireControlSystem_Exe PRIVATE Main.cpp)
+set_property(TARGET BullseyeFireControlSystem_Exe PROPERTY OUTPUT_NAME BullseyeFireControlSystem)
+target_link_libraries(BullseyeFireControlSystem_Exe PRIVATE BullseyeFireControlSystem_Lib)
