@@ -6,8 +6,9 @@ project(BullseyeFireControlSystemTests LANGUAGES CXX)
 
 # ---- Dependencies ----
 
-find_package(Catch2 REQUIRED)
-include(Catch)
+find_package(doctest REQUIRED)
+include(doctest)
+include(../cmake/DoctestWithMain.cmake)
 
 # ---- Tests ----
 
@@ -15,11 +16,11 @@ add_executable(BullseyeFireControlSystem_test BullseyeFireControlSystem.test.cpp
 target_link_libraries(
     BullseyeFireControlSystem_test PRIVATE
     BullseyeFireControlSystem_lib
-    Catch2::Catch2WithMain
+    doctest::doctestWithMain
 )
 target_compile_features(BullseyeFireControlSystem_test PRIVATE cxx_std_20)
 
-catch_discover_tests(BullseyeFireControlSystem_test)
+doctest_discover_tests(BullseyeFireControlSystem_test)
 
 # ---- End-of-file commands ----
 

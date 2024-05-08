@@ -1,6 +1,6 @@
-#include <catch2/catch_test_macros.hpp>
+#include <doctest/doctest.h>
 
-#include "lib.hpp"
+#include "Lib.hpp"
 
 TEST_CASE("Name is BullseyeFireControlSystem", "[library]")
 {
