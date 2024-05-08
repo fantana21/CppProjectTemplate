@@ -26,6 +26,8 @@ add_executable(BullseyeFireControlSystem_Exe)
 all_targets_compile_features(cxx_std_20)
 all_targets_include_directories("$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>")
 
+add_subdirectory(BullseyeFireControlSystem)
+
 # ---- Installation rules ----
 
 if(NOT CMAKE_SKIP_INSTALL_RULES)
