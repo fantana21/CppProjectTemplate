@@ -1,7 +1,7 @@
 #include <iostream>
 #include <string>
 
-#include "Lib.hpp"
+#include <BullseyeFireControlSystem/Lib.hpp>
 
 auto main() -> int
 {
