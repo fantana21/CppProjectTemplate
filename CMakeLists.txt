@@ -1,48 +1,47 @@
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.28)
 
 include(CMake/Prelude.cmake)
 
 project(
     BullseyeFireControlSystem
     VERSION 0.1.0
-    DESCRIPTION "Short description"
-    HOMEPAGE_URL "https://example.com/"
+    DESCRIPTION "A fire control system for the Bullseye project"
+    HOMEPAGE_URL "https://github.com/fantana21/BullseyeFireControlSystem"
     LANGUAGES CXX
 )
 
 include(CMake/ProjectIsTopLevel.cmake)
 include(CMake/Variables.cmake)
 
+# ---- Find dependencies ----
+
+find_package(fmt REQUIRED)
+
 # ---- Declare library ----
 
 add_library(
-    BullseyeFireControlSystem_lib OBJECT
-    BullseyeFireControlSystem/lib.cpp
+    BullseyeFireControlSystem_Lib OBJECT
+    BullseyeFireControlSystem/Lib.cpp
 )
 
 target_include_directories(
-    BullseyeFireControlSystem_lib ${warning_guard}
+    BullseyeFireControlSystem_Lib ${warning_guard}
     PUBLIC
-    "\$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/BullseyeFireControlSystem>"
+    "\$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>"
 )
 
-target_compile_features(BullseyeFireControlSystem_lib PUBLIC cxx_std_20)
+target_compile_features(BullseyeFireControlSystem_Lib PUBLIC cxx_std_20)
 
-find_package(fmt REQUIRED)
-target_link_libraries(BullseyeFireControlSystem_lib PRIVATE fmt::fmt)
+target_link_libraries(BullseyeFireControlSystem_Lib PRIVATE fmt::fmt)
 
 # ---- Declare executable ----
 
-add_executable(BullseyeFireControlSystem_exe BullseyeFireControlSystem/main.cpp)
-add_executable(BullseyeFireControlSystem::exe ALIAS BullseyeFireControlSystem_exe)
+add_executable(BullseyeFireControlSystem_Exe BullseyeFireControlSystem/main.cpp)
+set_property(TARGET BullseyeFireControlSystem_Exe PROPERTY OUTPUT_NAME BullseyeFireControlSystem)
+target_compile_features(BullseyeFireControlSystem_Exe PRIVATE cxx_std_20)
+target_link_libraries(BullseyeFireControlSystem_Exe PRIVATE BullseyeFireControlSystem_Lib)
 
-set_property(TARGET BullseyeFireControlSystem_exe PROPERTY OUTPUT_NAME BullseyeFireControlSystem)
-
-target_compile_features(BullseyeFireControlSystem_exe PRIVATE cxx_std_20)
-
-target_link_libraries(BullseyeFireControlSystem_exe PRIVATE BullseyeFireControlSystem_lib)
-
-# ---- Install rules ----
+# ---- Installation rules ----
 
 if(NOT CMAKE_SKIP_INSTALL_RULES)
   include(CMake/InstallationRules.cmake)
@@ -59,4 +58,4 @@ elseif(NOT PROJECT_IS_TOP_LEVEL)
   )
 endif()
 
-include(CMake/DevMode.cmake)
+include(CMake/DeveloperMode.cmake)

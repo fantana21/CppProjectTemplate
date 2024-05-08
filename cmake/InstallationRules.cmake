@@ -1,5 +1,5 @@
 install(
-    TARGETS BullseyeFireControlSystem_exe
+    TARGETS BullseyeFireControlSystem_Exe
     RUNTIME COMPONENT BullseyeFireControlSystem_Runtime
 )
 

@@ -7,15 +7,10 @@ endif()
 
 add_custom_target(
     run-exe
-    COMMAND BullseyeFireControlSystem_exe
+    COMMAND BullseyeFireControlSystem_Exe
     VERBATIM
 )
-add_dependencies(run-exe BullseyeFireControlSystem_exe)
-
-option(BUILD_MCSS_DOCS "Build documentation using Doxygen and m.css" OFF)
-if(BUILD_MCSS_DOCS)
-  include(CMake/Docs.cmake)
-endif()
+add_dependencies(run-exe BullseyeFireControlSystem_Exe)
 
 option(ENABLE_COVERAGE "Enable coverage support separate from CTest's" OFF)
 if(ENABLE_COVERAGE)
