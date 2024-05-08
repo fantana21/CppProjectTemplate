@@ -10,7 +10,7 @@ set(src "${PROJECT_SOURCE_DIR}")
 
 # ---- Dependencies ----
 
-set(mcss_SOURCE_DIR "${bin}/docs/.ci")
+set(mcss_SOURCE_DIR "${bin}/Docs/.ci")
 if(NOT IS_DIRECTORY "${mcss_SOURCE_DIR}")
   file(MAKE_DIRECTORY "${mcss_SOURCE_DIR}")
   file(
@@ -55,7 +55,7 @@ if(index EQUAL "-1")
 endif()
 string(SUBSTRING "${content}" 0 "${index}" content)
 
-file(WRITE "${bin}/DocsCi.project.cmake" "docs_${content}\n)\n")
+file(WRITE "${bin}/DocsCi.project.cmake" "Docs_${content}\n)\n")
 
 macro(list_pop_front list out)
   list(GET "${list}" 0 "${out}")
@@ -89,22 +89,22 @@ include("${bin}/DocsCi.project.cmake")
 # ---- Generate docs ----
 
 if(NOT DEFINED DOXYGEN_OUTPUT_DIRECTORY)
-  set(DOXYGEN_OUTPUT_DIRECTORY "${bin}/docs")
+  set(DOXYGEN_OUTPUT_DIRECTORY "${bin}/Docs")
 endif()
 set(out "${DOXYGEN_OUTPUT_DIRECTORY}")
 
 foreach(file IN ITEMS Doxyfile conf.py)
-  configure_file("${src}/docs/${file}.in" "${bin}/docs/${file}" @ONLY)
+  configure_file("${src}/Docs/${file}.in" "${bin}/Docs/${file}" @ONLY)
 endforeach()
 
 set(mcss_script "${mcss_SOURCE_DIR}/documentation/doxygen.py")
-set(config "${bin}/docs/conf.py")
+set(config "${bin}/Docs/conf.py")
 
 file(REMOVE_RECURSE "${out}/html" "${out}/xml")
 
 execute_process(
     COMMAND "${Python3_EXECUTABLE}" "${mcss_script}" "${config}"
-    WORKING_DIRECTORY "${bin}/docs"
+    WORKING_DIRECTORY "${bin}/Docs"
     RESULT_VARIABLE result
 )
 if(NOT result EQUAL "0")

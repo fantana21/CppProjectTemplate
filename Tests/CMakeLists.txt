@@ -11,7 +11,7 @@ include(Catch)
 
 # ---- Tests ----
 
-add_executable(BullseyeFireControlSystem_test source/BullseyeFireControlSystem_test.cpp)
+add_executable(BullseyeFireControlSystem_test BullseyeFireControlSystem.test.cpp)
 target_link_libraries(
     BullseyeFireControlSystem_test PRIVATE
     BullseyeFireControlSystem_lib
@@ -23,4 +23,4 @@ catch_discover_tests(BullseyeFireControlSystem_test)
 
 # ---- End-of-file commands ----
 
-add_folders(Test)
+add_folders(Tests)

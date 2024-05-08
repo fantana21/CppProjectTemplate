@@ -9,9 +9,9 @@ endmacro()
 default(FORMAT_COMMAND clang-format)
 default(
     PATTERNS
-    source/*.cpp source/*.hpp
+    BullseyeFireControlSystem/*.cpp BullseyeFireControlSystem/*.hpp
     include/*.hpp
-    test/*.cpp test/*.hpp
+    Tests/*.cpp Tests/*.hpp
 )
 default(FIX NO)
 

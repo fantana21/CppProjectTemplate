@@ -17,13 +17,13 @@ include(CMake/Variables.cmake)
 
 add_library(
     BullseyeFireControlSystem_lib OBJECT
-    source/lib.cpp
+    BullseyeFireControlSystem/lib.cpp
 )
 
 target_include_directories(
     BullseyeFireControlSystem_lib ${warning_guard}
     PUBLIC
-    "\$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/source>"
+    "\$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/BullseyeFireControlSystem>"
 )
 
 target_compile_features(BullseyeFireControlSystem_lib PUBLIC cxx_std_20)
@@ -33,7 +33,7 @@ target_link_libraries(BullseyeFireControlSystem_lib PRIVATE fmt::fmt)
 
 # ---- Declare executable ----
 
-add_executable(BullseyeFireControlSystem_exe source/main.cpp)
+add_executable(BullseyeFireControlSystem_exe BullseyeFireControlSystem/main.cpp)
 add_executable(BullseyeFireControlSystem::exe ALIAS BullseyeFireControlSystem_exe)
 
 set_property(TARGET BullseyeFireControlSystem_exe PROPERTY OUTPUT_NAME BullseyeFireControlSystem)

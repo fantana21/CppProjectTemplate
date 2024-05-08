@@ -21,14 +21,14 @@ find_package(Python3 3.6 REQUIRED)
 # ---- Declare documentation target ----
 
 set(
-    DOXYGEN_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/docs"
+    DOXYGEN_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/Docs"
     CACHE PATH "Path for the generated Doxygen documentation"
 )
 
-set(working_dir "${PROJECT_BINARY_DIR}/docs")
+set(working_dir "${PROJECT_BINARY_DIR}/Docs")
 
 foreach(file IN ITEMS Doxyfile conf.py)
-  configure_file("docs/${file}.in" "${working_dir}/${file}" @ONLY)
+  configure_file("Docs/${file}.in" "${working_dir}/${file}" @ONLY)
 endforeach()
 
 set(mcss_script "${mcss_SOURCE_DIR}/documentation/doxygen.py")
