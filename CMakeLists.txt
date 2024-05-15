@@ -10,7 +10,6 @@ project(
     LANGUAGES CXX
 )
 
-include(CMake/ProjectIsTopLevel.cmake)
 include(CMake/Variables.cmake)
 include(CMake/PropertiesForAllTargets.cmake)
 
