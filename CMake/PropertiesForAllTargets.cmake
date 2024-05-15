@@ -1,9 +1,5 @@
 function(all_targets_include_directories include_directories)
-    get_property(
-        target_names
-        DIRECTORY ${PROJECT_SOURCE_DIR}
-        PROPERTY BUILDSYSTEM_TARGETS
-    )
+    get_property(target_names DIRECTORY ${PROJECT_SOURCE_DIR} PROPERTY BUILDSYSTEM_TARGETS)
     message("Setting include directories to ${include_directories} for targets:")
     foreach(target IN LISTS target_names)
         message("- ${target}")
@@ -17,11 +13,7 @@ function(all_targets_include_directories include_directories)
 endfunction()
 
 function(all_targets_compile_features compile_features)
-    get_property(
-        target_names
-        DIRECTORY ${PROJECT_SOURCE_DIR}
-        PROPERTY BUILDSYSTEM_TARGETS
-    )
+    get_property(target_names DIRECTORY ${PROJECT_SOURCE_DIR} PROPERTY BUILDSYSTEM_TARGETS)
     message("Setting compile features to ${compile_features} for targets:")
     foreach(target IN LISTS target_names)
         message("- ${target}")
