@@ -31,18 +31,15 @@ add_subdirectory(BullseyeFireControlSystem)
 # ---- Installation rules ----
 
 if(NOT CMAKE_SKIP_INSTALL_RULES)
-  include(CMake/InstallationRules.cmake)
+    include(CMake/InstallationRules.cmake)
 endif()
 
 # ---- Developer mode ----
 
 if(NOT BullseyeFireControlSystem_DEVELOPER_MODE)
-  return()
+    return()
 elseif(NOT PROJECT_IS_TOP_LEVEL)
-  message(
-      AUTHOR_WARNING
-      "Developer mode is intended for developers of BullseyeFireControlSystem"
-  )
+    message(AUTHOR_WARNING "Developer mode is intended for developers of BullseyeFireControlSystem")
 endif()
 
 include(CMake/DeveloperMode.cmake)

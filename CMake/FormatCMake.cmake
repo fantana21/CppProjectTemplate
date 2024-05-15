@@ -13,13 +13,7 @@ else()
     set(flag --check)
 endif()
 
-file(
-    GLOB_RECURSE
-    files
-    CMake/*.cmake
-    BullseyeFireControlSystem/CMakeLists.txt
-    Tests/CMakeLists.txt
-)
+file(GLOB_RECURSE files CMake/*.cmake BullseyeFireControlSystem/CMakeLists.txt Tests/CMakeLists.txt)
 # GLOB_RECURSE needs a directory so we have to manually add the top-level CMakeLists.txt
 file(GLOB top_level_cml_file CMakeLists.txt)
 list(APPEND files "${top_level_cml_file}")
