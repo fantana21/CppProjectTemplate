@@ -8,7 +8,7 @@ project(BullseyeFireControlSystemTests LANGUAGES CXX)
 
 find_package(doctest REQUIRED)
 include(doctest)
-include(../cmake/DoctestWithMain.cmake)
+include(../CMake/DoctestWithMain.cmake)
 
 # ---- Tests ----
 

@@ -16,7 +16,7 @@ endif()
 file(
     GLOB_RECURSE
     files
-    cmake/*.cmake
+    CMake/*.cmake
     BullseyeFireControlSystem/CMakeLists.txt
     Tests/CMakeLists.txt
 )
