@@ -5,7 +5,7 @@ if(BUILD_TESTING)
   add_subdirectory(Tests)
 endif()
 
-option(ENABLE_COVERAGE "Enable coverage support separate from CTest's" OFF)
+option(ENABLE_COVERAGE "Enable generating code coverage reports" OFF)
 if(ENABLE_COVERAGE)
   include(CMake/Coverage.cmake)
 endif()
