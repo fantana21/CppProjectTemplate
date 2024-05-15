@@ -6,7 +6,7 @@ project(BullseyeFireControlSystemTests LANGUAGES CXX)
 
 # ---- Dependencies ----
 
-find_package(doctest REQUIRED)
+find_package(doctest CONFIG REQUIRED)
 include(doctest)
 include(../CMake/DoctestWithMain.cmake)
 
