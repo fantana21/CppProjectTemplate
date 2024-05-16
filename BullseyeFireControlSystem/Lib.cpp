@@ -2,7 +2,13 @@
 
 #include <fmt/core.h>
 
-library::library()
-    : name {fmt::format("{}", "BullseyeFireControlSystem")}
+
+Library::Library() : name_{fmt::format("{}", "BullseyeFireControlSystem")}
 {
+}
+
+
+auto Library::Name() const -> std::string
+{
+    return name_;
 }

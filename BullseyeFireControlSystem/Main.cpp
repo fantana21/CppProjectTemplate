@@ -1,12 +1,12 @@
-#include <iostream>
-#include <string>
-
 #include <BullseyeFireControlSystem/Lib.hpp>
+
+#include <iostream>
+
 
 auto main() -> int
 {
-  auto const lib = library {};
-  auto const message = "Hello from " + lib.name + "!";
-  std::cout << message << '\n';
-  return 0;
+    auto const library = Library{};
+    auto const message = "Hello from " + library.Name() + "!";
+    std::cout << message << '\n';
+    return 0;
 }

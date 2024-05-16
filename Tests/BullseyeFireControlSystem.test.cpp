@@ -1,9 +1,10 @@
-#include <doctest/doctest.h>
-
 #include <BullseyeFireControlSystem/Lib.hpp>
 
-TEST_CASE("Name is BullseyeFireControlSystem")
+#include <doctest/doctest.h>
+
+
+TEST_CASE("Library name is BullseyeFireControlSystem")
 {
-  auto const lib = library {};
-  REQUIRE(lib.name == "BullseyeFireControlSystem");
+    auto const library = Library{};
+    REQUIRE(library.Name() == "BullseyeFireControlSystem");
 }
