@@ -1,5 +1,5 @@
 {
-  "name": "BullseyeFireControlSystem",
+  "name": "bullseye-fire-control-system",
   "version-semver": "0.1.0",
   "dependencies": [
     {
