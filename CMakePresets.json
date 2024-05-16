@@ -65,25 +65,23 @@
       }
     },
     {
-      "name": "ci-linux",
-      "inherits": ["flags-gcc-clang", "cpp-std"],
-      "generator": "Ninja",
+      "name": "linux-common",
       "hidden": true,
+      "inherits": ["vcpkg", "cpp-std", "flags-gcc-clang", "dev-mode"],
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Release"
       }
     },
     {
-      "name": "ci-win64",
-      "inherits": ["flags-msvc", "cpp-std"],
-      "generator": "Visual Studio 17 2022",
-      "architecture": "x64",
-      "hidden": true
+      "name": "ci-ubuntu",
+      "inherits": ["linux-common", "clang-tidy", "cppcheck"]
     },
     {
       "name": "ci-coverage",
+      "inherits": ["linux-common"],
       "binaryDir": "${sourceDir}/build/coverage",
-      "inherits": ["ci-linux", "dev-mode", "vcpkg"],
       "cacheVariables": {
         "ENABLE_COVERAGE": "ON",
         "CMAKE_BUILD_TYPE": "Coverage",
@@ -96,18 +94,13 @@
     },
     {
       "name": "ci-sanitize",
+      "inherits": ["linux-common"],
       "binaryDir": "${sourceDir}/build/sanitize",
-      "inherits": ["ci-linux", "dev-mode", "vcpkg"],
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Sanitize",
         "CMAKE_CXX_FLAGS_SANITIZE": "-U_FORTIFY_SOURCE -O2 -g -fsanitize=address,undefined -fno-omit-frame-pointer -fno-common",
         "CMAKE_MAP_IMPORTED_CONFIG_SANITIZE": "Sanitize;RelWithDebInfo;Release;Debug;"
       }
-    },
-    {
-      "name": "ci-build",
-      "binaryDir": "${sourceDir}/build",
-      "hidden": true
     },
     {
       "name": "ci-multi-config",
@@ -118,12 +111,11 @@
       }
     },
     {
-      "name": "ci-ubuntu",
-      "inherits": ["ci-build", "ci-linux", "dev-mode", "vcpkg", "clang-tidy", "cppcheck"]
-    },
-    {
       "name": "ci-windows",
-      "inherits": ["ci-build", "ci-win64", "dev-mode", "vcpkg"]
+      "inherits": ["vcpkg", "cpp-std", "flags-msvc", "dev-mode"],
+      "generator": "Visual Studio 17 2022",
+      "binaryDir": "${sourceDir}/build",
+      "architecture": "x64"
     }
   ]
 }
