@@ -67,7 +67,12 @@
     {
       "name": "linux-common",
       "hidden": true,
-      "inherits": ["vcpkg", "cpp-std", "flags-gcc-clang", "dev-mode"],
+      "inherits": [
+        "vcpkg",
+        "cpp-std",
+        "flags-gcc-clang",
+        "dev-mode"
+      ],
       "generator": "Ninja",
       "binaryDir": "${sourceDir}/build",
       "cacheVariables": {
@@ -76,11 +81,17 @@
     },
     {
       "name": "ci-ubuntu",
-      "inherits": ["linux-common", "clang-tidy", "cppcheck"]
+      "inherits": [
+        "linux-common",
+        "clang-tidy",
+        "cppcheck"
+      ]
     },
     {
       "name": "ci-coverage",
-      "inherits": ["linux-common"],
+      "inherits": [
+        "linux-common"
+      ],
       "binaryDir": "${sourceDir}/build/coverage",
       "cacheVariables": {
         "ENABLE_COVERAGE": "ON",
@@ -94,7 +105,9 @@
     },
     {
       "name": "ci-sanitize",
-      "inherits": ["linux-common"],
+      "inherits": [
+        "linux-common"
+      ],
       "binaryDir": "${sourceDir}/build/sanitize",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Sanitize",
@@ -112,7 +125,12 @@
     },
     {
       "name": "ci-windows",
-      "inherits": ["vcpkg", "cpp-std", "flags-msvc", "dev-mode"],
+      "inherits": [
+        "vcpkg",
+        "cpp-std",
+        "flags-msvc",
+        "dev-mode"
+      ],
       "generator": "Visual Studio 17 2022",
       "binaryDir": "${sourceDir}/build",
       "architecture": "x64"
