@@ -12,12 +12,13 @@ include(../CMake/DoctestWithMain.cmake)
 
 # ---- Tests ----
 
-add_executable(BullseyeFireControlSystem_test BullseyeFireControlSystem.test.cpp)
+add_executable(BullseyeFireControlSystem_Test BullseyeFireControlSystem.test.cpp)
 target_link_libraries(
-    BullseyeFireControlSystem_test PRIVATE BullseyeFireControlSystem::Lib doctest::doctestWithMain
+    BullseyeFireControlSystem_Test
+    PRIVATE BullseyeFireControlSystem::Library doctest::doctestWithMain
 )
 
-doctest_discover_tests(BullseyeFireControlSystem_test)
+doctest_discover_tests(BullseyeFireControlSystem_Test)
 
 # ---- End-of-file commands ----
 

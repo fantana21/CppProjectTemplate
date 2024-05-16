@@ -1,4 +1,4 @@
-#include <BullseyeFireControlSystem/Lib.hpp>
+#include <BullseyeFireControlSystem/Library.hpp>
 
 #include <iostream>
 

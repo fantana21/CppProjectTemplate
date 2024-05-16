@@ -19,9 +19,9 @@ find_package(fmt CONFIG REQUIRED)
 
 # ---- Declare targets ----
 
-add_library(BullseyeFireControlSystem_Lib OBJECT)
-add_library(BullseyeFireControlSystem::Lib ALIAS BullseyeFireControlSystem_Lib)
-add_executable(BullseyeFireControlSystem_Exe)
+add_library(BullseyeFireControlSystem_Library OBJECT)
+add_library(BullseyeFireControlSystem::Library ALIAS BullseyeFireControlSystem_Library)
+add_executable(BullseyeFireControlSystem_Main)
 
 all_targets_compile_features(cxx_std_20)
 all_targets_include_directories("$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>")
