@@ -142,6 +142,58 @@
       "generator": "Visual Studio 17 2022",
       "binaryDir": "${sourceDir}/build",
       "architecture": "x64"
+    },
+    {
+      "name": "dev-linux-gcc",
+      "inherits": [
+        "linux-common",
+        "clang-tidy",
+        "cppcheck"
+      ],
+      "binaryDir": "${sourceDir}/build/gcc",
+      "cacheVariables": {
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_CXX_COMPILER": "g++"
+      }
+    },
+    {
+      "name": "dev-linux-clang",
+      "inherits": [
+        "dev-linux-gcc"
+      ],
+      "binaryDir": "${sourceDir}/build/clang",
+      "cacheVariables": {
+        "CMAKE_CXX_COMPILER": "clang++"
+      }
+    },
+    {
+      "name": "dev-windows-msvc",
+      "inherits": [
+        "ci-windows",
+        "clang-tidy-msvc",
+        "cppcheck"
+      ],
+      "binaryDir": "${sourceDir}/build/msvc"
+    },
+    {
+      "name": "dev-windows-clang-cl",
+      "description": "This preset requires a working MSVC environment, i.e., vcvarsall.bat must have been run.",
+      "inherits": [
+        "vcpkg",
+        "dev-mode",
+        "cpp-std",
+        "flags-msvc",
+        "clang-tidy-msvc",
+        "cppcheck"
+      ],
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/clang-cl",
+      "cacheVariables": {
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_CXX_COMPILER": "clang-cl"
+      }
     }
   ]
 }
