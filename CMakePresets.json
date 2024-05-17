@@ -7,14 +7,6 @@
   },
   "configurePresets": [
     {
-      "name": "dev-mode",
-      "hidden": true,
-      "cacheVariables": {
-        "BullseyeFireControlSystem_DEVELOPER_MODE": "ON",
-        "VCPKG_MANIFEST_FEATURES": "test"
-      }
-    },
-    {
       "name": "vcpkg",
       "hidden": true,
       "cacheVariables": {
@@ -22,17 +14,11 @@
       }
     },
     {
-      "name": "cppcheck",
+      "name": "dev-mode",
       "hidden": true,
       "cacheVariables": {
-        "CMAKE_CXX_CPPCHECK": "cppcheck;--inline-suppr"
-      }
-    },
-    {
-      "name": "clang-tidy",
-      "hidden": true,
-      "cacheVariables": {
-        "CMAKE_CXX_CLANG_TIDY": "clang-tidy;--header-filter=^${sourceDir}/"
+        "BullseyeFireControlSystem_DEVELOPER_MODE": "ON",
+        "VCPKG_MANIFEST_FEATURES": "test"
       }
     },
     {
@@ -65,13 +51,35 @@
       }
     },
     {
+      "name": "clang-tidy",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_CXX_CLANG_TIDY": "clang-tidy;--header-filter=^${sourceDir}/"
+      }
+    },
+    {
+      "name": "clang-tidy-msvc",
+      "description": "There is a bug where clang-tidy doesn't recognize the /EHsc flag, so we pass it manually (see https://gitlab.kitware.com/cmake/cmake/-/issues/20512)",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_CXX_CLANG_TIDY": "clang-tidy;--header-filter=^${sourceDir}/;--extra-arg=/EHsc"
+      }
+    },
+    {
+      "name": "cppcheck",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_CXX_CPPCHECK": "cppcheck;--inline-suppr"
+      }
+    },
+    {
       "name": "linux-common",
       "hidden": true,
       "inherits": [
         "vcpkg",
+        "dev-mode",
         "cpp-std",
-        "flags-gcc-clang",
-        "dev-mode"
+        "flags-gcc-clang"
       ],
       "generator": "Ninja",
       "binaryDir": "${sourceDir}/build",
@@ -127,9 +135,9 @@
       "name": "ci-windows",
       "inherits": [
         "vcpkg",
+        "dev-mode",
         "cpp-std",
-        "flags-msvc",
-        "dev-mode"
+        "flags-msvc"
       ],
       "generator": "Visual Studio 17 2022",
       "binaryDir": "${sourceDir}/build",
