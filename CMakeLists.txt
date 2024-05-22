@@ -28,10 +28,10 @@ all_targets_include_directories("$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>")
 
 add_subdirectory(BullseyeFireControlSystem)
 
-# ---- Installation rules ----
+# ---- Install rules ----
 
 if(NOT CMAKE_SKIP_INSTALL_RULES)
-    include(CMake/InstallationRules.cmake)
+    include(CMake/InstallRules.cmake)
 endif()
 
 # ---- Developer mode ----
