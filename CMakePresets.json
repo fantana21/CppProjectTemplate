@@ -17,7 +17,7 @@
       "name": "dev-mode",
       "hidden": true,
       "cacheVariables": {
-        "BullseyeFireControlSystem_DEVELOPER_MODE": "ON",
+        "CppProjectTemplate_DEVELOPER_MODE": "ON",
         "VCPKG_MANIFEST_FEATURES": "test"
       }
     },

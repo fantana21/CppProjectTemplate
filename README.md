@@ -1,6 +1,6 @@
-# BullseyeFireControlSystem
+# CppProjectTemplate
 
-This is the BullseyeFireControlSystem project.
+This is the CppProjectTemplate project.
 
 # Building and installing
 

@@ -15,7 +15,7 @@ if(FIX)
     set(args "")
 endif()
 
-file(GLOB_RECURSE files BullseyeFireControlSystem/*.[chi]pp Tests/*.[chi]pp)
+file(GLOB_RECURSE files CppProjectTemplate/*.[chi]pp Tests/*.[chi]pp)
 set(badly_formatted "")
 set(output "")
 string(LENGTH "${CMAKE_SOURCE_DIR}/" path_prefix_length)

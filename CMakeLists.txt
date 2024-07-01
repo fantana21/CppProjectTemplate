@@ -3,10 +3,10 @@ cmake_minimum_required(VERSION 3.28)
 include(CMake/Prelude.cmake)
 
 project(
-    BullseyeFireControlSystem
+    CppProjectTemplate
     VERSION 0.1.0
-    DESCRIPTION "A fire control system for the Bullseye project"
-    HOMEPAGE_URL "https://github.com/fantana21/BullseyeFireControlSystem"
+    DESCRIPTION "Based on cmake-init but with PascalCase, doctest, cmake-format, ..."
+    HOMEPAGE_URL "https://github.com/fantana21/CppProjectTemplate"
     LANGUAGES CXX
 )
 
@@ -19,14 +19,14 @@ find_package(fmt CONFIG REQUIRED)
 
 # ---- Declare targets ----
 
-add_library(BullseyeFireControlSystem_Library OBJECT)
-add_library(BullseyeFireControlSystem::Library ALIAS BullseyeFireControlSystem_Library)
-add_executable(BullseyeFireControlSystem_Main)
+add_library(CppProjectTemplate_Library OBJECT)
+add_library(CppProjectTemplate::Library ALIAS CppProjectTemplate_Library)
+add_executable(CppProjectTemplate_Main)
 
 all_targets_compile_features(cxx_std_20)
 all_targets_include_directories("$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>")
 
-add_subdirectory(BullseyeFireControlSystem)
+add_subdirectory(CppProjectTemplate)
 
 # ---- Install rules ----
 
@@ -36,10 +36,10 @@ endif()
 
 # ---- Developer mode ----
 
-if(NOT BullseyeFireControlSystem_DEVELOPER_MODE)
+if(NOT CppProjectTemplate_DEVELOPER_MODE)
     return()
 elseif(NOT PROJECT_IS_TOP_LEVEL)
-    message(AUTHOR_WARNING "Developer mode is intended for developers of BullseyeFireControlSystem")
+    message(AUTHOR_WARNING "Developer mode is intended for developers of CppProjectTemplate")
 endif()
 
 include(CMake/DeveloperMode.cmake)

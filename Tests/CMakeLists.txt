@@ -2,7 +2,7 @@
 # from it, i.e. the testing is done only from the build tree and is not feasible from an install
 # location
 
-project(BullseyeFireControlSystemTests LANGUAGES CXX)
+project(CppProjectTemplateTests LANGUAGES CXX)
 
 # ---- Dependencies ----
 
@@ -12,13 +12,13 @@ include(../CMake/DoctestWithMain.cmake)
 
 # ---- Tests ----
 
-add_executable(BullseyeFireControlSystem_Test BullseyeFireControlSystem.test.cpp)
+add_executable(CppProjectTemplate_Test CppProjectTemplate.test.cpp)
 target_link_libraries(
-    BullseyeFireControlSystem_Test
-    PRIVATE BullseyeFireControlSystem::Library doctest::doctestWithMain
+    CppProjectTemplate_Test
+    PRIVATE CppProjectTemplate::Library doctest::doctestWithMain
 )
 
-doctest_discover_tests(BullseyeFireControlSystem_Test)
+doctest_discover_tests(CppProjectTemplate_Test)
 
 # ---- End-of-file commands ----
 

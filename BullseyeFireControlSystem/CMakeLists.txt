@@ -1,6 +1,0 @@
-target_sources(BullseyeFireControlSystem_Library PRIVATE Library.cpp)
-target_link_libraries(BullseyeFireControlSystem_Library PRIVATE fmt::fmt)
-
-target_sources(BullseyeFireControlSystem_Main PRIVATE Main.cpp)
-set_property(TARGET BullseyeFireControlSystem_Main PROPERTY OUTPUT_NAME BullseyeFireControlSystem)
-target_link_libraries(BullseyeFireControlSystem_Main PRIVATE BullseyeFireControlSystem::Library)
