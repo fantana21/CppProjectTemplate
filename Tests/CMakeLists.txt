@@ -14,8 +14,7 @@ include(../CMake/DoctestWithMain.cmake)
 
 add_executable(CppProjectTemplate_Test CppProjectTemplate.test.cpp)
 target_link_libraries(
-    CppProjectTemplate_Test
-    PRIVATE CppProjectTemplate::Library doctest::doctestWithMain
+    CppProjectTemplate_Test PRIVATE CppProjectTemplate::Library doctest::doctestWithMain
 )
 
 doctest_discover_tests(CppProjectTemplate_Test)
