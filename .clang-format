@@ -21,8 +21,8 @@ AlignTrailingComments:
 AllowAllArgumentsOnNextLine: true
 AllowAllParametersOfDeclarationOnNextLine: true
 AllowBreakBeforeNoexceptSpecifier: OnlyWithParen
-# TODO: Maybe choose Always?
-AllowShortBlocksOnASingleLine: Empty
+# Empty does now work with while(true) {} so I chose Always
+AllowShortBlocksOnASingleLine: Always
 AllowShortCaseLabelsOnASingleLine: false
 AllowShortCompoundRequirementOnASingleLine: true
 AllowShortEnumsOnASingleLine: false
@@ -55,9 +55,9 @@ BraceWrapping:
   BeforeLambdaBody: true
   BeforeWhile:     false
   IndentBraces:    false
-  SplitEmptyFunction: true
-  SplitEmptyRecord: true
-  SplitEmptyNamespace: true
+  SplitEmptyFunction: false
+  SplitEmptyRecord: false
+  SplitEmptyNamespace: false
 BreakAdjacentStringLiterals: true
 BreakAfterAttributes: Never
 BreakAfterJavaFieldAnnotations: true
@@ -101,8 +101,8 @@ IncludeCategories:
     Priority:        6
     SortPriority:    0
     CaseSensitive:   false
-  # BallisticModel header files <BallisticModel/*.hpp> without underscores
-  - Regex:           '^<BallisticModel(\/[A-Za-z0-9]+)+\.hpp>'
+  # CppProjectTemplate header files <CppProjectTemplate/*.hpp> without underscores
+  - Regex:           '^<CppProjectTemplate(\/[A-Za-z0-9]+)+\.hpp>'
     Priority:        1
     SortPriority:    0
     CaseSensitive:   false
