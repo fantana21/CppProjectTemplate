@@ -12,12 +12,12 @@ include(../CMake/DoctestWithMain.cmake)
 
 # ---- Tests ----
 
-add_executable(CppProjectTemplate_Test CppProjectTemplate.test.cpp)
+add_executable(CppProjectTemplateTests_Library Library.test.cpp)
 target_link_libraries(
-    CppProjectTemplate_Test PRIVATE CppProjectTemplate::Library doctest::doctestWithMain
+    CppProjectTemplateTests_Library PRIVATE CppProjectTemplate::Library doctest::doctestWithMain
 )
 
-doctest_discover_tests(CppProjectTemplate_Test)
+doctest_discover_tests(CppProjectTemplateTests_Library)
 
 # ---- End-of-file commands ----
 
