@@ -10,6 +10,8 @@ if(ENABLE_COVERAGE)
     include(CMake/Coverage.cmake)
 endif()
 
+# Further options for developers go here
+
 include(CMake/FormatTargets.cmake)
 include(CMake/SpellTargets.cmake)
 
