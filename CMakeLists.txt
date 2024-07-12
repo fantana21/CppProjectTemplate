@@ -10,7 +10,7 @@ project(
     LANGUAGES CXX
 )
 
-include(CMake/Variables.cmake)
+include(CMake/OptionsAndVariables.cmake)
 include(CMake/PropertiesForAllTargets.cmake)
 
 # ---- Find dependencies ----
