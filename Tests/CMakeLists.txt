@@ -18,6 +18,12 @@ target_link_libraries(
 )
 doctest_discover_tests(CppProjectTemplateTests_Library)
 
+add_and_set_up_test(Square)
+target_link_libraries(
+    CppProjectTemplateTests_Square PRIVATE CppProjectTemplate::Square doctest::doctestWithMain
+)
+doctest_discover_tests(CppProjectTemplateTests_Square)
+
 # ---- End-of-file commands ----
 
 add_folders(Tests)

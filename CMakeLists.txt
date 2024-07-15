@@ -11,7 +11,6 @@ project(
 )
 
 include(CMake/OptionsAndVariables.cmake)
-include(CMake/PropertiesForAllTargets.cmake)
 include(CMake/AddAndSetUpTargets.cmake)
 
 # ---- Find dependencies ----
@@ -21,9 +20,8 @@ find_package(fmt CONFIG REQUIRED)
 # ---- Declare targets ----
 
 add_and_set_up_library(Library STATIC)
+add_and_set_up_library(Square INTERFACE)
 add_and_set_up_executable(Main OUTPUT_NAME CppProjectTemplate)
-
-all_targets_compile_features(cxx_std_20)
 
 add_subdirectory(CppProjectTemplate)
 
