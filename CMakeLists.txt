@@ -19,7 +19,7 @@ find_package(fmt CONFIG REQUIRED)
 
 # ---- Declare targets ----
 
-add_library(CppProjectTemplate_Library OBJECT)
+add_library(CppProjectTemplate_Library STATIC)
 add_library(CppProjectTemplate::Library ALIAS CppProjectTemplate_Library)
 add_executable(CppProjectTemplate_Main)
 
