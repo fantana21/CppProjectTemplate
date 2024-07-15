@@ -12,6 +12,7 @@ project(
 
 include(CMake/OptionsAndVariables.cmake)
 include(CMake/PropertiesForAllTargets.cmake)
+include(CMake/AddAndSetUpTargets.cmake)
 
 # ---- Find dependencies ----
 
@@ -19,15 +20,10 @@ find_package(fmt CONFIG REQUIRED)
 
 # ---- Declare targets ----
 
-add_library(CppProjectTemplate_Library STATIC)
-set_property(TARGET CppProjectTemplate_Library PROPERTY EXPORT_NAME Library)
-add_library(CppProjectTemplate::Library ALIAS CppProjectTemplate_Library)
-
-add_executable(CppProjectTemplate_Main)
-set_property(TARGET CppProjectTemplate_Main PROPERTY OUTPUT_NAME CppProjectTemplate)
+add_and_set_up_library(Library STATIC)
+add_and_set_up_executable(Main OUTPUT_NAME CppProjectTemplate)
 
 all_targets_compile_features(cxx_std_20)
-all_targets_include_directories("$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>")
 
 add_subdirectory(CppProjectTemplate)
 
