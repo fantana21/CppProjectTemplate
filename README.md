@@ -17,8 +17,13 @@ non-exhaustive list of changes.
   are now the six format-related targets: `format[-cpp|-cmake][-fix]`
 - Remove `Docs` folder and everything related to Code documentation apart from the
   top-level Markdown files.
-- Add `PropertiesForAllTargets.cmake`
-- Adapt configuration files for clang-format and clang-tidy to personal preferences
+- Provide `add_and_set_up_xxx()` functions which wrap most boilerplate code that appears
+  when adding targets. Libraries, e.g., get a target name prefix, an export name and an
+  alias according to best practices. The functions also allow to easily set properties,
+  like include directories and compile features for all targets.
+- Adapt configuration files for clang-format and clang-tidy to personal preferences. Also
+  add a separate clang-tidy configuration for tests, because magic numbers, e.g., are very
+  common and not an issue there.
 - Change a few names, descriptions, comments, and error messages
 
 
