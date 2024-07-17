@@ -95,12 +95,8 @@
       ]
     },
     {
-      "name": "ci-coverage-gcc",
-      "description": "For generating coverage reports on Ubuntu runners with GCC",
-      "inherits": [
-        "common-linux"
-      ],
-      "generator": "Ninja",
+      "name": "coverage-gcc",
+      "hidden": true,
       "cacheVariables": {
         "ENABLE_COVERAGE": "ON",
         "CMAKE_BUILD_TYPE": "Coverage",
@@ -109,6 +105,15 @@
         "CMAKE_SHARED_LINKER_FLAGS_COVERAGE": "--coverage",
         "CMAKE_MAP_IMPORTED_CONFIG_COVERAGE": "Coverage;RelWithDebInfo;Release;Debug;"
       }
+    },
+    {
+      "name": "ci-coverage-gcc",
+      "description": "For generating coverage reports on Ubuntu runners with GCC",
+      "inherits": [
+        "common-linux",
+        "coverage-gcc"
+      ],
+      "generator": "Ninja"
     },
     {
       "name": "ci-sanitize",
@@ -153,6 +158,18 @@
       }
     },
     {
+      "name": "dev-linux-coverage-gcc",
+      "inherits": [
+        "common-linux",
+        "coverage-gcc"
+      ],
+      "generator": "Ninja",
+      "cacheVariables": {
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+        "CMAKE_CXX_COMPILER": "g++"
+      }
+    },
+    {
       "name": "dev-linux-clang",
       "inherits": [
         "dev-linux-gcc"
@@ -183,7 +200,7 @@
     },
     {
       "name": "dev-windows-clang-cl",
-      "description": "Requires a working MSVC environment and triplets from Neumann-A/my-vcpkg-triplets",
+      "description": "Requires a working MSVC environment and a triplet from Neumann-A/my-vcpkg-triplets",
       "inherits": [
         "dev-windows-msvc"
       ],
