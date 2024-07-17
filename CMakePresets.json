@@ -180,7 +180,7 @@
     },
     {
       "name": "dev-windows-msvc",
-      "description": "Requires a working MSVC environment",
+      "description": "Requires toolchain from MarkSchofield/WindowsToolchain",
       "inherits": [
         "vcpkg",
         "dev-mode",
@@ -193,19 +193,21 @@
       "binaryDir": "${sourceDir}/build/${presetName}",
       "cacheVariables": {
         "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
-        "CMAKE_CXX_COMPILER": "cl",
+        "VCPKG_CHAINLOAD_TOOLCHAIN_FILE": "$env{WINDOWS_TOOLCHAIN_ROOT}/Windows.MSVC.toolchain.cmake",
         "VCPKG_HOST_TRIPLET": "x64-windows-static-md",
         "VCPKG_TARGET_TRIPLET": "x64-windows-static-md"
       }
     },
     {
       "name": "dev-windows-clang-cl",
-      "description": "Requires a working MSVC environment and a triplet from Neumann-A/my-vcpkg-triplets",
+      "description": "Requires toolchain from MarkSchofield/WindowsToolchain and triplet from Neumann-A/my-vcpkg-triplets",
       "inherits": [
         "dev-windows-msvc"
       ],
       "cacheVariables": {
-        "CMAKE_CXX_COMPILER": "clang-cl",
+        "CMAKE_C_COMPILER_FRONTEND_VARIANT": "MSVC",
+        "CMAKE_CXX_COMPILER_FRONTEND_VARIANT": "MSVC",
+        "VCPKG_CHAINLOAD_TOOLCHAIN_FILE": "$env{WINDOWS_TOOLCHAIN_ROOT}/Windows.Clang.toolchain.cmake",
         "VCPKG_HOST_TRIPLET": "x64-win-llvm-static-md",
         "VCPKG_TARGET_TRIPLET": "x64-win-llvm-static-md"
       }
