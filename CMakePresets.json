@@ -87,7 +87,7 @@
     },
     {
       "name": "ci-ubuntu",
-      "description": "For building and static code checking on Ubuntu runners with GCC",
+      "description": "For building and static code checking on Ubuntu runners with GCC or Clang",
       "inherits": [
         "common-linux",
         "clang-tidy",
@@ -95,7 +95,7 @@
       ]
     },
     {
-      "name": "ci-coverage",
+      "name": "ci-coverage-gcc",
       "description": "For generating coverage reports on Ubuntu runners with GCC",
       "inherits": [
         "common-linux"
@@ -107,13 +107,12 @@
         "CMAKE_CXX_FLAGS_COVERAGE": "-O0 -g --coverage -fkeep-inline-functions -fkeep-static-functions",
         "CMAKE_EXE_LINKER_FLAGS_COVERAGE": "--coverage",
         "CMAKE_SHARED_LINKER_FLAGS_COVERAGE": "--coverage",
-        "CMAKE_MAP_IMPORTED_CONFIG_COVERAGE": "Coverage;RelWithDebInfo;Release;Debug;",
-        "COVERAGE_HTML_COMMAND": ""
+        "CMAKE_MAP_IMPORTED_CONFIG_COVERAGE": "Coverage;RelWithDebInfo;Release;Debug;"
       }
     },
     {
       "name": "ci-sanitize",
-      "description": "For running sanitizers on Ubuntu runners with GCC",
+      "description": "For running sanitizers on Ubuntu runners with GCC or Clang",
       "inherits": [
         "common-linux"
       ],
@@ -150,7 +149,6 @@
       ],
       "cacheVariables": {
         "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
-        "CMAKE_C_COMPILER": "gcc",
         "CMAKE_CXX_COMPILER": "g++"
       }
     },
@@ -160,7 +158,6 @@
         "dev-linux-gcc"
       ],
       "cacheVariables": {
-        "CMAKE_C_COMPILER": "clang",
         "CMAKE_CXX_COMPILER": "clang++"
       }
     },
@@ -199,6 +196,16 @@
   ],
   "buildPresets": [
     {
+      "name": "ci-ubuntu-debug",
+      "configurePreset": "ci-ubuntu",
+      "configuration": "Debug"
+    },
+    {
+      "name": "ci-ubuntu-release",
+      "configurePreset": "ci-ubuntu",
+      "configuration": "Release"
+    },
+    {
       "name": "ci-windows-debug",
       "configurePreset": "ci-windows",
       "configuration": "Debug"
@@ -206,6 +213,26 @@
     {
       "name": "ci-windows-release",
       "configurePreset": "ci-windows",
+      "configuration": "Release"
+    },
+    {
+      "name": "dev-linux-gcc-debug",
+      "configurePreset": "dev-linux-gcc",
+      "configuration": "Debug"
+    },
+    {
+      "name": "dev-linux-gcc-release",
+      "configurePreset": "dev-linux-gcc",
+      "configuration": "Release"
+    },
+    {
+      "name": "dev-linux-clang-debug",
+      "configurePreset": "dev-linux-clang",
+      "configuration": "Debug"
+    },
+    {
+      "name": "dev-linux-clang-release",
+      "configurePreset": "dev-linux-clang",
       "configuration": "Release"
     },
     {
