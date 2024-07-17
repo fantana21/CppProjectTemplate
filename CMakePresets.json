@@ -26,9 +26,9 @@
       "description": "This preset makes sure the project actually builds with at least the specified standard",
       "hidden": true,
       "cacheVariables": {
-        "CMAKE_CXX_EXTENSIONS": "OFF",
         "CMAKE_CXX_STANDARD": "20",
-        "CMAKE_CXX_STANDARD_REQUIRED": "ON"
+        "CMAKE_CXX_STANDARD_REQUIRED": "ON",
+        "CMAKE_CXX_EXTENSIONS": "OFF"
       }
     },
     {
@@ -47,7 +47,8 @@
       "hidden": true,
       "cacheVariables": {
         "CMAKE_CXX_FLAGS": "/sdl /guard:cf /utf-8 /diagnostics:caret /w14165 /w44242 /w44254 /w44263 /w34265 /w34287 /w44296 /w44365 /w44388 /w44464 /w14545 /w14546 /w14547 /w14549 /w14555 /w34619 /w34640 /w24826 /w14905 /w14906 /w14928 /w45038 /W4 /permissive- /volatile:iso /Zc:inline /Zc:preprocessor /Zc:enumTypes /Zc:lambda /Zc:__cplusplus /Zc:externConstexpr /Zc:throwingNew /EHsc",
-        "CMAKE_EXE_LINKER_FLAGS": "/machine:x64 /guard:cf"
+        "CMAKE_EXE_LINKER_FLAGS": "/machine:x64 /guard:cf",
+        "CMAKE_SHARED_LINKER_FLAGS": "/machine:x64 /guard:cf"
       }
     },
     {
@@ -73,7 +74,7 @@
       }
     },
     {
-      "name": "linux-common",
+      "name": "common-linux",
       "hidden": true,
       "inherits": [
         "vcpkg",
@@ -81,30 +82,29 @@
         "cpp-std",
         "flags-gcc-clang"
       ],
-      "generator": "Ninja",
-      "binaryDir": "${sourceDir}/build",
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Release"
-      }
+      "generator": "Ninja Multi-Config",
+      "binaryDir": "${sourceDir}/build/${presetName}"
     },
     {
       "name": "ci-ubuntu",
+      "description": "For building and static code checking on Ubuntu runners with GCC",
       "inherits": [
-        "linux-common",
+        "common-linux",
         "clang-tidy",
         "cppcheck"
       ]
     },
     {
       "name": "ci-coverage",
+      "description": "For generating coverage reports on Ubuntu runners with GCC",
       "inherits": [
-        "linux-common"
+        "common-linux"
       ],
-      "binaryDir": "${sourceDir}/build/coverage",
+      "generator": "Ninja",
       "cacheVariables": {
         "ENABLE_COVERAGE": "ON",
         "CMAKE_BUILD_TYPE": "Coverage",
-        "CMAKE_CXX_FLAGS_COVERAGE": "-Og -g --coverage -fkeep-inline-functions -fkeep-static-functions",
+        "CMAKE_CXX_FLAGS_COVERAGE": "-O0 -g --coverage -fkeep-inline-functions -fkeep-static-functions",
         "CMAKE_EXE_LINKER_FLAGS_COVERAGE": "--coverage",
         "CMAKE_SHARED_LINKER_FLAGS_COVERAGE": "--coverage",
         "CMAKE_MAP_IMPORTED_CONFIG_COVERAGE": "Coverage;RelWithDebInfo;Release;Debug;",
@@ -113,10 +113,11 @@
     },
     {
       "name": "ci-sanitize",
+      "description": "For running sanitizers on Ubuntu runners with GCC",
       "inherits": [
-        "linux-common"
+        "common-linux"
       ],
-      "binaryDir": "${sourceDir}/build/sanitize",
+      "generator": "Ninja",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Sanitize",
         "CMAKE_CXX_FLAGS_SANITIZE": "-U_FORTIFY_SOURCE -O2 -g -fsanitize=address,undefined -fno-omit-frame-pointer -fno-common",
@@ -124,15 +125,8 @@
       }
     },
     {
-      "name": "ci-multi-config",
-      "description": "Speed up multi-config generators by generating only one configuration instead of the defaults",
-      "hidden": true,
-      "cacheVariables": {
-        "CMAKE_CONFIGURATION_TYPES": "Release"
-      }
-    },
-    {
       "name": "ci-windows",
+      "description": "For building on Windows runners with MSVC and MSBuild",
       "inherits": [
         "vcpkg",
         "dev-mode",
@@ -140,20 +134,23 @@
         "flags-msvc"
       ],
       "generator": "Visual Studio 17 2022",
-      "binaryDir": "${sourceDir}/build",
-      "architecture": "x64"
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "architecture": "x64",
+      "cacheVariables": {
+        "VCPKG_HOST_TRIPLET": "x64-windows-static-md",
+        "VCPKG_TARGET_TRIPLET": "x64-windows-static-md"
+      }
     },
     {
       "name": "dev-linux-gcc",
       "inherits": [
-        "linux-common",
+        "common-linux",
         "clang-tidy",
         "cppcheck"
       ],
-      "binaryDir": "${sourceDir}/build/gcc",
       "cacheVariables": {
         "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
-        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_C_COMPILER": "gcc",
         "CMAKE_CXX_COMPILER": "g++"
       }
     },
@@ -162,23 +159,14 @@
       "inherits": [
         "dev-linux-gcc"
       ],
-      "binaryDir": "${sourceDir}/build/clang",
       "cacheVariables": {
+        "CMAKE_C_COMPILER": "clang",
         "CMAKE_CXX_COMPILER": "clang++"
       }
     },
     {
       "name": "dev-windows-msvc",
-      "inherits": [
-        "ci-windows",
-        "clang-tidy-msvc",
-        "cppcheck"
-      ],
-      "binaryDir": "${sourceDir}/build/msvc"
-    },
-    {
-      "name": "dev-windows-clang-cl",
-      "description": "This preset requires a working MSVC environment, i.e., vcvarsall.bat must have been run.",
+      "description": "Requires a working MSVC environment",
       "inherits": [
         "vcpkg",
         "dev-mode",
@@ -187,13 +175,58 @@
         "clang-tidy-msvc",
         "cppcheck"
       ],
-      "generator": "Ninja",
-      "binaryDir": "${sourceDir}/build/clang-cl",
+      "generator": "Ninja Multi-Config",
+      "binaryDir": "${sourceDir}/build/${presetName}",
       "cacheVariables": {
         "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
-        "CMAKE_BUILD_TYPE": "Debug",
-        "CMAKE_CXX_COMPILER": "clang-cl"
+        "CMAKE_CXX_COMPILER": "cl",
+        "VCPKG_HOST_TRIPLET": "x64-windows-static-md",
+        "VCPKG_TARGET_TRIPLET": "x64-windows-static-md"
       }
+    },
+    {
+      "name": "dev-windows-clang-cl",
+      "description": "Requires a working MSVC environment and triplets from Neumann-A/my-vcpkg-triplets",
+      "inherits": [
+        "dev-windows-msvc"
+      ],
+      "cacheVariables": {
+        "CMAKE_CXX_COMPILER": "clang-cl",
+        "VCPKG_HOST_TRIPLET": "x64-win-llvm-static-md",
+        "VCPKG_TARGET_TRIPLET": "x64-win-llvm-static-md"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "ci-windows-debug",
+      "configurePreset": "ci-windows",
+      "configuration": "Debug"
+    },
+    {
+      "name": "ci-windows-release",
+      "configurePreset": "ci-windows",
+      "configuration": "Release"
+    },
+    {
+      "name": "dev-windows-msvc-debug",
+      "configurePreset": "dev-windows-msvc",
+      "configuration": "Debug"
+    },
+    {
+      "name": "dev-windows-msvc-release",
+      "configurePreset": "dev-windows-msvc",
+      "configuration": "Release"
+    },
+    {
+      "name": "dev-windows-clang-cl-debug",
+      "configurePreset": "dev-windows-clang-cl",
+      "configuration": "Debug"
+    },
+    {
+      "name": "dev-windows-clang-cl-release",
+      "configurePreset": "dev-windows-clang-cl",
+      "configuration": "Release"
     }
   ]
 }
