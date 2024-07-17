@@ -21,7 +21,7 @@ find_package(fmt CONFIG REQUIRED)
 
 add_and_set_up_library(Library STATIC)
 add_and_set_up_library(Square INTERFACE)
-add_and_set_up_executable(Main OUTPUT_NAME CppProjectTemplate)
+add_and_set_up_executable(Main)
 
 add_subdirectory(CppProjectTemplate)
 
