@@ -2,7 +2,10 @@
 # Enable ALL the things! Except not really. We don't use the abseil library, OpenCL (the altera
 # stuff), android, darwin (an Apple OS apparently), MPI or OpenMP. The fuchsia checks are just too
 # restrictive, we don't write Objective-C and don't develop the Linux kernel or LLVM-libc.
-# misc-non-private-member-variables-in-classes: the options don't do anything
+# misc-non-private-member-variables-in-classes: the options don't do anything.
+# misc-const-correctness is not about const-correctness, but about const-ness of local variables and
+# I am not on the const-all-the-things bandwagon. We use Include What You Use instead of Include
+# Cleaner because the latter does not work with first-party includes using <>.
 Checks: "*,\
   -*avoid-c-arrays,\
   -abseil-*,\
@@ -25,6 +28,7 @@ Checks: "*,\
   -llvm-header-guard,\
   -llvm-namespace-comment,\
   -llvmlibc-*,\
+  -misc-const-correctness,\
   -misc-include-cleaner,\
   -mpi-*,\
   -openmp-*"

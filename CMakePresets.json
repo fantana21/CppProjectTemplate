@@ -74,6 +74,13 @@
       }
     },
     {
+      "name": "include-what-you-use",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_CXX_INCLUDE_WHAT_YOU_USE": "include-what-you-use"
+      }
+    },
+    {
       "name": "common-linux",
       "hidden": true,
       "inherits": [
@@ -91,7 +98,8 @@
       "inherits": [
         "common-linux",
         "clang-tidy",
-        "cppcheck"
+        "cppcheck",
+        "include-what-you-use"
       ]
     },
     {
@@ -168,7 +176,8 @@
       "inherits": [
         "common-linux",
         "clang-tidy",
-        "cppcheck"
+        "cppcheck",
+        "include-what-you-use"
       ],
       "cacheVariables": {
         "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",

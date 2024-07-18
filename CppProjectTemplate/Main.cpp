@@ -2,6 +2,7 @@
 #include <CppProjectTemplate/Square.hpp>
 
 #include <iostream>
+#include <string>
 
 
 auto main() -> int
