@@ -129,20 +129,38 @@
       }
     },
     {
-      "name": "ci-windows",
-      "description": "For building on Windows runners with MSVC and MSBuild",
+      "name": "common-windows",
+      "hidden": true,
       "inherits": [
         "vcpkg",
         "dev-mode",
         "cpp-std",
         "flags-msvc"
       ],
-      "generator": "Visual Studio 17 2022",
       "binaryDir": "${sourceDir}/build/${presetName}",
-      "architecture": "x64",
       "cacheVariables": {
         "VCPKG_HOST_TRIPLET": "x64-windows-static-md",
         "VCPKG_TARGET_TRIPLET": "x64-windows-static-md"
+      }
+    },
+    {
+      "name": "ci-windows-msvc",
+      "description": "For building on Windows runners with MSVC and MSBuild",
+      "inherits": [
+        "common-windows"
+      ],
+      "generator": "Visual Studio 17 2022",
+      "architecture": "x64"
+    },
+    {
+      "name": "ci-windows-clang-cl",
+      "description": "For building on Windows runners with clang-cl (requires a working MSVC environment)",
+      "inherits": [
+        "common-windows"
+      ],
+      "generator": "Ninja Multi-Config",
+      "cacheVariables": {
+        "CMAKE_CXX_COMPILER": "clang-cl"
       }
     },
     {
@@ -182,20 +200,14 @@
       "name": "dev-windows-msvc",
       "description": "Requires toolchain from MarkSchofield/WindowsToolchain",
       "inherits": [
-        "vcpkg",
-        "dev-mode",
-        "cpp-std",
-        "flags-msvc",
+        "common-windows",
         "clang-tidy-msvc",
         "cppcheck"
       ],
       "generator": "Ninja Multi-Config",
-      "binaryDir": "${sourceDir}/build/${presetName}",
       "cacheVariables": {
         "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
-        "VCPKG_CHAINLOAD_TOOLCHAIN_FILE": "$env{WINDOWS_TOOLCHAIN_ROOT}/Windows.MSVC.toolchain.cmake",
-        "VCPKG_HOST_TRIPLET": "x64-windows-static-md",
-        "VCPKG_TARGET_TRIPLET": "x64-windows-static-md"
+        "VCPKG_CHAINLOAD_TOOLCHAIN_FILE": "$env{WINDOWS_TOOLCHAIN_ROOT}/Windows.MSVC.toolchain.cmake"
       }
     },
     {
@@ -225,13 +237,23 @@
       "configuration": "Release"
     },
     {
-      "name": "ci-windows-debug",
-      "configurePreset": "ci-windows",
+      "name": "ci-windows-msvc-debug",
+      "configurePreset": "ci-windows-msvc",
       "configuration": "Debug"
     },
     {
-      "name": "ci-windows-release",
-      "configurePreset": "ci-windows",
+      "name": "ci-windows-msvc-release",
+      "configurePreset": "ci-windows-msvc",
+      "configuration": "Release"
+    },
+    {
+      "name": "ci-windows-clang-cl-debug",
+      "configurePreset": "ci-windows-clang-cl",
+      "configuration": "Debug"
+    },
+    {
+      "name": "ci-windows-clang-cl-release",
+      "configurePreset": "ci-windows-clang-cl",
       "configuration": "Release"
     },
     {
