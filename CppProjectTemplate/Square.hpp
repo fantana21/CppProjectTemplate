@@ -1,5 +1,8 @@
+#pragma once
+
+
 template<typename T>
-auto Square(T value) -> decltype(value * value)
+constexpr auto Square(T value) -> decltype(value * value)
 {
     return value * value;
 }
