@@ -29,6 +29,7 @@ non-exhaustive list of changes.
   when adding targets. Libraries, e.g., get a target name prefix, an export name and an
   alias according to best practices. The functions also allow to easily set properties,
   like include directories and compile features for all targets.
+- Support [ccache](https://ccache.dev/)
 - Adapt configuration files for clang-format and clang-tidy to personal preferences. Also
   add a separate clang-tidy configuration for tests, because magic numbers, e.g., are very
   common and not an issue there.
