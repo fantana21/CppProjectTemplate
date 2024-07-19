@@ -13,6 +13,7 @@ project(
 include(CMake/OptionsAndVariables.cmake)
 include(CMake/AddAndSetUpTargets.cmake)
 include(CMake/CCache.cmake)
+include(CMake/ClangTidyCache.cmake)
 
 # ---- Find dependencies ----
 
