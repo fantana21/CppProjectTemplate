@@ -60,10 +60,10 @@
     },
     {
       "name": "clang-tidy-msvc",
-      "description": "There is a bug where clang-tidy doesn't recognize the /EHsc flag, so we pass it manually (see https://gitlab.kitware.com/cmake/cmake/-/issues/20512)",
+      "description": "The header-filter seems to apply to relative paths on Windows. Also, there is a bug where clang-tidy doesn't recognize the /EHsc flag, so we pass it manually (see https://gitlab.kitware.com/cmake/cmake/-/issues/20512).",
       "hidden": true,
       "cacheVariables": {
-        "CMAKE_CXX_CLANG_TIDY": "clang-tidy;--header-filter=^${sourceDir}/;--extra-arg=/EHsc"
+        "CMAKE_CXX_CLANG_TIDY": "clang-tidy;--header-filter=.*;--extra-arg=/EHsc"
       }
     },
     {
