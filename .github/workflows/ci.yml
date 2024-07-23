@@ -10,6 +10,7 @@ on:
     - main
 
 env:
+  LLVM_VERSION: 18.1.5
   VCPKG_COMMIT: "46e4c4c78c347ded6add526b0c2bb66db35d4710"
 
 jobs:
@@ -21,7 +22,7 @@ jobs:
     - name: Set up clang-format
       uses: aminya/setup-cpp@v1
       with:
-        clangformat: 18.1.5
+        clangformat: ${{ env.LLVM_VERSION }}
 
     - name: Install codespell and cmake-format
       run: pip install codespell cmakelang
