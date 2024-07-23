@@ -135,10 +135,6 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Install LLVM 18 on Windows with choco since it's not supported by setup-cpp
-      if: contains(matrix.os, 'windows')
-      run: choco install LLVM --version=${{ env.LLVM_VERSION }}
-
     - name: Install compiler and clang-tidy on Ubuntu
       if: contains(matrix.os, 'ubuntu')
       uses: aminya/setup-cpp@v1
