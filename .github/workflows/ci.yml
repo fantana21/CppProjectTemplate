@@ -160,7 +160,7 @@ jobs:
       run: |
         $preset = "ci-$("${{ matrix.os }}".split("-")[0])"
         if ("${{ contains(matrix.os, 'windows') }}" -eq "true") {
-          $preset += "-${{ contains(matrix.compiler, 'msvc') ? 'msvc' : 'clang-cl' }}"
+          $preset += ("${{ contains(matrix.compiler, 'msvc') }}" -eq 'true') ? "-msvc" : "-clang-cl"
         }
         Add-Content "$env:GITHUB_ENV" "PRESET=$preset"
         echo $preset
