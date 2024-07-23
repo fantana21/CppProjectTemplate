@@ -15,14 +15,15 @@ env:
 
 jobs:
   format-and-spell:
-    runs-on: ubuntu-22.04
+    # runs-on: ubuntu-22.04
+    runs-on: windows-2022
     steps:
     - uses: actions/checkout@v4
 
-    - name: Set up clang-format
-      uses: aminya/setup-cpp@v1
-      with:
-        clangformat: ${{ env.LLVM_VERSION }}
+    # - name: Set up clang-format
+    #   uses: aminya/setup-cpp@v1
+    #   with:
+    #     clangformat: ${{ env.LLVM_VERSION }}
 
     - name: Install codespell and cmake-format
       run: pip install codespell cmakelang
