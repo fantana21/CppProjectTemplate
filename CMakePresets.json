@@ -52,6 +52,17 @@
       }
     },
     {
+      "name": "flags-clang-cl",
+      "description": "Clang-cl supports the same flags as MSVC apart from some /Zc: flags",
+      "hidden": true,
+      "inherits": [
+        "flags-msvc"
+      ],
+      "cacheVariables": {
+        "CMAKE_CXX_FLAGS": "/sdl /guard:cf /utf-8 /diagnostics:caret /w14165 /w44242 /w44254 /w44263 /w34265 /w34287 /w44296 /w44365 /w44388 /w44464 /w14545 /w14546 /w14547 /w14549 /w14555 /w34619 /w34640 /w24826 /w14905 /w14906 /w14928 /w45038 /W4 /permissive- /volatile:iso /Zc:inline /Zc:__cplusplus /EHsc"
+      }
+    },
+    {
       "name": "clang-tidy",
       "hidden": true,
       "cacheVariables": {
@@ -60,10 +71,10 @@
     },
     {
       "name": "clang-tidy-msvc",
-      "description": "There is a bug where clang-tidy doesn't recognize the /EHsc flag, so we pass it manually (see https://gitlab.kitware.com/cmake/cmake/-/issues/20512)",
+      "description": "The header-filter seems to apply to relative paths on Windows. Also, there is a bug where clang-tidy doesn't recognize the /EHsc flag, so we pass it manually (see https://gitlab.kitware.com/cmake/cmake/-/issues/20512).",
       "hidden": true,
       "cacheVariables": {
-        "CMAKE_CXX_CLANG_TIDY": "clang-tidy;--header-filter=^${sourceDir}/;--extra-arg=/EHsc"
+        "CMAKE_CXX_CLANG_TIDY": "clang-tidy;--header-filter=.*;--extra-arg=/EHsc"
       }
     },
     {
@@ -142,8 +153,7 @@
       "inherits": [
         "vcpkg",
         "dev-mode",
-        "cpp-std",
-        "flags-msvc"
+        "cpp-std"
       ],
       "binaryDir": "${sourceDir}/build/${presetName}",
       "cacheVariables": {
@@ -155,7 +165,8 @@
       "name": "ci-windows-msvc",
       "description": "For building on Windows runners with MSVC and MSBuild",
       "inherits": [
-        "common-windows"
+        "common-windows",
+        "flags-msvc"
       ],
       "generator": "Visual Studio 17 2022",
       "architecture": "x64"
@@ -164,6 +175,7 @@
       "name": "ci-windows-clang-cl",
       "description": "For building on Windows runners with clang-cl (requires a working MSVC environment)",
       "inherits": [
+        "flags-clang-cl",
         "common-windows"
       ],
       "generator": "Ninja Multi-Config",
@@ -210,6 +222,7 @@
       "description": "Requires toolchain from MarkSchofield/WindowsToolchain",
       "inherits": [
         "common-windows",
+        "flags-msvc",
         "clang-tidy-msvc",
         "cppcheck"
       ],
@@ -223,6 +236,7 @@
       "name": "dev-windows-clang-cl",
       "description": "Requires toolchain from MarkSchofield/WindowsToolchain and triplet from Neumann-A/my-vcpkg-triplets",
       "inherits": [
+        "flags-clang-cl",
         "dev-windows-msvc"
       ],
       "cacheVariables": {
