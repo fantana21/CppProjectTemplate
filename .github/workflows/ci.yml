@@ -42,22 +42,6 @@ jobs:
     - name: Spell check
       run: cmake -P CMake/Spell.cmake
 
-  build-and-test:
-    if: false
-    needs: [format-and-spell]
-    strategy:
-      fail-fast: false
-      matrix:
-        os:
-          - ubuntu-22.04
-          - windows-2022
-        compiler:
-          - clang-18.1.5
-          - gcc-13
-    runs-on: ubuntu-22.04
-    steps:
-      - uses: actions/checkout@v4
-
   coverage:
     if: false
     needs: [format-and-spell]
