@@ -119,6 +119,7 @@ jobs:
   test:
     needs: format-and-spell
     strategy:
+      fail-fast: false
       matrix:
         os:
           - ubuntu-22.04
