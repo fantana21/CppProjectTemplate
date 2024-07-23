@@ -189,7 +189,7 @@ jobs:
 
     - name: Test debug configuration
       working-directory: build/${{ env.PRESET }}
-      run: ctest --output-on-failure --no-tests=error -C Debug -j 2
+      run: ctest --output-on-failure --no-tests=error -C Debug -j 2 -V
 
     - name: Build release configuration
       run: |
@@ -198,4 +198,4 @@ jobs:
 
     - name: Test release configuration
       working-directory: build/${{ env.PRESET }}
-      run: ctest --output-on-failure --no-tests=error -C Release -j 2
+      run: ctest --output-on-failure --no-tests=error -C Release -j 2 -V
