@@ -14,17 +14,26 @@ env:
 
 jobs:
   format-and-spell:
-    if: false
     runs-on: ubuntu-22.04
-
     steps:
     - uses: actions/checkout@v4
 
-    - uses: actions/setup-python@v5
-      with: { python-version: "3.8" }
+    - name: Set up clang-format
+      uses: aminya/setup-cpp@v1
+      with:
+        clangformat: 18.1.5
 
-    - name: Install codespell
-      run: pip3 install codespell
+    - name: Install codespell and cmake-format
+      run: pip install codespell cmakelang
+
+    - name: Print versions
+      run: |
+        python --version
+        pip --version
+        cmake --version
+        clang-format --version
+        cmake-format --version
+        codespell --version
 
     - name: Format code
       run: cmake -P CMake/Format.cmake
