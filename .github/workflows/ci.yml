@@ -3,11 +3,11 @@ name: Continuous Integration
 on:
   push:
     branches:
-    - master
+    - main
 
   pull_request:
     branches:
-    - master
+    - main
 
 env:
   VCPKG_COMMIT: "46e4c4c78c347ded6add526b0c2bb66db35d4710"
@@ -40,6 +40,22 @@ jobs:
 
     - name: Spell check
       run: cmake -P CMake/Spell.cmake
+
+  build-and-test:
+    if: false
+    needs: [format-and-spell]
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-22.04
+          - windows-2022
+        compiler:
+          - clang-18.1.5
+          - gcc-13
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
 
   coverage:
     if: false
@@ -141,4 +157,3 @@ jobs:
     - name: Test
       working-directory: build
       run: ctest --output-on-failure --no-tests=error -C Release -j 2
-      
