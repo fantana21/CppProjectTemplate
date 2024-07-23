@@ -173,12 +173,6 @@ jobs:
           Add-Content "$env:GITHUB_ENV" "PRESET=$preset"
           echo $preset
 
-      - name: Print preset name
-        shell: pwsh
-        run: |
-          echo ${{ env.PRESET}}
-          echo $env:PRESET
-
       - name: Configure
         shell: pwsh
         run: |
