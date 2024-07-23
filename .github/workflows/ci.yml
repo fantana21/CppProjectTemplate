@@ -10,7 +10,7 @@ on:
     - main
 
 env:
-  LLVM_VERSION: 18.1.5
+  LLVM_VERSION: 18
   VCPKG_COMMITTISH: 49ac2134b31b95b0ddf29d56873dcd24392691df
 
 jobs:
@@ -109,7 +109,7 @@ jobs:
           - ubuntu-22.04
           - windows-2022
         compiler:
-          - llvm-18.1.5
+          - llvm-18
         include:
           - os: ubuntu-22.04
             compiler: gcc-13
