@@ -3,11 +3,11 @@ name: Continuous Integration
 on:
   push:
     branches:
-    - main
+      - main
 
   pull_request:
     branches:
-    - main
+      - main
 
 env:
   LLVM_VERSION: 18
@@ -17,57 +17,57 @@ jobs:
   format-and-spell:
     runs-on: ubuntu-22.04
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Set up clang-format
-      uses: aminya/setup-cpp@v1
-      with:
-        clangformat: ${{ env.LLVM_VERSION }}
+      - name: Set up clang-format
+        uses: aminya/setup-cpp@v1
+        with:
+          clangformat: ${{ env.LLVM_VERSION }}
 
-    - name: Install codespell and cmake-format
-      run: pip install codespell cmakelang
+      - name: Install codespell and cmake-format
+        run: pip install codespell cmakelang
 
-    - name: Print versions
-      run: |
-        python --version
-        pip --version
-        cmake --version
-        clang-format --version
-        cmake-format --version
-        codespell --version
+      - name: Print versions
+        run: |
+          python --version
+          pip --version
+          cmake --version
+          clang-format --version
+          cmake-format --version
+          codespell --version
 
-    - name: Format code
-      run: cmake -P CMake/Format.cmake
+      - name: Format code
+        run: cmake -P CMake/Format.cmake
 
-    - name: Spell check
-      run: cmake -P CMake/Spell.cmake
+      - name: Spell check
+        run: cmake -P CMake/Spell.cmake
 
   coverage:
     if: false
     needs: [format-and-spell]
     runs-on: ubuntu-22.04
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Install LCov
-      run: sudo apt-get update -q
-        && sudo apt-get install lcov -q -y
+      - name: Install LCov
+        run: sudo apt-get update -q
+          && sudo apt-get install lcov -q -y
 
-    - name: Install vcpkg
-      uses: friendlyanon/setup-vcpkg@v1
-      with: { committish: "${{ env.VCPKG_COMMIT }}" }
+      - name: Install vcpkg
+        uses: friendlyanon/setup-vcpkg@v1
+        with: { committish: "${{ env.VCPKG_COMMIT }}" }
 
-    - name: Configure
-      run: cmake --preset=ci-coverage
+      - name: Configure
+        run: cmake --preset=ci-coverage
 
-    - name: Build
-      run: cmake --build build/coverage -j 2
+      - name: Build
+        run: cmake --build build/coverage -j 2
 
-    - name: Test
-      run: ctest --test-dir build/coverage --output-on-failure --no-tests=error -j 2
+      - name: Test
+        run: ctest --test-dir build/coverage --output-on-failure --no-tests=error -j 2
 
-    - name: Process coverage info
-      run: cmake --build build/coverage -t coverage
+      - name: Process coverage info
+        run: cmake --build build/coverage -t coverage
 
   sanitize:
     if: false
@@ -75,30 +75,30 @@ jobs:
     runs-on: ubuntu-22.04
     env: { CXX: clang++-14 }
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Install vcpkg
-      uses: friendlyanon/setup-vcpkg@v1
-      with: { committish: "${{ env.VCPKG_COMMIT }}" }
+      - name: Install vcpkg
+        uses: friendlyanon/setup-vcpkg@v1
+        with: { committish: "${{ env.VCPKG_COMMIT }}" }
 
-    - name: Configure
-      run: cmake --preset=ci-sanitize
+      - name: Configure
+        run: cmake --preset=ci-sanitize
 
-    - name: Build
-      run: cmake --build build/sanitize -j 2
+      - name: Build
+        run: cmake --build build/sanitize -j 2
 
-    - name: Test
-      working-directory: build/sanitize
-      env:
-        ASAN_OPTIONS: "strict_string_checks=1:\
-          detect_stack_use_after_return=1:\
-          check_initialization_order=1:\
-          strict_init_order=1:\
-          detect_leaks=1:\
-          halt_on_error=1"
-        UBSAN_OPTIONS: "print_stacktrace=1:\
-          halt_on_error=1"
-      run: ctest --output-on-failure --no-tests=error -j 2
+      - name: Test
+        working-directory: build/sanitize
+        env:
+          ASAN_OPTIONS: "strict_string_checks=1:\
+            detect_stack_use_after_return=1:\
+            check_initialization_order=1:\
+            strict_init_order=1:\
+            detect_leaks=1:\
+            halt_on_error=1"
+          UBSAN_OPTIONS: "print_stacktrace=1:\
+            halt_on_error=1"
+        run: ctest --output-on-failure --no-tests=error -j 2
 
   test:
     needs: format-and-spell
@@ -117,85 +117,85 @@ jobs:
             compiler: msvc
     runs-on: ${{ matrix.os }}
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Install compiler and clang-tidy on Ubuntu
-      if: contains(matrix.os, 'ubuntu')
-      uses: aminya/setup-cpp@v1
-      with:
-        compiler: ${{ matrix.compiler }}
-        clangtidy: ${{ env.LLVM_VERSION }}
+      - name: Install compiler and clang-tidy on Ubuntu
+        if: contains(matrix.os, 'ubuntu')
+        uses: aminya/setup-cpp@v1
+        with:
+          compiler: ${{ matrix.compiler }}
+          clangtidy: ${{ env.LLVM_VERSION }}
 
-    - name: Set up tools
-      uses: aminya/setup-cpp@v1
-      with:
-        vcvarsall: ${{ contains(matrix.os, 'windows') }}
-        cmake: 3.28.6
-        ninja: 1.10.1
-        cppcheck: true
+      - name: Set up tools
+        uses: aminya/setup-cpp@v1
+        with:
+          vcvarsall: ${{ contains(matrix.os, 'windows') }}
+          cmake: 3.28.6
+          ninja: 1.10.1
+          cppcheck: true
 
-    - name: Check versions on Windows
-      if: contains(matrix.os, 'windows')
-      run: |
-        cl
-        clang-cl --version
-        clang-tidy --version
+      - name: Check versions on Windows
+        if: contains(matrix.os, 'windows')
+        run: |
+          cl
+          clang-cl --version
+          clang-tidy --version
 
-    - name: Check versions on Ubuntu
-      if: contains(matrix.os, 'ubuntu')
-      run: |
-        g++ --version
-        clang-tidy --version
+      - name: Check versions on Ubuntu
+        if: contains(matrix.os, 'ubuntu')
+        run: |
+          g++ --version
+          clang-tidy --version
 
-    - name: Install vcpkg
-      uses: friendlyanon/setup-vcpkg@v1
-      with:
-        committish: ${{ env.VCPKG_COMMITTISH }}
+      - name: Install vcpkg
+        uses: friendlyanon/setup-vcpkg@v1
+        with:
+          committish: ${{ env.VCPKG_COMMITTISH }}
 
-    - name: Set up MultiToolTask
-      if: contains(matrix.os, 'windows')
-      run: |
-        Add-Content "$env:GITHUB_ENV" 'UseMultiToolTask=true'
-        Add-Content "$env:GITHUB_ENV" 'EnforceProcessCountAcrossBuilds=true'
+      - name: Set up MultiToolTask
+        if: contains(matrix.os, 'windows')
+        run: |
+          Add-Content "$env:GITHUB_ENV" 'UseMultiToolTask=true'
+          Add-Content "$env:GITHUB_ENV" 'EnforceProcessCountAcrossBuilds=true'
 
-    - name: Compute preset name
-      shell: pwsh
-      run: |
-        $preset = "ci-$("${{ matrix.os }}".split("-")[0])"
-        if ("${{ contains(matrix.os, 'windows') }}" -eq "true") {
-          $preset += ("${{ contains(matrix.compiler, 'msvc') }}" -eq 'true') ? "-msvc" : "-clang-cl"
-        }
-        Add-Content "$env:GITHUB_ENV" "PRESET=$preset"
-        echo $preset
+      - name: Compute preset name
+        shell: pwsh
+        run: |
+          $preset = "ci-$("${{ matrix.os }}".split("-")[0])"
+          if ("${{ contains(matrix.os, 'windows') }}" -eq "true") {
+            $preset += ("${{ contains(matrix.compiler, 'msvc') }}" -eq 'true') ? "-msvc" : "-clang-cl"
+          }
+          Add-Content "$env:GITHUB_ENV" "PRESET=$preset"
+          echo $preset
 
-    - name: Print preset name
-      shell: pwsh
-      run: |
-        echo ${{ env.PRESET}}
-        echo $env:PRESET
+      - name: Print preset name
+        shell: pwsh
+        run: |
+          echo ${{ env.PRESET}}
+          echo $env:PRESET
 
-    - name: Configure
-      shell: pwsh
-      run: |
-        if("${{ contains(matrix.os, 'ubuntu') && contains(matrix.compiler, 'llvm') }}" -eq "true") {
-          $CXX = "clang++"
-        }
-        cmake --preset=${{ env.PRESET }}
+      - name: Configure
+        shell: pwsh
+        run: |
+          if("${{ contains(matrix.os, 'ubuntu') && contains(matrix.compiler, 'llvm') }}" -eq "true") {
+            $CXX = "clang++"
+          }
+          cmake --preset=${{ env.PRESET }}
 
-    - name: Build debug configuration
-      run: |
-        echo "Build preset = ${{ env.PRESET }}-debug"
-        cmake --build --preset=${{ env.PRESET }}-debug
+      - name: Build debug configuration
+        run: |
+          echo "Build preset = ${{ env.PRESET }}-debug"
+          cmake --build --preset=${{ env.PRESET }}-debug
 
-    - name: Test debug configuration
-      working-directory: build/${{ env.PRESET }}
-      run: ctest --output-on-failure --no-tests=error -C Debug -j 2 -V
+      - name: Test debug configuration
+        working-directory: build/${{ env.PRESET }}
+        run: ctest --output-on-failure --no-tests=error -C Debug -j 2 -V
 
-    - name: Build release configuration
-      run: |
-        echo "Build preset = ${{ env.PRESET }}-release"
-        cmake --build --preset=${{ env.PRESET }}-release
+      - name: Build release configuration
+        run: |
+          echo "Build preset = ${{ env.PRESET }}-release"
+          cmake --build --preset=${{ env.PRESET }}-release
 
-    - name: Test release configuration
-      working-directory: build/${{ env.PRESET }}
-      run: ctest --output-on-failure --no-tests=error -C Release -j 2 -V
+      - name: Test release configuration
+        working-directory: build/${{ env.PRESET }}
+        run: ctest --output-on-failure --no-tests=error -C Release -j 2 -V
