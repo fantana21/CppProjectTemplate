@@ -157,6 +157,12 @@ jobs:
         clang-cl --version
         clang-tidy --version
 
+    - name: Check versions on Ubuntu
+      if: contains(matrix.os, 'ubuntu')
+      run: |
+        g++ --version
+        clang-tidy --version
+
     - name: Install vcpkg
       uses: friendlyanon/setup-vcpkg@v1
       with:
