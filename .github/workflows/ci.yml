@@ -11,7 +11,7 @@ on:
 
 env:
   LLVM_VERSION: 18.1.5
-  VCPKG_COMMIT: "46e4c4c78c347ded6add526b0c2bb66db35d4710"
+  VCPKG_COMMITTISH: 49ac2134b31b95b0ddf29d56873dcd24392691df
 
 jobs:
   format-and-spell:
@@ -117,44 +117,82 @@ jobs:
       run: ctest --output-on-failure --no-tests=error -j 2
 
   test:
-    if: false
-    needs: [format-and-spell]
+    needs: format-and-spell
     strategy:
       matrix:
-        os: [ubuntu-22.04, windows-2022]
+        os:
+          - ubuntu-22.04
+          - windows-2022
+        compiler:
+          - llvm-${{ env.LLVM_VERSION }}
+        include:
+          - os: ubuntu-22.04
+            compiler: gcc-13
+          - os: windows-2022
+            compiler: msvc
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v4
 
-    - name: Install static analyzers
-      if: matrix.os == 'ubuntu-22.04'
-      run: >-
-        sudo apt-get install clang-tidy-14 cppcheck -y -q
-
-        sudo update-alternatives --install
-        /usr/bin/clang-tidy clang-tidy
-        /usr/bin/clang-tidy-14 140
+    - name: Set up compilers and tools
+      uses: aminya/setup-cpp@v1
+      with:
+        compiler: ${{ matrix.compiler }}
+        vcvarsall: ${{ contains(matrix.os, 'windows') }}
+        cmake: 3.28.6
+        ninja: 1.10.1
+        clangtidy: ${{ env.LLVM_VERSION }}
+        cppcheck: true
 
     - name: Install vcpkg
       uses: friendlyanon/setup-vcpkg@v1
-      with: { committish: "${{ env.VCPKG_COMMIT }}" }
+      with:
+        committish: ${{ env.VCPKG_COMMITTISH }}
 
-    - name: Setup MultiToolTask
-      if: matrix.os == 'windows-2022'
+    - name: Set up MultiToolTask
+      if: contains(matrix.os, 'windows')
       run: |
         Add-Content "$env:GITHUB_ENV" 'UseMultiToolTask=true'
         Add-Content "$env:GITHUB_ENV" 'EnforceProcessCountAcrossBuilds=true'
 
+    - name: Compute preset name
+      shell: pwsh
+      run: |
+        $preset = "ci-$("${{ matrix.os }}".split("-")[0])"
+        if ("${{ contains(matrix.os, 'windows') }}" -eq "true") {
+          $preset += "-${{ contains(matrix.compiler, 'msvc') ? 'msvc' : 'clang-cl' }}"
+        }
+        Add-Content "$env:GITHUB_ENV" "PRESET=$preset"
+        echo $preset
+
+    - name: Print preset name
+      shell: pwsh
+      run: |
+        echo ${{ env.PRESET}}
+        echo $env:PRESET
+
     - name: Configure
       shell: pwsh
-      run: cmake "--preset=ci-$("${{ matrix.os }}".split("-")[0])"
+      run: |
+        if("${{ contains(matrix.os, 'ubuntu') && contains(matrix.compiler, 'llvm') }}" -eq "true") {
+          $CXX = "clang++"
+        }
+        cmake --preset=${{ env.PRESET }}
 
-    - name: Build
-      run: cmake --build build --config Release -j 2
+    - name: Build debug configuration
+      run: |
+        echo "Build preset = ${{ env.PRESET }}-debug"
+        cmake --build --preset=${{ env.PRESET }}-debug
 
-    - name: Install
-      run: cmake --install build --config Release --prefix prefix
+    - name: Test debug configuration
+      working-directory: build/${{ env.PRESET }}
+      run: ctest --output-on-failure --no-tests=error -C Debug -j 2
 
-    - name: Test
-      working-directory: build
+    - name: Build release configuration
+      run: |
+        echo "Build preset = ${{ env.PRESET }}-release"
+        cmake --build --preset=${{ env.PRESET }}-release
+
+    - name: Test release configuration
+      working-directory: build/${{ env.PRESET }}
       run: ctest --output-on-failure --no-tests=error -C Release -j 2
