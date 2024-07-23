@@ -1,10 +1,24 @@
-# ---- Developer mode ----
-
-# Developer mode enables targets and code paths in the CMake scripts that are only relevant for the
-# developer(s) of CppProjectTemplate. Targets necessary to build the project must be provided
-# unconditionally, so consumers can trivially build and package the project.
 if(PROJECT_IS_TOP_LEVEL)
+    # ---- Developer mode ----
+
+    # Developer mode enables targets and code paths in the CMake scripts that are only relevant for
+    # the developer(s) of CppProjectTemplate. Targets necessary to build the project must be
+    # provided unconditionally, so consumers can trivially build and package the project.
     option(CppProjectTemplate_DEVELOPER_MODE "Enable developer mode" OFF)
+
+    # ---- Caches ----
+
+    option(CppProjectTemplate_ENABLE_CCACHE "Speed up recompilation with ccache" ON)
+    if(CppProjectTemplate_ENABLE_CCACHE)
+        include(CMake/CCache.cmake)
+    endif()
+
+    option(
+        CppProjectTemplate_ENABLE_CLANG_TIDY_CACHE "Speed up reanalysis with clang-tidy-cache" ON
+    )
+    if(CppProjectTemplate_ENABLE_CLANG_TIDY_CACHE)
+        include(CMake/ClangTidyCache.cmake)
+    endif()
 endif()
 
 # ---- Warning guard ----
