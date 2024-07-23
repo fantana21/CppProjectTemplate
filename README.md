@@ -1,8 +1,8 @@
 # CppProjectTemplate
 
-This is the CppProjectTemplate project. It is based on
-[cmake-init](https://github.com/friendlyanon/cmake-init). The following is a
-non-exhaustive list of changes.
+This is Fantana's CppProjectTemplate. It is based on
+[cmake-init](https://github.com/friendlyanon/cmake-init) and adapted to our needs and
+preferences. The following is a non-exhaustive list of changes.
 
 - Use PascalCase for C++ and CMake files as well as directories
 - Split up top-level `CMakeLists.txt` to define target properties close to the source
@@ -41,11 +41,9 @@ non-exhaustive list of changes.
 
 # Building and installing
 
-See the [BUILDING](BUILDING.md) document.
+See the [BUILDING](BUILDING.md) document. If you are a developer check out
+[HACKING.md](HACKING.md).
 
-# Contributing
-
-See the [CONTRIBUTING](CONTRIBUTING.md) document.
 
 # Licensing
 
