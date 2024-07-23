@@ -7,7 +7,7 @@ if(CCACHE_PROGRAM)
     set(ccacheEnv
         # If most of the sources come from this project, CMAKE_SOURCE_DIR is a good
         # CCACHE_BASEDIR. Otherwise, you can try setting it to CMAKE_BINARY_DIR. Compare
-        # ccache's statistics with ccache -s [-v[v]] beetween builds to see if it's helping.
+        # ccache's statistics with ccache -s [-v[v]] between builds to see if it's helping.
         CCACHE_BASEDIR=${CMAKE_SOURCE_DIR}
         # Use the following sloppiness settings when using precompiled headers
         # CCACHE_SLOPPINESS=pch_defines,time_macros
