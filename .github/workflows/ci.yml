@@ -138,7 +138,6 @@ jobs:
         if: contains(matrix.os, 'windows')
         run: |
           cl
-          clang-cl --version
           clang-tidy --version
 
       - name: Check versions on Ubuntu
@@ -181,20 +180,12 @@ jobs:
           }
           cmake --preset=${{ env.PRESET }}
 
-      - name: Build debug configuration
+      - name: Build and test debug configuration
         run: |
-          echo "Build preset = ${{ env.PRESET }}-debug"
           cmake --build --preset=${{ env.PRESET }}-debug
+          ctest --test-dir build/${{ env.PRESET }} --output-on-failure --no-tests=error -C Debug -j 2 -V
 
-      - name: Test debug configuration
-        working-directory: build/${{ env.PRESET }}
-        run: ctest --output-on-failure --no-tests=error -C Debug -j 2 -V
-
-      - name: Build release configuration
+      - name: Build and test release configuration
         run: |
-          echo "Build preset = ${{ env.PRESET }}-release"
           cmake --build --preset=${{ env.PRESET }}-release
-
-      - name: Test release configuration
-        working-directory: build/${{ env.PRESET }}
-        run: ctest --output-on-failure --no-tests=error -C Release -j 2 -V
+          ctest --test-dir build/${{ env.PRESET }} --output-on-failure --no-tests=error -C Release -j 2 -V
