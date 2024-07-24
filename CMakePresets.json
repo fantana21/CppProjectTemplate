@@ -134,7 +134,10 @@
         "common-linux",
         "coverage-gcc"
       ],
-      "generator": "Ninja"
+      "generator": "Ninja",
+      "cacheVariables": {
+        "CMAKE_CXX_COMPILER": "g++"
+      }
     },
     {
       "name": "ci-sanitize",

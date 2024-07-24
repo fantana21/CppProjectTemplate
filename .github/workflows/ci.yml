@@ -307,6 +307,7 @@ jobs:
 
       - name: Configure, build, and test with sanitizers using GCC
         run: |
+          export CXX=g++
           cmake --preset=ci-sanitize
           cmake --build --preset=ci-sanitize
           ctest --preset ci-sanitize
@@ -323,6 +324,7 @@ jobs:
 
       - name: Configure, build, and test with sanitizers using Clang
         run: |
+          export CXX=clang++
           cmake --preset=ci-sanitize
           cmake --build --preset=ci-sanitize
           ctest --preset ci-sanitize
