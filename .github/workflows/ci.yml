@@ -134,17 +134,16 @@ jobs:
           ninja: 1.10.1
           cppcheck: ${{ contains(matrix.os, 'ubuntu') }}
 
-      - name: Check versions on Windows
-        if: contains(matrix.os, 'windows')
+      - name: Print versions of build tools
         run: |
-          cl
-          clang-tidy --version
+          cmake --version
+          ninja --version
 
-      - name: Check versions on Ubuntu
+      - name: Print versions of static analysis tools
         if: contains(matrix.os, 'ubuntu')
         run: |
-          g++ --version
           clang-tidy --version
+          cppcheck --version
 
       - name: Install vcpkg
         uses: friendlyanon/setup-vcpkg@v1
