@@ -10,8 +10,7 @@
       "name": "vcpkg",
       "hidden": true,
       "cacheVariables": {
-        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
-        "VCPKG_INSTALL_OPTIONS": "--debug"
+        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
       }
     },
     {
@@ -111,7 +110,10 @@
         "common-linux",
         "clang-tidy",
         "cppcheck"
-      ]
+      ],
+      "cacheVariables": {
+        "VCPKG_INSTALL_OPTIONS": "--debug"
+      }
     },
     {
       "name": "coverage-gcc",
@@ -169,7 +171,10 @@
         "flags-msvc"
       ],
       "generator": "Visual Studio 17 2022",
-      "architecture": "x64"
+      "architecture": "x64",
+      "cacheVariables": {
+        "VCPKG_INSTALL_OPTIONS": "--debug"
+      }
     },
     {
       "name": "ci-windows-clang-cl",
@@ -180,7 +185,8 @@
       ],
       "generator": "Ninja Multi-Config",
       "cacheVariables": {
-        "CMAKE_CXX_COMPILER": "clang-cl"
+        "CMAKE_CXX_COMPILER": "clang-cl",
+        "VCPKG_INSTALL_OPTIONS": "--debug"
       }
     },
     {
