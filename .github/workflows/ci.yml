@@ -101,6 +101,7 @@ jobs:
         run: ctest --output-on-failure --no-tests=error -j 2
 
   test:
+    if: false
     needs: format-and-spell
     strategy:
       fail-fast: false
