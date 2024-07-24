@@ -259,6 +259,14 @@
       "configuration": "Release"
     },
     {
+      "name": "ci-coverage-gcc",
+      "configurePreset": "ci-coverage-gcc"
+    },
+    {
+      "name": "ci-sanitize",
+      "configurePreset": "ci-sanitize"
+    },
+    {
       "name": "ci-windows-msvc-debug",
       "configurePreset": "ci-windows-msvc",
       "configuration": "Debug"
