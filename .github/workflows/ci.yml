@@ -117,14 +117,20 @@ jobs:
           clangtidy: ${{ env.LLVM_VERSION }}
           cppcheck: true
 
+      - name: Install LCOV
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install lcov -q -y
+
       - name: Print versions of compilers and tools
         run: |
+          g++ --version || true
+          clang++ --version
           cmake --version
           ninja --version
           clang-tidy --version
           cppcheck --version
-          g++ --version || true
-          clang++ --version || true
+          lcov --version
 
       - name: Install vcpkg
         uses: friendlyanon/setup-vcpkg@v1
