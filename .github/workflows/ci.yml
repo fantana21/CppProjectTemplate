@@ -214,11 +214,10 @@ jobs:
         uses: friendlyanon/setup-vcpkg@v1
         with:
           committish: ${{ env.VCPKG_COMMITTISH }}
-          cache-key: vcpkg-${{ runner.os }}-${{ matrix.compiler }}-${{ env.VCPKG_COMMITTISH }}-${{ hashFiles('vcpkg.json', 'CMakePresets.json') }}
+          cache-key: vcpkg-${{ runner.os }}-${{ env.VCPKG_COMMITTISH }}-${{ hashFiles('vcpkg.json', 'CMakePresets.json') }}
           cache-restore-keys: |
-            vcpkg-${{ runner.os }}-${{ matrix.compiler }}-${{ env.VCPKG_COMMITTISH }}-
-            vcpkg-${{ runner.os }}-${{ matrix.compiler }}-
-            vcpkg-${{ runner.os }}-
+            vcpkg-${{ runner.os }}-${{ env.VCPKG_COMMITTISH }}
+            vcpkg-${{ runner.os }}
 
       - name: Set up MultiToolTask
         run: |
@@ -257,7 +256,7 @@ jobs:
           g++ --version
           clang++ --version || true
 
-      - name: Install compilers and tools
+      - name: Install LLVM ${{ env.LLVM_VERSION }} and tools
         uses: aminya/setup-cpp@v1
         with:
           compiler: llvm-${{ env.LLVM_VERSION }}
@@ -279,11 +278,10 @@ jobs:
         uses: friendlyanon/setup-vcpkg@v1
         with:
           committish: ${{ env.VCPKG_COMMITTISH }}
-          cache-key: vcpkg-${{ runner.os }}-${{ matrix.compiler }}-${{ env.VCPKG_COMMITTISH }}-${{ hashFiles('vcpkg.json', 'CMakePresets.json') }}
+          cache-key: vcpkg-${{ runner.os }}-${{ env.VCPKG_COMMITTISH }}-${{ hashFiles('vcpkg.json', 'CMakePresets.json') }}
           cache-restore-keys: |
-            vcpkg-${{ runner.os }}-${{ matrix.compiler }}-${{ env.VCPKG_COMMITTISH }}-
-            vcpkg-${{ runner.os }}-${{ matrix.compiler }}-
-            vcpkg-${{ runner.os }}-
+            vcpkg-${{ runner.os }}-${{ env.VCPKG_COMMITTISH }}
+            vcpkg-${{ runner.os }}
 
       - name: Configure, build, and test debug and release configurations using GCC
         run: |
