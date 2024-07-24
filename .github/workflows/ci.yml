@@ -289,6 +289,12 @@ jobs:
           ctest --preset ci-coverage-gcc
           cmake --build --preset=ci-coverage-gcc -t coverage
 
+      - name: Upload HTML coverage report as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: CoverageReport
+          path: build/ci-coverage-gcc/coverage_html/
+
       - name: Configure, build, and test with sanitizers using GCC
         run: |
           cmake --preset=ci-sanitize
