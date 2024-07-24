@@ -249,7 +249,7 @@ jobs:
       - name: Install GCC 13
         uses: aminya/setup-cpp@v1
         with:
-          compiler: gcc-13.1.0
+          compiler: gcc-13
 
       - name: Print compiler versions
         run: |
