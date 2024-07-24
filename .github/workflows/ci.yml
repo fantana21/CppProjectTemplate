@@ -44,7 +44,7 @@ jobs:
       - name: Spell check
         run: cmake -P CMake/Spell.cmake
 
-  windows:
+  test-windows:
     needs: format-and-spell
     runs-on: windows-2022
     steps:
@@ -92,7 +92,7 @@ jobs:
           cmake --build --preset=ci-windows-clang-cl-release
           ctest --preset ci-windows-clang-cl
 
-  ubuntu:
+  test-ubuntu:
     needs: format-and-spell
     runs-on: ubuntu-22.04
     steps:
