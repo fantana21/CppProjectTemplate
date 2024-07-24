@@ -247,22 +247,33 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install compilers and tools
+      - name: Install GCC 13
         uses: aminya/setup-cpp@v1
         with:
           compiler: gcc-13
+
+      - name: Print compiler versions
+        run: |
+          g++ --version
+          clang++ --version || true
+
+      - name: Install compilers and tools
+        uses: aminya/setup-cpp@v1
+        with:
           compiler: llvm-${{ env.LLVM_VERSION }}
           cmake: ${{ env.CMAKE_VERSION }}
           ninja: ${{ env.NINJA_VERSION }}
           clangtidy: ${{ env.LLVM_VERSION }}
           cppcheck: true
 
-      - name: Print versions of tools
+      - name: Print versions of compilers and tools
         run: |
           cmake --version
           ninja --version
           clang-tidy --version
           cppcheck --version
+          g++ --version || true
+          clang++ --version || true
 
       - name: Install vcpkg
         uses: friendlyanon/setup-vcpkg@v1
