@@ -132,7 +132,7 @@ jobs:
           vcvarsall: ${{ contains(matrix.os, 'windows') }}
           cmake: 3.28.6
           ninja: 1.10.1
-          cppcheck: true
+          cppcheck: ${{ contains(matrix.os, 'ubuntu') }}
 
       - name: Check versions on Windows
         if: contains(matrix.os, 'windows')
