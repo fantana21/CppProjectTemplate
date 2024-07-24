@@ -326,5 +326,49 @@
       "configurePreset": "dev-windows-clang-cl",
       "configuration": "Release"
     }
+  ],
+  "testPresets": [
+    {
+      "name": "ci-common",
+      "hidden": true,
+      "output": {
+        "outputOnFailure": true,
+        "verbosity": "verbose"
+      },
+      "execution": {
+        "jobs": 2,
+        "noTestsAction": "error"
+      }
+    },
+    {
+      "name": "ci-ubuntu",
+      "description": "Run latest tests built with GCC or Clang on Ubuntu runners",
+      "inherits": "ci-common",
+      "configurePreset": "ci-ubuntu"
+    },
+    {
+      "name": "ci-coverage-gcc",
+      "description": "Run tests built with GCC and coverage enabled on Ubuntu runners",
+      "inherits": "ci-common",
+      "configurePreset": "ci-coverage-gcc"
+    },
+    {
+      "name": "ci-sanitize",
+      "description": "Run the latest tests built with GCC or Clang and sanitizers enabled on Ubuntu runners",
+      "inherits": "ci-common",
+      "configurePreset": "ci-sanitize"
+    },
+    {
+      "name": "ci-windows-msvc",
+      "description": "Run the latest tests built with MSVC on Windows runners",
+      "inherits": "ci-common",
+      "configurePreset": "ci-windows-msvc"
+    },
+    {
+      "name": "ci-windows-clang-cl",
+      "description": "Run the latest tests built with clang-cl on Windows runners",
+      "inherits": "ci-common",
+      "configurePreset": "ci-windows-clang-cl"
+    }
   ]
 }

@@ -183,9 +183,9 @@ jobs:
       - name: Build and test debug configuration
         run: |
           cmake --build --preset=${{ env.PRESET }}-debug
-          ctest --test-dir build/${{ env.PRESET }} --output-on-failure --no-tests=error -C Debug -j 2 -V
+          ctest --preset ${{ env.PRESET }}
 
       - name: Build and test release configuration
         run: |
           cmake --build --preset=${{ env.PRESET }}-release
-          ctest --test-dir build/${{ env.PRESET }} --output-on-failure --no-tests=error -C Release -j 2 -V
+          ctest --preset ${{ env.PRESET }}
