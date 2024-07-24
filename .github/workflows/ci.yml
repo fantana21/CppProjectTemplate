@@ -229,17 +229,17 @@ jobs:
         run: |
           cmake --preset=ci-windows-msvc
           cmake --build --preset=ci-windows-msvc-debug
-          ctest --preset ci-windows-msvc-debug
+          ctest --preset ci-windows-msvc
           cmake --build --preset=ci-windows-msvc-release
-          ctest --preset ci-windows-msvc-release
+          ctest --preset ci-windows-msvc
 
       - name: Configure, build, and test debug and release configurations using clang-cl
         run: |
           cmake --preset=ci-windows-clang-cl
           cmake --build --preset=ci-windows-clang-cl-debug
-          ctest --preset ci-windows-clang-cl-debug
+          ctest --preset ci-windows-clang-cl
           cmake --build --preset=ci-windows-clang-cl-release
-          ctest --preset ci-windows-clang-cl-release
+          ctest --preset ci-windows-clang-cl
 
   ubuntu:
     needs: format-and-spell
@@ -289,9 +289,9 @@ jobs:
         run: |
           cmake --preset=ci-ubuntu
           cmake --build --preset=ci-ubuntu-debug
-          ctest --preset ci-ubuntu-debug
+          ctest --preset ci-ubuntu
           cmake --build --preset=ci-ubuntu-release
-          ctest --preset ci-ubuntu-release
+          ctest --preset ci-ubuntu
 
       - name: Configure, build, test, and generate coverage report using GCC
         run: |
@@ -318,9 +318,9 @@ jobs:
           export CXX=clang++
           cmake --preset=ci-ubuntu
           cmake --build --preset=ci-ubuntu-debug
-          ctest --preset ci-ubuntu-debug
+          ctest --preset ci-ubuntu
           cmake --build --preset=ci-ubuntu-release
-          ctest --preset ci-ubuntu-release
+          ctest --preset ci-ubuntu
 
       - name: Configure, build, and test with sanitizers using Clang
         run: |
