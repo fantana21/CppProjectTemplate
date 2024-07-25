@@ -108,10 +108,7 @@
         "common-linux",
         "clang-tidy",
         "cppcheck"
-      ],
-      "cacheVariables": {
-        "VCPKG_INSTALL_OPTIONS": "--debug"
-      }
+      ]
     },
     {
       "name": "coverage-gcc",
