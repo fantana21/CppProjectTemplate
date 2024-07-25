@@ -338,8 +338,7 @@
       "name": "ci-common",
       "hidden": true,
       "output": {
-        "outputOnFailure": true,
-        "verbosity": "verbose"
+        "outputOnFailure": true
       },
       "execution": {
         "jobs": 2,
