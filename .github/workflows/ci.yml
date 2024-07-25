@@ -194,6 +194,34 @@ jobs:
           cmake --build --preset=ci-ubuntu-release
           ctest --preset ci-ubuntu
 
+      - name: Build, test, and generate coverage report (Clang)
+        id: coverage-clang
+        if: ${{ !cancelled() && steps.test-clang.conclusion == 'success' }}
+        run: |
+          export CXX=clang++
+          cmake --preset=ci-coverage
+          cmake --build --preset=ci-coverage
+          ctest --preset ci-coverage
+          cmake --build --preset=ci-coverage -t coverage
+
+      - name: Upload HTML and XML coverage reports as artifacts (Clang)
+        if: ${{ !cancelled() && steps.coverage-clang.conclusion == 'success' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: CoverageReportsClang
+          path: |
+            build/ci-coverage/CoverageHtml/
+            build/ci-coverage/Coverage.xml
+
+      - name: Show text coverage report as job summary (Clang)
+        if: ${{ !cancelled() && steps.coverage-clang.conclusion == 'success' }}
+        shell: pwsh
+        run: |
+          echo "## Clang code coverage summary`n`n~~~" >> Coverage.md
+          Get-Content .\build\coverage\coverage.txt | Select-Object -Skip 3 >> Coverage.md
+          echo "~~~" >> Coverage.md
+          cat Coverage.md >> $env:GITHUB_STEP_SUMMARY
+
       - name: Build and test with sanitizers (Clang)
         if: ${{ !cancelled() && steps.test-clang.conclusion == 'success' }}
         run: |
