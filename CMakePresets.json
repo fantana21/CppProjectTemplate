@@ -1,8 +1,8 @@
 {
-  "version": 3,
+  "version": 4,
   "cmakeMinimumRequired": {
     "major": 3,
-    "minor": 21,
+    "minor": 23,
     "patch": 0
   },
   "configurePresets": [
@@ -185,68 +185,6 @@
         "CMAKE_CXX_COMPILER": "clang-cl",
         "VCPKG_INSTALL_OPTIONS": "--debug"
       }
-    },
-    {
-      "name": "dev-linux-gcc",
-      "inherits": [
-        "common-linux",
-        "clang-tidy",
-        "cppcheck",
-        "include-what-you-use"
-      ],
-      "cacheVariables": {
-        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
-        "CMAKE_CXX_COMPILER": "g++"
-      }
-    },
-    {
-      "name": "dev-linux-clang",
-      "inherits": [
-        "dev-linux-gcc"
-      ],
-      "cacheVariables": {
-        "CMAKE_CXX_COMPILER": "clang++"
-      }
-    },
-    {
-      "name": "dev-linux-coverage",
-      "inherits": [
-        "coverage",
-        "common-linux"
-      ],
-      "cacheVariables": {
-        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
-      }
-    },
-    {
-      "name": "dev-windows-msvc",
-      "description": "Requires toolchain from MarkSchofield/WindowsToolchain",
-      "inherits": [
-        "common-windows",
-        "flags-msvc",
-        "clang-tidy-msvc",
-        "cppcheck"
-      ],
-      "generator": "Ninja Multi-Config",
-      "cacheVariables": {
-        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
-        "VCPKG_CHAINLOAD_TOOLCHAIN_FILE": "$env{WINDOWS_TOOLCHAIN_ROOT}/Windows.MSVC.toolchain.cmake"
-      }
-    },
-    {
-      "name": "dev-windows-clang-cl",
-      "description": "Requires toolchain from MarkSchofield/WindowsToolchain and triplet from Neumann-A/my-vcpkg-triplets",
-      "inherits": [
-        "flags-clang-cl",
-        "dev-windows-msvc"
-      ],
-      "cacheVariables": {
-        "CMAKE_C_COMPILER_FRONTEND_VARIANT": "MSVC",
-        "CMAKE_CXX_COMPILER_FRONTEND_VARIANT": "MSVC",
-        "VCPKG_CHAINLOAD_TOOLCHAIN_FILE": "$env{WINDOWS_TOOLCHAIN_ROOT}/Windows.Clang.toolchain.cmake",
-        "VCPKG_HOST_TRIPLET": "x64-win-llvm-static-md",
-        "VCPKG_TARGET_TRIPLET": "x64-win-llvm-static-md"
-      }
     }
   ],
   "buildPresets": [
@@ -286,50 +224,6 @@
     {
       "name": "ci-windows-clang-cl-release",
       "configurePreset": "ci-windows-clang-cl",
-      "configuration": "Release"
-    },
-    {
-      "name": "dev-linux-gcc-debug",
-      "configurePreset": "dev-linux-gcc",
-      "configuration": "Debug"
-    },
-    {
-      "name": "dev-linux-gcc-release",
-      "configurePreset": "dev-linux-gcc",
-      "configuration": "Release"
-    },
-    {
-      "name": "dev-linux-clang-debug",
-      "configurePreset": "dev-linux-clang",
-      "configuration": "Debug"
-    },
-    {
-      "name": "dev-linux-clang-release",
-      "configurePreset": "dev-linux-clang",
-      "configuration": "Release"
-    },
-    {
-      "name": "dev-linux-coverage",
-      "configurePreset": "dev-linux-coverage"
-    },
-    {
-      "name": "dev-windows-msvc-debug",
-      "configurePreset": "dev-windows-msvc",
-      "configuration": "Debug"
-    },
-    {
-      "name": "dev-windows-msvc-release",
-      "configurePreset": "dev-windows-msvc",
-      "configuration": "Release"
-    },
-    {
-      "name": "dev-windows-clang-cl-debug",
-      "configurePreset": "dev-windows-clang-cl",
-      "configuration": "Debug"
-    },
-    {
-      "name": "dev-windows-clang-cl-release",
-      "configurePreset": "dev-windows-clang-cl",
       "configuration": "Release"
     }
   ],
