@@ -76,7 +76,7 @@ jobs:
           Add-Content "$env:GITHUB_ENV" 'UseMultiToolTask=true'
           Add-Content "$env:GITHUB_ENV" 'EnforceProcessCountAcrossBuilds=true'
 
-      - name: Configure, build, and test debug and release configurations using MSVC
+      - name: Build and test debug and release mode (MSVC)
         run: |
           cmake --preset=ci-windows-msvc
           cmake --build --preset=ci-windows-msvc-debug
@@ -84,7 +84,7 @@ jobs:
           cmake --build --preset=ci-windows-msvc-release
           ctest --preset ci-windows-msvc
 
-      - name: Configure, build, and test debug and release configurations using clang-cl
+      - name: Build and test debug and release mode (clang-cl)
         run: |
           cmake --preset=ci-windows-clang-cl
           cmake --build --preset=ci-windows-clang-cl-debug
@@ -137,7 +137,7 @@ jobs:
             vcpkg-${{ runner.os }}-${{ env.VCPKG_COMMITTISH }}
             vcpkg-${{ runner.os }}
 
-      - name: Configure, build, and test debug and release configurations using GCC
+      - name: Build and test debug and release mode (GCC)
         id: test-gcc
         run: |
           export CXX=g++
@@ -147,7 +147,7 @@ jobs:
           cmake --build --preset=ci-ubuntu-release
           ctest --preset ci-ubuntu
 
-      - name: Configure, build, test, and generate coverage report using GCC
+      - name: Build, test, and generate coverage report (GCC)
         run: |
           cmake --preset=ci-coverage-gcc
           cmake --build --preset=ci-coverage-gcc
@@ -170,7 +170,7 @@ jobs:
           echo "~~~" >> Coverage.md
           cat Coverage.md >> $env:GITHUB_STEP_SUMMARY
 
-      - name: Configure, build, and test with sanitizers using GCC
+      - name: Build and test with sanitizers (GCC)
         if: ${{ !cancelled() && steps.test-gcc.conclusion == 'success' }}
         run: |
           export CXX=g++
@@ -178,7 +178,7 @@ jobs:
           cmake --build --preset=ci-sanitize
           ctest --preset ci-sanitize
 
-      - name: Configure, build, and test debug and release configurations using Clang
+      - name: Build and test debug and release mode (Clang)
         id: test-clang
         if: ${{ !cancelled() }}
         run: |
@@ -190,7 +190,7 @@ jobs:
           cmake --build --preset=ci-ubuntu-release
           ctest --preset ci-ubuntu
 
-      - name: Configure, build, and test with sanitizers using Clang
+      - name: Build and test with sanitizers (Clang)
         if: ${{ !cancelled() && steps.test-clang.conclusion == 'success' }}
         run: |
           export CXX=clang++
