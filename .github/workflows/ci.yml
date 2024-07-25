@@ -170,7 +170,7 @@ jobs:
         shell: pwsh
         run: |
           echo "## GCC code coverage summary`n`n~~~" >> Coverage.md
-          Get-Content .\build\coverage\coverage.txt | Select-Object -Skip 3 >> Coverage.md
+          Get-Content .\build\ci-coverage\Coverage.txt | Select-Object -Skip 3 >> Coverage.md
           echo "~~~" >> Coverage.md
           cat Coverage.md >> $env:GITHUB_STEP_SUMMARY
 
@@ -218,7 +218,7 @@ jobs:
         shell: pwsh
         run: |
           echo "## Clang code coverage summary`n`n~~~" >> Coverage.md
-          Get-Content .\build\coverage\coverage.txt | Select-Object -Skip 3 >> Coverage.md
+          Get-Content .\build\ci-coverage\Coverage.txt | Select-Object -Skip 3 >> Coverage.md
           echo "~~~" >> Coverage.md
           cat Coverage.md >> $env:GITHUB_STEP_SUMMARY
 
