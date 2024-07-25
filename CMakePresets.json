@@ -115,6 +115,7 @@
       "name": "coverage",
       "description": "These coverage flags are supported by both GCC and Clang",
       "hidden": true,
+      "generator": "Ninja",
       "cacheVariables": {
         "ENABLE_COVERAGE": "ON",
         "CMAKE_BUILD_TYPE": "Coverage",
@@ -128,10 +129,9 @@
       "name": "ci-coverage",
       "description": "For generating coverage reports on Ubuntu runners with GCC or Clang",
       "inherits": [
-        "common-linux",
-        "coverage"
-      ],
-      "generator": "Ninja"
+        "coverage",
+        "common-linux"
+      ]
     },
     {
       "name": "ci-sanitize",
@@ -200,24 +200,22 @@
       }
     },
     {
-      "name": "dev-linux-coverage-gcc",
-      "inherits": [
-        "common-linux",
-        "coverage"
-      ],
-      "generator": "Ninja",
-      "cacheVariables": {
-        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
-        "CMAKE_CXX_COMPILER": "g++"
-      }
-    },
-    {
       "name": "dev-linux-clang",
       "inherits": [
         "dev-linux-gcc"
       ],
       "cacheVariables": {
         "CMAKE_CXX_COMPILER": "clang++"
+      }
+    },
+    {
+      "name": "dev-linux-coverage",
+      "inherits": [
+        "coverage",
+        "common-linux"
+      ],
+      "cacheVariables": {
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
       }
     },
     {
@@ -309,6 +307,10 @@
       "name": "dev-linux-clang-release",
       "configurePreset": "dev-linux-clang",
       "configuration": "Release"
+    },
+    {
+      "name": "dev-linux-coverage",
+      "configurePreset": "dev-linux-coverage"
     },
     {
       "name": "dev-windows-msvc-debug",
