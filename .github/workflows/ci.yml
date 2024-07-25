@@ -158,13 +158,16 @@ jobs:
           cmake --build --preset=ci-ubuntu-release
           ctest --preset ci-ubuntu
 
-      - name: Build, test, and generate coverage report (GCC)
+      - name: Build, test, and generate coverage reports (GCC)
         run: |
           export CXX=g++
           cmake --preset=ci-coverage
           cmake --build --preset=ci-coverage
           ctest --preset ci-coverage
           cmake --build --preset=ci-coverage -t coverage
+          echo -e "## Code coverage report\n\n~~~" > Coverage.md
+          tail build/ci-coverage/Coverage.txt -n +4 >> Coverage.md
+          echo "~~~" >> Coverage.md
 
       - name: Upload HTML and XML coverage reports as artifacts (GCC)
         uses: actions/upload-artifact@v4
@@ -174,13 +177,15 @@ jobs:
             build/ci-coverage/CoverageHtml/
             build/ci-coverage/Coverage.xml
 
-      - name: Show text coverage report as job summary (GCC)
-        shell: pwsh
-        run: |
-          echo "## GCC code coverage summary`n`n~~~" > Coverage.md
-          Get-Content .\build\ci-coverage\Coverage.txt | Select-Object -Skip 3 >> Coverage.md
-          echo "~~~" >> Coverage.md
-          cat Coverage.md > $env:GITHUB_STEP_SUMMARY
+      - name: Show Markdown coverage report as job summary (GCC)
+        run: cat Coverage.md > $GITHUB_STEP_SUMMARY
+
+      - name: Show Markdown coverage report as sticky PR comment (GCC)
+        if: github.event_name == 'pull_request'
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          recreate: true
+          path: Coverage.md
 
       - name: Build and test with sanitizers (GCC)
         if: ${{ !cancelled() && steps.test-gcc.conclusion == 'success' }}
@@ -202,7 +207,7 @@ jobs:
           cmake --build --preset=ci-ubuntu-release
           ctest --preset ci-ubuntu
 
-      - name: Build, test, and generate coverage report (Clang)
+      - name: Build, test, and generate coverage reports (Clang)
         id: coverage-clang
         if: ${{ !cancelled() && steps.test-clang.conclusion == 'success' }}
         run: |
@@ -211,6 +216,9 @@ jobs:
           cmake --build --preset=ci-coverage
           ctest --preset ci-coverage
           cmake --build --preset=ci-coverage -t coverage
+          echo -e "## Code coverage report\n\n~~~" > Coverage.md
+          tail build/ci-coverage/Coverage.txt -n +4 >> Coverage.md
+          echo "~~~" >> Coverage.md
 
       - name: Upload HTML and XML coverage reports as artifacts (Clang)
         if: ${{ !cancelled() && steps.coverage-clang.conclusion == 'success' }}
@@ -221,14 +229,15 @@ jobs:
             build/ci-coverage/CoverageHtml/
             build/ci-coverage/Coverage.xml
 
-      - name: Show text coverage report as job summary (Clang)
-        if: ${{ !cancelled() && steps.coverage-clang.conclusion == 'success' }}
-        shell: pwsh
-        run: |
-          echo "## Clang code coverage summary`n`n~~~" > Coverage.md
-          Get-Content .\build\ci-coverage\Coverage.txt | Select-Object -Skip 3 >> Coverage.md
-          echo "~~~" >> Coverage.md
-          cat Coverage.md > $env:GITHUB_STEP_SUMMARY
+      - name: Show Markdown coverage report as job summary (Clang)
+        run: cat Coverage.md > $GITHUB_STEP_SUMMARY
+
+      - name: Show Markdown coverage report as sticky PR comment (Clang)
+        if: github.event_name == 'pull_request'
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          recreate: true
+          path: Coverage.md
 
       - name: Build and test with sanitizers (Clang)
         if: ${{ !cancelled() && steps.test-clang.conclusion == 'success' }}
