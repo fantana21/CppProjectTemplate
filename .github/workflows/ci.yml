@@ -169,10 +169,10 @@ jobs:
       - name: Show text coverage report as job summary (GCC)
         shell: pwsh
         run: |
-          echo "## GCC code coverage summary`n`n~~~" >> Coverage.md
+          echo "## GCC code coverage summary`n`n~~~" > Coverage.md
           Get-Content .\build\ci-coverage\Coverage.txt | Select-Object -Skip 3 >> Coverage.md
           echo "~~~" >> Coverage.md
-          cat Coverage.md >> $env:GITHUB_STEP_SUMMARY
+          cat Coverage.md > $env:GITHUB_STEP_SUMMARY
 
       - name: Build and test with sanitizers (GCC)
         if: ${{ !cancelled() && steps.test-gcc.conclusion == 'success' }}
@@ -217,10 +217,10 @@ jobs:
         if: ${{ !cancelled() && steps.coverage-clang.conclusion == 'success' }}
         shell: pwsh
         run: |
-          echo "## Clang code coverage summary`n`n~~~" >> Coverage.md
+          echo "## Clang code coverage summary`n`n~~~" > Coverage.md
           Get-Content .\build\ci-coverage\Coverage.txt | Select-Object -Skip 3 >> Coverage.md
           echo "~~~" >> Coverage.md
-          cat Coverage.md >> $env:GITHUB_STEP_SUMMARY
+          cat Coverage.md > $env:GITHUB_STEP_SUMMARY
 
       - name: Build and test with sanitizers (Clang)
         if: ${{ !cancelled() && steps.test-clang.conclusion == 'success' }}
