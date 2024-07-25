@@ -116,7 +116,7 @@ jobs:
           ninja: ${{ env.NINJA_VERSION }}
           clangtidy: ${{ env.LLVM_VERSION }}
           cppcheck: true
-          gcovr: true
+          gcovr: 7
 
       - name: Print versions of compilers and tools
         run: |
