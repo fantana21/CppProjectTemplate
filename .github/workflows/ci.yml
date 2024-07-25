@@ -127,6 +127,9 @@ jobs:
           clang-tidy --version
           cppcheck --version
           gcovr --version
+          gcov --version || true
+          gcov-13 --version || true
+          llvm-cov --version || true
 
       - name: Install vcpkg
         uses: friendlyanon/setup-vcpkg@v1
