@@ -140,6 +140,7 @@ jobs:
           llvm-cov --version || true
 
       - name: Install vcpkg
+        id: install-vcpkg
         uses: friendlyanon/setup-vcpkg@v1
         with:
           committish: ${{ env.VCPKG_COMMITTISH }}
@@ -197,9 +198,9 @@ jobs:
 
       - name: Build and test debug and release mode (Clang)
         id: test-clang
-        if: ${{ !cancelled() }}
+        if: ${{ !cancelled() && steps.install-vcpkg.conclusion == 'success' }}
         run: |
-          rm -r build
+          rm -rf build
           export CXX=clang++
           cmake --preset=ci-ubuntu
           cmake --build --preset=ci-ubuntu-debug
