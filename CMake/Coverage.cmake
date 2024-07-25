@@ -1,7 +1,9 @@
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     set(GCOV_EXECUTABLE "llvm-cov gcov")
 elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-    set(GCOV_EXECUTABLE "gcov")
+    string(REPLACE "." ";" GCC_VERSION_LIST ${CMAKE_CXX_COMPILER_VERSION})
+    list(GET GCC_VERSION_LIST 0 GCC_MAJOR_VERSION)
+    set(GCOV_EXECUTABLE "gcov-${GCC_MAJOR_VERSION}")
 else()
     message(
         FATAL_ERROR "Unsupported compiler for generating coverage info: ${CMAKE_CXX_COMPILER_ID}"
