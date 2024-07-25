@@ -79,19 +79,11 @@ jobs:
 
       - name: Build and test debug and release mode (MSVC)
         run: |
-          cmake --preset=ci-windows-msvc
-          cmake --build --preset=ci-windows-msvc-debug
-          ctest --preset ci-windows-msvc
-          cmake --build --preset=ci-windows-msvc-release
-          ctest --preset ci-windows-msvc
+          cmake --workflow --preset ci-windows-msvc
 
       - name: Build and test debug and release mode (clang-cl)
         run: |
-          cmake --preset=ci-windows-clang-cl
-          cmake --build --preset=ci-windows-clang-cl-debug
-          ctest --preset ci-windows-clang-cl
-          cmake --build --preset=ci-windows-clang-cl-release
-          ctest --preset ci-windows-clang-cl
+          cmake --workflow --preset ci-windows-clang-cl
 
   test-ubuntu:
     needs: format-and-spell
@@ -149,19 +141,12 @@ jobs:
         id: test-gcc
         run: |
           export CXX=g++
-          cmake --preset=ci-ubuntu
-          cmake --build --preset=ci-ubuntu-debug
-          ctest --preset ci-ubuntu
-          cmake --build --preset=ci-ubuntu-release
-          ctest --preset ci-ubuntu
+          cmake --workflow --preset ci-ubuntu
 
       - name: Build, test, and generate coverage reports (GCC)
         run: |
           export CXX=g++
-          cmake --preset=ci-coverage
-          cmake --build --preset=ci-coverage
-          ctest --preset ci-coverage
-          cmake --build --preset=ci-coverage -t coverage
+          cmake --workflow --preset ci-coverage
 
       - name: Upload HTML and XML coverage reports as artifacts (GCC)
         uses: actions/upload-artifact@v4
@@ -186,9 +171,7 @@ jobs:
         if: ${{ !cancelled() && steps.test-gcc.conclusion == 'success' }}
         run: |
           export CXX=g++
-          cmake --preset=ci-sanitize
-          cmake --build --preset=ci-sanitize
-          ctest --preset ci-sanitize
+          cmake --workflow --preset ci-sanitize
 
       - name: Build and test debug and release mode (Clang)
         id: test-clang
@@ -196,21 +179,14 @@ jobs:
         run: |
           rm -rf build
           export CXX=clang++
-          cmake --preset=ci-ubuntu
-          cmake --build --preset=ci-ubuntu-debug
-          ctest --preset ci-ubuntu
-          cmake --build --preset=ci-ubuntu-release
-          ctest --preset ci-ubuntu
+          cmake --workflow --preset ci-ubuntu
 
       - name: Build, test, and generate coverage reports (Clang)
         id: coverage-clang
         if: ${{ !cancelled() && steps.test-clang.conclusion == 'success' }}
         run: |
           export CXX=clang++
-          cmake --preset=ci-coverage
-          cmake --build --preset=ci-coverage
-          ctest --preset ci-coverage
-          cmake --build --preset=ci-coverage -t coverage
+          cmake --workflow --preset ci-coverage
 
       - name: Upload HTML and XML coverage reports as artifacts (Clang)
         if: ${{ !cancelled() && steps.coverage-clang.conclusion == 'success' }}
@@ -236,6 +212,4 @@ jobs:
         if: ${{ !cancelled() && steps.test-clang.conclusion == 'success' }}
         run: |
           export CXX=clang++
-          cmake --preset=ci-sanitize
-          cmake --build --preset=ci-sanitize
-          ctest --preset ci-sanitize
+          cmake --workflow --preset ci-sanitize

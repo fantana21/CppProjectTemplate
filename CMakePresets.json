@@ -1,8 +1,8 @@
 {
-  "version": 4,
+  "version": 6,
   "cmakeMinimumRequired": {
     "major": 3,
-    "minor": 23,
+    "minor": 25,
     "patch": 0
   },
   "configurePresets": [
@@ -199,6 +199,13 @@
       "configurePreset": "ci-coverage"
     },
     {
+      "name": "ci-coverage-reports",
+      "configurePreset": "ci-coverage",
+      "targets": [
+        "coverage"
+      ]
+    },
+    {
       "name": "ci-sanitize",
       "configurePreset": "ci-sanitize"
     },
@@ -268,6 +275,126 @@
       "description": "Run the latest tests built with clang-cl on Windows runners",
       "inherits": "ci-common",
       "configurePreset": "ci-windows-clang-cl"
+    }
+  ],
+  "workflowPresets": [
+    {
+      "name": "ci-ubuntu",
+      "description": "Configure, build and test debug and release configuration on Ubuntu runners",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "ci-ubuntu"
+        },
+        {
+          "type": "build",
+          "name": "ci-ubuntu-debug"
+        },
+        {
+          "type": "test",
+          "name": "ci-ubuntu"
+        },
+        {
+          "type": "build",
+          "name": "ci-ubuntu-release"
+        },
+        {
+          "type": "test",
+          "name": "ci-ubuntu"
+        }
+      ]
+    },
+    {
+      "name": "ci-coverage",
+      "description": "Generate coverage reports on Ubuntu runners",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "ci-coverage"
+        },
+        {
+          "type": "build",
+          "name": "ci-coverage"
+        },
+        {
+          "type": "test",
+          "name": "ci-coverage"
+        },
+        {
+          "type": "build",
+          "name": "ci-coverage-reports"
+        }
+      ]
+    },
+    {
+      "name": "ci-sanitize",
+      "description": "Run sanitizers on Ubuntu runners",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "ci-sanitize"
+        },
+        {
+          "type": "build",
+          "name": "ci-sanitize"
+        },
+        {
+          "type": "test",
+          "name": "ci-sanitize"
+        }
+      ]
+    },
+    {
+      "name": "ci-windows-msvc",
+      "description": "Configure, build and test debug and release configuration on Windows runners with MSVC",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "ci-windows-msvc"
+        },
+        {
+          "type": "build",
+          "name": "ci-windows-msvc-debug"
+        },
+        {
+          "type": "test",
+          "name": "ci-windows-msvc"
+        },
+        {
+          "type": "build",
+          "name": "ci-windows-msvc-release"
+        },
+        {
+          "type": "test",
+          "name": "ci-windows-msvc"
+        }
+      ]
+    },
+    {
+      "name": "ci-windows-clang-cl",
+      "description": "Configure, build and test debug and release configuration on Windows runners with clang-cl",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "ci-windows-clang-cl"
+        },
+        {
+          "type": "build",
+          "name": "ci-windows-clang-cl-debug"
+        },
+        {
+          "type": "test",
+          "name": "ci-windows-clang-cl"
+        },
+        {
+          "type": "build",
+          "name": "ci-windows-clang-cl-release"
+        },
+        {
+          "type": "test",
+          "name": "ci-windows-clang-cl"
+        }
+      ]
     }
   ]
 }
