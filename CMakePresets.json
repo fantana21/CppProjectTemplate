@@ -107,7 +107,8 @@
       "inherits": [
         "common-linux",
         "clang-tidy",
-        "cppcheck"
+        "cppcheck",
+        "include-what-you-use"
       ]
     },
     {
