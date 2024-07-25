@@ -7,14 +7,14 @@ preferences. The following is a non-exhaustive list of changes.
 - Use PascalCase for C++ and CMake files as well as directories.
 - Split up top-level `CMakeLists.txt` to define target properties close to the source.
 - Rework `CMakePresets.json`. The hierarchy, names, and some settings are changed a bit
-  and `Ninja Multi-Config` is used as the default generator. Most importantly though
-  developer presets and more Windows presets are added. There are CI presets for two
-  different compilers on both Windows and Ubuntu now. Moving the developer presets to
-  `CMakePresets.json` was mostly for convenience. They do require additional setup for
-  Windows in form of custom toolchains and triplets, though. At any rate, users are still
-  expected to add `CMakeUsersPresets.json`, even if it is just for creating shorter
-  aliases. Finally, build presets are added for all configuration presets that use
-  multi-config generators.
+  and `Ninja Multi-Config` is used as the default generator. Most importantly though more
+  presets where added such that two different compilers are supported on both Windows and
+  Ubuntu now. Additionally, build and test presets are available for all configuration
+  presets.
+- Add `CMakeDevPresets.json` containing configure and build presets for developers. This
+  file is intended to be included in `CMakeUserPresets.json`. It ensures that a reasonable
+  set of developer presets are checked into version control and easily available for
+  everyone.
 - Increase minimum required CMake version and get rid of some code that became obsolete
   because of that.
 - Use [doctest](https://github.com/doctest/doctest) instead of
