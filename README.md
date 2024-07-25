@@ -8,17 +8,20 @@ preferences. The following is a non-exhaustive list of changes.
 - Split up top-level `CMakeLists.txt` to define target properties close to the source.
 - Rework `CMakePresets.json`. The hierarchy, names, and some settings are changed a bit
   and `Ninja Multi-Config` is used as the default generator. Most importantly though more
-  presets where added such that two different compilers are supported on both Windows and
-  Ubuntu now. Additionally, build and test presets are available for all configuration
-  presets.
+  configure presets where added such that two different compilers are supported on both
+  Windows and Ubuntu now. Additionally, build, test, and workflow presets are available
+  for all CI-relevant tasks.
 - Add `CMakeDevPresets.json` containing configure and build presets for developers. This
   file is intended to be included in `CMakeUserPresets.json`. It ensures that a reasonable
   set of developer presets are checked into version control and easily available for
-  everyone.
+  everyone. The presets include configure, build, test and workflow presets.
 - Increase minimum required CMake version and get rid of some code that became obsolete
   because of that.
 - Use [doctest](https://github.com/doctest/doctest) instead of
   [Catch2](https://github.com/catchorg/Catch2).
+- Use [gcovr](https://gcovr.com/en/stable/) instead of
+  [LCOV](https://github.com/linux-test-project/lcov) for generating coverage reports,
+  since gcovr is also available on Windows.
 - Rename linter scripts and targets since they only format.
 - Add scripts and targets for formatting CMake code with
   [cmake-format](https://cmake-format.readthedocs.io/en/latest/cmake-format.html). There
