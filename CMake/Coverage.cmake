@@ -33,7 +33,8 @@ set(GENERATE_COVERAGE_REPORTS
 add_custom_target(
     coverage
     COMMAND ${GENERATE_COVERAGE_REPORTS}
+    COMMAND ${CMAKE_COMMAND} -P "${PROJECT_SOURCE_DIR}/CMake/MarkdownCoverageReport.cmake"
     WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
-    COMMENT "Generating plain text, HTML, and XML coverage reports"
+    COMMENT "Generating text, HTML, XML, and Markdown coverage reports"
     VERBATIM
 )
