@@ -181,6 +181,7 @@ jobs:
         if: github.event_name == 'pull_request'
         uses: marocchino/sticky-pull-request-comment@v2
         with:
+          header: GCC
           recreate: true
           path: Coverage.md
 
@@ -233,6 +234,7 @@ jobs:
         if: github.event_name == 'pull_request'
         uses: marocchino/sticky-pull-request-comment@v2
         with:
+          header: Clang
           recreate: true
           path: Coverage.md
 
