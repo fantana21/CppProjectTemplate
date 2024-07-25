@@ -168,10 +168,7 @@
         "flags-msvc"
       ],
       "generator": "Visual Studio 17 2022",
-      "architecture": "x64",
-      "cacheVariables": {
-        "VCPKG_INSTALL_OPTIONS": "--debug"
-      }
+      "architecture": "x64"
     },
     {
       "name": "ci-windows-clang-cl",
@@ -182,8 +179,7 @@
       ],
       "generator": "Ninja Multi-Config",
       "cacheVariables": {
-        "CMAKE_CXX_COMPILER": "clang-cl",
-        "VCPKG_INSTALL_OPTIONS": "--debug"
+        "CMAKE_CXX_COMPILER": "clang-cl"
       }
     }
   ],
