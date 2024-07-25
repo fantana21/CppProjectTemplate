@@ -116,11 +116,7 @@ jobs:
           ninja: ${{ env.NINJA_VERSION }}
           clangtidy: ${{ env.LLVM_VERSION }}
           cppcheck: true
-
-      - name: Install LCOV
-        run: |
-          sudo apt-get update -q
-          sudo apt-get install lcov -q -y
+          gcovr: true
 
       - name: Print versions of compilers and tools
         run: |
@@ -130,7 +126,7 @@ jobs:
           ninja --version
           clang-tidy --version
           cppcheck --version
-          lcov --version
+          gcovr --version
 
       - name: Install vcpkg
         uses: friendlyanon/setup-vcpkg@v1
