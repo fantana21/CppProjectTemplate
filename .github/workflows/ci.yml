@@ -118,6 +118,18 @@ jobs:
           cppcheck: true
           gcovr: 7
 
+      - name: Install Include What You Use
+        run: |
+          sudo apt-get update -q
+          apt list --installed | grep llvm
+          apt list --installed | grep clang
+          sudo apt-get install -y llvm-${{ env.LLVM_VERSION }}-dev libclang-${{ env.LLVM_VERSION }}-dev clang-${{ env.LLVM_VERSION }}
+          git clone --depth 1 --branch clang_{{ env.LLVM_VERSION }} https://github.com/include-what-you-use/include-what-you-use.git
+          cd include-what-you-use
+          cmake -B build -S . -G Ninja -DCMAKE_PREFIX_PATH=/usr/lib/llvm-${{ env.LLVM_VERSION }}
+          cmake --build build
+          sudo cmake --install build
+
       - name: Print versions of compilers and tools
         run: |
           g++ --version || true
