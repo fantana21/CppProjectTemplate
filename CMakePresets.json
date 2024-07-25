@@ -280,7 +280,7 @@
   "workflowPresets": [
     {
       "name": "ci-ubuntu",
-      "description": "Configure, build and test debug and release configuration on Ubuntu runners",
+      "description": "Configure, build, and test debug and release configuration on Ubuntu runners",
       "steps": [
         {
           "type": "configure",
@@ -346,7 +346,7 @@
     },
     {
       "name": "ci-windows-msvc",
-      "description": "Configure, build and test debug and release configuration on Windows runners with MSVC",
+      "description": "Configure, build, and test debug and release configuration on Windows runners with MSVC",
       "steps": [
         {
           "type": "configure",
@@ -372,7 +372,7 @@
     },
     {
       "name": "ci-windows-clang-cl",
-      "description": "Configure, build and test debug and release configuration on Windows runners with clang-cl",
+      "description": "Configure, build, and test debug and release configuration on Windows runners with clang-cl",
       "steps": [
         {
           "type": "configure",
