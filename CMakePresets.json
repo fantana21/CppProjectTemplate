@@ -111,28 +111,26 @@
       ]
     },
     {
-      "name": "coverage-gcc",
+      "name": "coverage",
+      "description": "These coverage flags are supported by both GCC and Clang",
       "hidden": true,
       "cacheVariables": {
         "ENABLE_COVERAGE": "ON",
         "CMAKE_BUILD_TYPE": "Coverage",
-        "CMAKE_CXX_FLAGS_COVERAGE": "-O0 -g --coverage -fkeep-inline-functions -fkeep-static-functions",
+        "CMAKE_CXX_FLAGS_COVERAGE": "-O0 -g --coverage",
         "CMAKE_EXE_LINKER_FLAGS_COVERAGE": "--coverage",
         "CMAKE_SHARED_LINKER_FLAGS_COVERAGE": "--coverage",
         "CMAKE_MAP_IMPORTED_CONFIG_COVERAGE": "Coverage;RelWithDebInfo;Release;Debug;"
       }
     },
     {
-      "name": "ci-coverage-gcc",
-      "description": "For generating coverage reports on Ubuntu runners with GCC",
+      "name": "ci-coverage",
+      "description": "For generating coverage reports on Ubuntu runners with GCC or Clang",
       "inherits": [
         "common-linux",
-        "coverage-gcc"
+        "coverage"
       ],
-      "generator": "Ninja",
-      "cacheVariables": {
-        "CMAKE_CXX_COMPILER": "g++"
-      }
+      "generator": "Ninja"
     },
     {
       "name": "ci-sanitize",
@@ -204,7 +202,7 @@
       "name": "dev-linux-coverage-gcc",
       "inherits": [
         "common-linux",
-        "coverage-gcc"
+        "coverage"
       ],
       "generator": "Ninja",
       "cacheVariables": {
@@ -264,8 +262,8 @@
       "configuration": "Release"
     },
     {
-      "name": "ci-coverage-gcc",
-      "configurePreset": "ci-coverage-gcc"
+      "name": "ci-coverage",
+      "configurePreset": "ci-coverage"
     },
     {
       "name": "ci-sanitize",
@@ -352,10 +350,10 @@
       "configurePreset": "ci-ubuntu"
     },
     {
-      "name": "ci-coverage-gcc",
-      "description": "Run tests built with GCC and coverage enabled on Ubuntu runners",
+      "name": "ci-coverage",
+      "description": "Run tests built with GCC or Clang and coverage enabled on Ubuntu runners",
       "inherits": "ci-common",
-      "configurePreset": "ci-coverage-gcc"
+      "configurePreset": "ci-coverage"
     },
     {
       "name": "ci-sanitize",

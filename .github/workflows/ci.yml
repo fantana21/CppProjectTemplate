@@ -152,23 +152,24 @@ jobs:
 
       - name: Build, test, and generate coverage report (GCC)
         run: |
-          cmake --preset=ci-coverage-gcc
-          cmake --build --preset=ci-coverage-gcc
-          ctest --preset ci-coverage-gcc
-          cmake --build --preset=ci-coverage-gcc -t coverage
+          export CXX=g++
+          cmake --preset=ci-coverage
+          cmake --build --preset=ci-coverage
+          ctest --preset ci-coverage
+          cmake --build --preset=ci-coverage -t coverage
 
-      - name: Upload HTML and XML coverage reports as artifacts
+      - name: Upload HTML and XML coverage reports as artifacts (GCC)
         uses: actions/upload-artifact@v4
         with:
-          name: CoverageReports
+          name: CoverageReportsGcc
           path: |
-            build/ci-coverage-gcc/CoverageHtml/
-            build/ci-coverage-gcc/Coverage.xml
+            build/ci-coverage/CoverageHtml/
+            build/ci-coverage/Coverage.xml
 
-      - name: Show text coverage report as job summary
+      - name: Show text coverage report as job summary (GCC)
         shell: pwsh
         run: |
-          echo "## Code coverage summary`n`n~~~" >> Coverage.md
+          echo "## GCC code coverage summary`n`n~~~" >> Coverage.md
           Get-Content .\build\coverage\coverage.txt | Select-Object -Skip 3 >> Coverage.md
           echo "~~~" >> Coverage.md
           cat Coverage.md >> $env:GITHUB_STEP_SUMMARY
