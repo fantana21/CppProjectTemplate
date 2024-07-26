@@ -148,24 +148,11 @@ jobs:
           export CXX=g++
           cmake --workflow --preset ci-coverage
 
-      - name: Upload HTML and XML coverage reports as artifacts (GCC)
-        uses: actions/upload-artifact@v4
+      - name: Report coverage results as job summary, PR comment, and artifact (GCC)
+        uses: ./.github/actions/report-coverage@v1
         with:
-          name: CoverageReportsGcc
-          path: |
-            build/ci-coverage/CoverageHtml/
-            build/ci-coverage/Coverage.xml
-
-      - name: Show Markdown coverage report as job summary (GCC)
-        run: cat build/ci-coverage/Coverage.md > $GITHUB_STEP_SUMMARY
-
-      - name: Show Markdown coverage report as sticky PR comment (GCC)
-        if: github.event_name == 'pull_request'
-        uses: marocchino/sticky-pull-request-comment@v2
-        with:
-          header: gcc
-          recreate: true
-          path: build/ci-coverage/Coverage.md
+          pr-comment-header: gcc
+          artifact-name: CoverageReportsGcc
 
       - name: Build and test with sanitizers (GCC)
         if: ${{ !cancelled() && steps.test-gcc.conclusion == 'success' }}
@@ -188,25 +175,12 @@ jobs:
           export CXX=clang++
           cmake --workflow --preset ci-coverage
 
-      - name: Upload HTML and XML coverage reports as artifacts (Clang)
+      - name: Report coverage results as job summary, PR comment, and artifact (Clang)
         if: ${{ !cancelled() && steps.coverage-clang.conclusion == 'success' }}
-        uses: actions/upload-artifact@v4
+        uses: ./.github/actions/report-coverage@v1
         with:
-          name: CoverageReportsClang
-          path: |
-            build/ci-coverage/CoverageHtml/
-            build/ci-coverage/Coverage.xml
-
-      - name: Show Markdown coverage report as job summary (Clang)
-        run: cat build/ci-coverage/Coverage.md > $GITHUB_STEP_SUMMARY
-
-      - name: Show Markdown coverage report as sticky PR comment (Clang)
-        if: github.event_name == 'pull_request'
-        uses: marocchino/sticky-pull-request-comment@v2
-        with:
-          header: clang
-          recreate: true
-          path: build/ci-coverage/Coverage.md
+          pr-comment-header: clang
+          artifact-name: CoverageReportsClang
 
       - name: Build and test with sanitizers (Clang)
         if: ${{ !cancelled() && steps.test-clang.conclusion == 'success' }}

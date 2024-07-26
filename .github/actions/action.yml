@@ -1,0 +1,63 @@
+name: report-coverage
+description: Report coverage results in different formats
+author: Patrick Kappl
+
+inputs:
+  add-job-summary:
+    default: true
+    required: false
+    description: Show markdown coverage report as job summary
+
+  add-pr-comment:
+    default: true
+    required: false
+    description: Show markdown coverage report as sticky PR comment
+
+  pr-comment-header:
+    default: coverage
+    required: false
+    description: Header to distinguish multiple PR comments
+
+  markdown-path:
+    default: build/ci-coverage/Coverage.md
+    required: false
+    description: Path to the markdown coverage report
+
+  upload-artifact:
+    default: true
+    required: false
+    description: Upload coverage report(s) as job artifact
+
+  artifact-name:
+    default: CoverageReports
+    required: false
+    description: Name of the coverage report artifact
+
+  artifact-path:
+    default: |
+      build/ci-coverage/CoverageHtml/
+      build/ci-coverage/Coverage.xml
+    required: false
+    description: Path(s) to coverage report(s) uploaded as job artifact
+
+runs:
+  using: composite
+  steps:
+    - name: Show Markdown coverage report as job summary
+      if: ${{ inputs.add-job-summary }}
+      run: cat ${{ inputs.markdown-path }} > $GITHUB_STEP_SUMMARY
+
+    - name: Show Markdown coverage report as sticky PR comment
+      if: ${{ inputs.add-pr-comment && github.event_name == 'pull_request' }}
+      uses: marocchino/sticky-pull-request-comment@v2
+      with:
+        header: ${{ inputs.pr-comment-header }}
+        recreate: true
+        path: ${{ inputs.markdown-path }}
+
+    - name: Upload coverage reports as job artifact
+      if: ${{ inputs.upload-artifact }}
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ inputs.artifact-name }}
+        path: ${{ inputs.artifact-path }}
