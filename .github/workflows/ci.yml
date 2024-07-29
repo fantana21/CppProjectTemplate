@@ -112,8 +112,12 @@ jobs:
           cmake --build build
           sudo cmake --install build
 
-      - name: Install Valgrind
-        run: sudo apt-get install -y valgrind
+      - name: Install Valgrind and store version info
+        run: |
+          sudo apt-get install -y valgrind
+          export VALGRIND_VERSION=$(valgrind --version | sed -r 's/.*([0-9]+\.[0-9]+\.[0-9]+).*/\1/')
+          echo "VALGRIND_MAJOR_VERSION=$(echo $VALGRIND_VERSION | cut -d '.' -f 1)" >> $GITHUB_ENV
+          echo "VALGRIND_MINOR_VERSION=$(echo $VALGRIND_VERSION | cut -d '.' -f 2)" >> $GITHUB_ENV
 
       - name: Print versions of compilers and tools
         run: |
@@ -202,8 +206,9 @@ jobs:
 
       - name: Build and test debug and release mode with Valgrind (Clang)
         # Running tests with Valgrind is slow, so we only do it if running them with sanitizers
-        # succeeded
-        if: ${{ !cancelled() && steps.sanitize-clang.conclusion == 'success' }}
+        # succeeded. Also, at least Valgrind 3.20 is required because Clang >= 14 generates DWARF 5
+        # code by default, which is not supported by older versions of Valgrind.
+        if: ${{ !cancelled() && steps.sanitize-clang.conclusion == 'success' && env.VALGRIND_MAJOR_VERSION >= 3 && env.VALGRIND_MINOR_VERSION >= 20 }}
         run: |
           export CXX=clang++
           cmake --workflow --preset ci-valgrind
