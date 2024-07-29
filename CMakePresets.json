@@ -1,17 +1,15 @@
 {
-  "version": 2,
+  "version": 6,
   "cmakeMinimumRequired": {
     "major": 3,
-    "minor": 14,
+    "minor": 25,
     "patch": 0
   },
   "configurePresets": [
     {
       "name": "vcpkg",
       "hidden": true,
-      "cacheVariables": {
-        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
-      }
+      "toolchainFile": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
     },
     {
       "name": "dev-mode",
@@ -114,38 +112,45 @@
       ]
     },
     {
-      "name": "coverage-gcc",
+      "name": "coverage",
+      "description": "These coverage flags are supported by both GCC and Clang",
       "hidden": true,
+      "generator": "Ninja",
       "cacheVariables": {
         "ENABLE_COVERAGE": "ON",
         "CMAKE_BUILD_TYPE": "Coverage",
-        "CMAKE_CXX_FLAGS_COVERAGE": "-O0 -g --coverage -fkeep-inline-functions -fkeep-static-functions",
+        "CMAKE_CXX_FLAGS_COVERAGE": "-O0 -g --coverage",
         "CMAKE_EXE_LINKER_FLAGS_COVERAGE": "--coverage",
         "CMAKE_SHARED_LINKER_FLAGS_COVERAGE": "--coverage",
         "CMAKE_MAP_IMPORTED_CONFIG_COVERAGE": "Coverage;RelWithDebInfo;Release;Debug;"
       }
     },
     {
-      "name": "ci-coverage-gcc",
-      "description": "For generating coverage reports on Ubuntu runners with GCC",
+      "name": "ci-coverage",
+      "description": "For generating coverage reports on Ubuntu runners with GCC or Clang",
       "inherits": [
-        "common-linux",
-        "coverage-gcc"
-      ],
-      "generator": "Ninja"
+        "coverage",
+        "common-linux"
+      ]
     },
     {
-      "name": "ci-sanitize",
-      "description": "For running sanitizers on Ubuntu runners with GCC or Clang",
-      "inherits": [
-        "common-linux"
-      ],
+      "name": "sanitize",
+      "description": "These sanitizer flags are supported by both GCC and Clang",
+      "hidden": true,
       "generator": "Ninja",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Sanitize",
         "CMAKE_CXX_FLAGS_SANITIZE": "-U_FORTIFY_SOURCE -O2 -g -fsanitize=address,undefined -fno-omit-frame-pointer -fno-common",
         "CMAKE_MAP_IMPORTED_CONFIG_SANITIZE": "Sanitize;RelWithDebInfo;Release;Debug;"
       }
+    },
+    {
+      "name": "ci-sanitize",
+      "description": "For running sanitizers on Ubuntu runners with GCC or Clang",
+      "inherits": [
+        "sanitize",
+        "common-linux"
+      ]
     },
     {
       "name": "common-windows",
@@ -182,70 +187,6 @@
       "cacheVariables": {
         "CMAKE_CXX_COMPILER": "clang-cl"
       }
-    },
-    {
-      "name": "dev-linux-gcc",
-      "inherits": [
-        "common-linux",
-        "clang-tidy",
-        "cppcheck",
-        "include-what-you-use"
-      ],
-      "cacheVariables": {
-        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
-        "CMAKE_CXX_COMPILER": "g++"
-      }
-    },
-    {
-      "name": "dev-linux-coverage-gcc",
-      "inherits": [
-        "common-linux",
-        "coverage-gcc"
-      ],
-      "generator": "Ninja",
-      "cacheVariables": {
-        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
-        "CMAKE_CXX_COMPILER": "g++"
-      }
-    },
-    {
-      "name": "dev-linux-clang",
-      "inherits": [
-        "dev-linux-gcc"
-      ],
-      "cacheVariables": {
-        "CMAKE_CXX_COMPILER": "clang++"
-      }
-    },
-    {
-      "name": "dev-windows-msvc",
-      "description": "Requires toolchain from MarkSchofield/WindowsToolchain",
-      "inherits": [
-        "common-windows",
-        "flags-msvc",
-        "clang-tidy-msvc",
-        "cppcheck"
-      ],
-      "generator": "Ninja Multi-Config",
-      "cacheVariables": {
-        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
-        "VCPKG_CHAINLOAD_TOOLCHAIN_FILE": "$env{WINDOWS_TOOLCHAIN_ROOT}/Windows.MSVC.toolchain.cmake"
-      }
-    },
-    {
-      "name": "dev-windows-clang-cl",
-      "description": "Requires toolchain from MarkSchofield/WindowsToolchain and triplet from Neumann-A/my-vcpkg-triplets",
-      "inherits": [
-        "flags-clang-cl",
-        "dev-windows-msvc"
-      ],
-      "cacheVariables": {
-        "CMAKE_C_COMPILER_FRONTEND_VARIANT": "MSVC",
-        "CMAKE_CXX_COMPILER_FRONTEND_VARIANT": "MSVC",
-        "VCPKG_CHAINLOAD_TOOLCHAIN_FILE": "$env{WINDOWS_TOOLCHAIN_ROOT}/Windows.Clang.toolchain.cmake",
-        "VCPKG_HOST_TRIPLET": "x64-win-llvm-static-md",
-        "VCPKG_TARGET_TRIPLET": "x64-win-llvm-static-md"
-      }
     }
   ],
   "buildPresets": [
@@ -258,6 +199,38 @@
       "name": "ci-ubuntu-release",
       "configurePreset": "ci-ubuntu",
       "configuration": "Release"
+    },
+    {
+      "name": "ci-ubuntu-debug-valgrind",
+      "description": "Build target 'ExperimentalMemCheck' which runs the tests with Valgrind",
+      "inherits": "ci-ubuntu-debug",
+      "targets": [
+        "ExperimentalMemCheck"
+      ]
+    },
+    {
+      "name": "ci-ubuntu-release-valgrind",
+      "description": "Build target 'ExperimentalMemCheck' which runs the tests with Valgrind",
+      "inherits": "ci-ubuntu-release",
+      "targets": [
+        "ExperimentalMemCheck"
+      ]
+    },
+    {
+      "name": "ci-coverage",
+      "configurePreset": "ci-coverage"
+    },
+    {
+      "name": "ci-coverage-reports",
+      "description": "Build target 'coverage' which generates coverage reports",
+      "configurePreset": "ci-coverage",
+      "targets": [
+        "coverage"
+      ]
+    },
+    {
+      "name": "ci-sanitize",
+      "configurePreset": "ci-sanitize"
     },
     {
       "name": "ci-windows-msvc-debug",
@@ -278,46 +251,199 @@
       "name": "ci-windows-clang-cl-release",
       "configurePreset": "ci-windows-clang-cl",
       "configuration": "Release"
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "ci-common",
+      "hidden": true,
+      "output": {
+        "outputOnFailure": true
+      },
+      "execution": {
+        "jobs": 2,
+        "noTestsAction": "error"
+      }
     },
     {
-      "name": "dev-linux-gcc-debug",
-      "configurePreset": "dev-linux-gcc",
-      "configuration": "Debug"
+      "name": "ci-ubuntu",
+      "description": "Run latest tests built with GCC or Clang on Ubuntu runners",
+      "inherits": "ci-common",
+      "configurePreset": "ci-ubuntu"
     },
     {
-      "name": "dev-linux-gcc-release",
-      "configurePreset": "dev-linux-gcc",
-      "configuration": "Release"
+      "name": "ci-coverage",
+      "description": "Run tests built with GCC or Clang and coverage enabled on Ubuntu runners",
+      "inherits": "ci-common",
+      "configurePreset": "ci-coverage"
     },
     {
-      "name": "dev-linux-clang-debug",
-      "configurePreset": "dev-linux-clang",
-      "configuration": "Debug"
+      "name": "ci-sanitize",
+      "description": "Run the latest tests built with GCC or Clang and sanitizers enabled on Ubuntu runners",
+      "inherits": "ci-common",
+      "configurePreset": "ci-sanitize",
+      "environment": {
+        "ASAN_OPTIONS": "strict_string_checks=1:detect_stack_use_after_return=1:check_initialization_order=1:strict_init_order=1:detect_leaks=1:halt_on_error=1",
+        "UBSAN_OPTIONS": "print_stacktrace=1:halt_on_error=1"
+      }
     },
     {
-      "name": "dev-linux-clang-release",
-      "configurePreset": "dev-linux-clang",
-      "configuration": "Release"
+      "name": "ci-windows-msvc",
+      "description": "Run the latest tests built with MSVC on Windows runners",
+      "inherits": "ci-common",
+      "configurePreset": "ci-windows-msvc"
     },
     {
-      "name": "dev-windows-msvc-debug",
-      "configurePreset": "dev-windows-msvc",
-      "configuration": "Debug"
+      "name": "ci-windows-clang-cl",
+      "description": "Run the latest tests built with clang-cl on Windows runners",
+      "inherits": "ci-common",
+      "configurePreset": "ci-windows-clang-cl"
+    }
+  ],
+  "workflowPresets": [
+    {
+      "name": "ci-ubuntu",
+      "description": "Configure, build, and test debug and release configuration on Ubuntu runners",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "ci-ubuntu"
+        },
+        {
+          "type": "build",
+          "name": "ci-ubuntu-debug"
+        },
+        {
+          "type": "test",
+          "name": "ci-ubuntu"
+        },
+        {
+          "type": "build",
+          "name": "ci-ubuntu-release"
+        },
+        {
+          "type": "test",
+          "name": "ci-ubuntu"
+        }
+      ]
     },
     {
-      "name": "dev-windows-msvc-release",
-      "configurePreset": "dev-windows-msvc",
-      "configuration": "Release"
+      "name": "ci-valgrind",
+      "description": "Configure, build, and test debug and release configuration with Valgrind on Ubuntu runners",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "ci-ubuntu"
+        },
+        {
+          "type": "build",
+          "name": "ci-ubuntu-debug"
+        },
+        {
+          "type": "build",
+          "name": "ci-ubuntu-debug-valgrind"
+        },
+        {
+          "type": "build",
+          "name": "ci-ubuntu-release"
+        },
+        {
+          "type": "build",
+          "name": "ci-ubuntu-debug-valgrind"
+        }
+      ]
     },
     {
-      "name": "dev-windows-clang-cl-debug",
-      "configurePreset": "dev-windows-clang-cl",
-      "configuration": "Debug"
+      "name": "ci-coverage",
+      "description": "Generate coverage reports on Ubuntu runners",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "ci-coverage"
+        },
+        {
+          "type": "build",
+          "name": "ci-coverage"
+        },
+        {
+          "type": "test",
+          "name": "ci-coverage"
+        },
+        {
+          "type": "build",
+          "name": "ci-coverage-reports"
+        }
+      ]
     },
     {
-      "name": "dev-windows-clang-cl-release",
-      "configurePreset": "dev-windows-clang-cl",
-      "configuration": "Release"
+      "name": "ci-sanitize",
+      "description": "Run sanitizers on Ubuntu runners",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "ci-sanitize"
+        },
+        {
+          "type": "build",
+          "name": "ci-sanitize"
+        },
+        {
+          "type": "test",
+          "name": "ci-sanitize"
+        }
+      ]
+    },
+    {
+      "name": "ci-windows-msvc",
+      "description": "Configure, build, and test debug and release configuration on Windows runners with MSVC",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "ci-windows-msvc"
+        },
+        {
+          "type": "build",
+          "name": "ci-windows-msvc-debug"
+        },
+        {
+          "type": "test",
+          "name": "ci-windows-msvc"
+        },
+        {
+          "type": "build",
+          "name": "ci-windows-msvc-release"
+        },
+        {
+          "type": "test",
+          "name": "ci-windows-msvc"
+        }
+      ]
+    },
+    {
+      "name": "ci-windows-clang-cl",
+      "description": "Configure, build, and test debug and release configuration on Windows runners with clang-cl",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "ci-windows-clang-cl"
+        },
+        {
+          "type": "build",
+          "name": "ci-windows-clang-cl-debug"
+        },
+        {
+          "type": "test",
+          "name": "ci-windows-clang-cl"
+        },
+        {
+          "type": "build",
+          "name": "ci-windows-clang-cl-release"
+        },
+        {
+          "type": "test",
+          "name": "ci-windows-clang-cl"
+        }
+      ]
     }
   ]
 }

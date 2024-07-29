@@ -3,133 +3,212 @@ name: Continuous Integration
 on:
   push:
     branches:
-    - master
+      - main
 
   pull_request:
     branches:
-    - master
+      - main
 
 env:
-  VCPKG_COMMIT: "46e4c4c78c347ded6add526b0c2bb66db35d4710"
+  LLVM_VERSION: 18
+  GCC_VERSION: 13
+  CMAKE_VERSION: 3.28.6
+  NINJA_VERSION: 1.10.1
+  VCPKG_COMMITTISH: 49ac2134b31b95b0ddf29d56873dcd24392691df
 
 jobs:
   format-and-spell:
-    if: false
-    runs-on: ubuntu-22.04
-
-    steps:
-    - uses: actions/checkout@v4
-
-    - uses: actions/setup-python@v5
-      with: { python-version: "3.8" }
-
-    - name: Install codespell
-      run: pip3 install codespell
-
-    - name: Format code
-      run: cmake -P CMake/Format.cmake
-
-    - name: Spell check
-      run: cmake -P CMake/Spell.cmake
-
-  coverage:
-    if: false
-    needs: [format-and-spell]
     runs-on: ubuntu-22.04
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Install LCov
-      run: sudo apt-get update -q
-        && sudo apt-get install lcov -q -y
+      - name: Set up clang-format
+        uses: aminya/setup-cpp@v1
+        with:
+          clangformat: ${{ env.LLVM_VERSION }}
 
-    - name: Install vcpkg
-      uses: friendlyanon/setup-vcpkg@v1
-      with: { committish: "${{ env.VCPKG_COMMIT }}" }
+      - name: Install codespell and cmake-format
+        run: pip install codespell cmakelang
 
-    - name: Configure
-      run: cmake --preset=ci-coverage
+      - name: Print versions
+        run: |
+          python --version
+          pip --version
+          cmake --version
+          clang-format --version
+          cmake-format --version
+          codespell --version
 
-    - name: Build
-      run: cmake --build build/coverage -j 2
+      - name: Format code
+        run: cmake -P CMake/Format.cmake
 
-    - name: Test
-      run: ctest --test-dir build/coverage --output-on-failure --no-tests=error -j 2
+      - name: Spell check
+        run: cmake -P CMake/Spell.cmake
 
-    - name: Process coverage info
-      run: cmake --build build/coverage -t coverage
+  test-windows:
+    needs: format-and-spell
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v4
 
-  sanitize:
-    if: false
-    needs: [format-and-spell]
+      - name: Set up build tools
+        uses: aminya/setup-cpp@v1
+        with:
+          vcvarsall: true
+          cmake: ${{ env.CMAKE_VERSION }}
+          ninja: ${{ env.NINJA_VERSION }}
+
+      - name: Print version of build tools
+        run: |
+          cmake --version
+          ninja --version
+
+      - name: Install vcpkg
+        uses: friendlyanon/setup-vcpkg@v1
+        with:
+          committish: ${{ env.VCPKG_COMMITTISH }}
+          cache-key: vcpkg-${{ runner.os }}-${{ env.VCPKG_COMMITTISH }}-${{ hashFiles('vcpkg.json', 'CMakePresets.json') }}
+          cache-restore-keys: |
+            vcpkg-${{ runner.os }}-${{ env.VCPKG_COMMITTISH }}
+            vcpkg-${{ runner.os }}
+
+      - name: Set up MultiToolTask
+        run: |
+          Add-Content "$env:GITHUB_ENV" 'UseMultiToolTask=true'
+          Add-Content "$env:GITHUB_ENV" 'EnforceProcessCountAcrossBuilds=true'
+
+      - name: Build and test debug and release mode (MSVC)
+        run: cmake --workflow --preset ci-windows-msvc
+
+      - name: Build and test debug and release mode (clang-cl)
+        run: cmake --workflow --preset ci-windows-clang-cl
+
+  test-ubuntu:
+    needs: format-and-spell
     runs-on: ubuntu-22.04
-    env: { CXX: clang++-14 }
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Install vcpkg
-      uses: friendlyanon/setup-vcpkg@v1
-      with: { committish: "${{ env.VCPKG_COMMIT }}" }
+      - name: Install GCC ${{ env.GCC_VERSION }}
+        uses: aminya/setup-cpp@v1
+        with:
+          compiler: gcc-${{ env.GCC_VERSION }}
 
-    - name: Configure
-      run: cmake --preset=ci-sanitize
+      - name: Install LLVM ${{ env.LLVM_VERSION }} and tools
+        uses: aminya/setup-cpp@v1
+        with:
+          compiler: llvm-${{ env.LLVM_VERSION }}
+          cmake: ${{ env.CMAKE_VERSION }}
+          ninja: ${{ env.NINJA_VERSION }}
+          clangtidy: ${{ env.LLVM_VERSION }}
+          cppcheck: true
+          gcovr: 7
 
-    - name: Build
-      run: cmake --build build/sanitize -j 2
+      - name: Install Include What You Use
+        run: |
+          git clone --depth 1 --branch clang_${{ env.LLVM_VERSION }} https://github.com/include-what-you-use/include-what-you-use.git
+          cd include-what-you-use
+          cmake -B build -S . -G Ninja -DCMAKE_PREFIX_PATH=/usr/lib/llvm-${{ env.LLVM_VERSION }}
+          cmake --build build
+          sudo cmake --install build
 
-    - name: Test
-      working-directory: build/sanitize
-      env:
-        ASAN_OPTIONS: "strict_string_checks=1:\
-          detect_stack_use_after_return=1:\
-          check_initialization_order=1:\
-          strict_init_order=1:\
-          detect_leaks=1:\
-          halt_on_error=1"
-        UBSAN_OPTIONS: "print_stacktrace=1:\
-          halt_on_error=1"
-      run: ctest --output-on-failure --no-tests=error -j 2
+      - name: Install Valgrind and store version info
+        run: |
+          sudo apt-get install -y valgrind
+          export VALGRIND_VERSION=$(valgrind --version | sed -r 's/.*([0-9]+\.[0-9]+\.[0-9]+).*/\1/')
+          echo "VALGRIND_MAJOR_VERSION=$(echo $VALGRIND_VERSION | cut -d '.' -f 1)" >> $GITHUB_ENV
+          echo "VALGRIND_MINOR_VERSION=$(echo $VALGRIND_VERSION | cut -d '.' -f 2)" >> $GITHUB_ENV
 
-  test:
-    if: false
-    needs: [format-and-spell]
-    strategy:
-      matrix:
-        os: [ubuntu-22.04, windows-2022]
-    runs-on: ${{ matrix.os }}
-    steps:
-    - uses: actions/checkout@v4
+      - name: Print versions of compilers and tools
+        run: |
+          g++ --version
+          clang++ --version
+          cmake --version
+          ninja --version
+          clang-tidy --version
+          cppcheck --version
+          gcovr --version
+          gcov --version
+          gcov-${{ env.GCC_VERSION }} --version || true
+          llvm-cov --version
+          valgrind --version
 
-    - name: Install static analyzers
-      if: matrix.os == 'ubuntu-22.04'
-      run: >-
-        sudo apt-get install clang-tidy-14 cppcheck -y -q
+      - name: Install vcpkg
+        id: install-vcpkg
+        uses: friendlyanon/setup-vcpkg@v1
+        with:
+          committish: ${{ env.VCPKG_COMMITTISH }}
+          cache-key: vcpkg-${{ runner.os }}-${{ env.VCPKG_COMMITTISH }}-${{ hashFiles('vcpkg.json', 'CMakePresets.json') }}
+          cache-restore-keys: |
+            vcpkg-${{ runner.os }}-${{ env.VCPKG_COMMITTISH }}
+            vcpkg-${{ runner.os }}
 
-        sudo update-alternatives --install
-        /usr/bin/clang-tidy clang-tidy
-        /usr/bin/clang-tidy-14 140
+      - name: Build and test debug and release mode (GCC)
+        id: test-gcc
+        run: |
+          export CXX=g++
+          cmake --workflow --preset ci-ubuntu
 
-    - name: Install vcpkg
-      uses: friendlyanon/setup-vcpkg@v1
-      with: { committish: "${{ env.VCPKG_COMMIT }}" }
+      - name: Build, test, and generate coverage reports (GCC)
+        run: |
+          export CXX=g++
+          cmake --workflow --preset ci-coverage
 
-    - name: Setup MultiToolTask
-      if: matrix.os == 'windows-2022'
-      run: |
-        Add-Content "$env:GITHUB_ENV" 'UseMultiToolTask=true'
-        Add-Content "$env:GITHUB_ENV" 'EnforceProcessCountAcrossBuilds=true'
+      - name: Report coverage results as job summary, PR comment, and artifact (GCC)
+        uses: ./.github/actions/report-coverage
+        with:
+          pr-comment-header: gcc
+          artifact-name: CoverageReportsGcc
 
-    - name: Configure
-      shell: pwsh
-      run: cmake "--preset=ci-$("${{ matrix.os }}".split("-")[0])"
+      - name: Build and test with sanitizers (GCC)
+        id: sanitize-gcc
+        if: ${{ !cancelled() && steps.test-gcc.conclusion == 'success' }}
+        run: |
+          export CXX=g++
+          cmake --workflow --preset ci-sanitize
 
-    - name: Build
-      run: cmake --build build --config Release -j 2
+      - name: Build and test debug and release mode with Valgrind (GCC)
+        # Running tests with Valgrind is slow, so we only do it if running them with sanitizers
+        # succeeded
+        if: ${{ !cancelled() && steps.sanitize-gcc.conclusion == 'success' }}
+        run: |
+          export CXX=g++
+          cmake --workflow --preset ci-valgrind
 
-    - name: Install
-      run: cmake --install build --config Release --prefix prefix
+      - name: Build and test debug and release mode (Clang)
+        id: test-clang
+        if: ${{ !cancelled() && steps.install-vcpkg.conclusion == 'success' }}
+        run: |
+          rm -rf build
+          export CXX=clang++
+          cmake --workflow --preset ci-ubuntu
 
-    - name: Test
-      working-directory: build
-      run: ctest --output-on-failure --no-tests=error -C Release -j 2
-      
+      - name: Build, test, and generate coverage reports (Clang)
+        id: coverage-clang
+        if: ${{ !cancelled() && steps.test-clang.conclusion == 'success' }}
+        run: |
+          export CXX=clang++
+          cmake --workflow --preset ci-coverage
+
+      - name: Report coverage results as job summary, PR comment, and artifact (Clang)
+        if: ${{ !cancelled() && steps.coverage-clang.conclusion == 'success' }}
+        uses: ./.github/actions/report-coverage
+        with:
+          pr-comment-header: clang
+          artifact-name: CoverageReportsClang
+
+      - name: Build and test with sanitizers (Clang)
+        id: sanitize-clang
+        if: ${{ !cancelled() && steps.test-clang.conclusion == 'success' }}
+        run: |
+          export CXX=clang++
+          cmake --workflow --preset ci-sanitize
+
+      - name: Build and test debug and release mode with Valgrind (Clang)
+        # Running tests with Valgrind is slow, so we only do it if running them with sanitizers
+        # succeeded. Also, at least Valgrind 3.20 is required because Clang >= 14 generates DWARF 5
+        # code by default, which is not supported by older versions of Valgrind.
+        if: ${{ !cancelled() && steps.sanitize-clang.conclusion == 'success' && env.VALGRIND_MAJOR_VERSION >= 3 && env.VALGRIND_MINOR_VERSION >= 20 }}
+        run: |
+          export CXX=clang++
+          cmake --workflow --preset ci-valgrind
