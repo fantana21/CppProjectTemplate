@@ -201,11 +201,28 @@
       "configuration": "Release"
     },
     {
+      "name": "ci-ubuntu-debug-valgrind",
+      "description": "Build target 'ExperimentalMemCheck' which runs the tests with Valgrind",
+      "inherits": "ci-ubuntu-debug",
+      "targets": [
+        "ExperimentalMemCheck"
+      ]
+    },
+    {
+      "name": "ci-ubuntu-release-valgrind",
+      "description": "Build target 'ExperimentalMemCheck' which runs the tests with Valgrind",
+      "inherits": "ci-ubuntu-release",
+      "targets": [
+        "ExperimentalMemCheck"
+      ]
+    },
+    {
       "name": "ci-coverage",
       "configurePreset": "ci-coverage"
     },
     {
       "name": "ci-coverage-reports",
+      "description": "Build target 'coverage' which generates coverage reports",
       "configurePreset": "ci-coverage",
       "targets": [
         "coverage"
@@ -307,6 +324,32 @@
         {
           "type": "test",
           "name": "ci-ubuntu"
+        }
+      ]
+    },
+    {
+      "name": "ci-valgrind",
+      "description": "Configure, build, and test debug and release configuration with Valgrind on Ubuntu runners",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "ci-ubuntu"
+        },
+        {
+          "type": "build",
+          "name": "ci-ubuntu-debug"
+        },
+        {
+          "type": "build",
+          "name": "ci-ubuntu-debug-valgrind"
+        },
+        {
+          "type": "build",
+          "name": "ci-ubuntu-release"
+        },
+        {
+          "type": "build",
+          "name": "ci-ubuntu-debug-valgrind"
         }
       ]
     },
