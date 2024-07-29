@@ -163,7 +163,7 @@ jobs:
           export CXX=g++
           cmake --workflow --preset ci-sanitize
 
-      - name: Build and test debug and relase mode with Valgrind (GCC)
+      - name: Build and test debug and release mode with Valgrind (GCC)
         # Running tests with Valgrind is slow, so we only do it if running them with sanitizers
         # succeeded
         if: ${{ !cancelled() && steps.sanitize-gcc.conclusion == 'success' }}
@@ -200,7 +200,7 @@ jobs:
           export CXX=clang++
           cmake --workflow --preset ci-sanitize
 
-      - name: Build and test debug and relase mode with Valgrind (Clang)
+      - name: Build and test debug and release mode with Valgrind (Clang)
         # Running tests with Valgrind is slow, so we only do it if running them with sanitizers
         # succeeded
         if: ${{ !cancelled() && steps.sanitize-clang.conclusion == 'success' }}
