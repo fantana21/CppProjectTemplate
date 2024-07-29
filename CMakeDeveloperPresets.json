@@ -108,7 +108,7 @@
       "configurePreset": "dev-linux-coverage"
     },
     {
-      "name": "dev-linux-coverage-report",
+      "name": "dev-linux-coverage-reports",
       "configurePreset": "dev-linux-coverage",
       "targets": [
         "coverage"
