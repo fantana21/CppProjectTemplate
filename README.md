@@ -11,10 +11,10 @@ preferences. The following is a non-exhaustive list of changes.
   configure presets where added such that two different compilers are supported on both
   Windows and Ubuntu now. Additionally, build, test, and workflow presets are available
   for all CI-relevant tasks.
-- Add `CMakeDevPresets.json` containing configure and build presets for developers. This
-  file is intended to be included in `CMakeUserPresets.json`. It ensures that a reasonable
-  set of developer presets are checked into version control and easily available for
-  everyone. The presets include configure, build, test and workflow presets.
+- Add `CMakeDeveloperPresets.json` containing configure and build presets for developers.
+  This file is intended to be included in `CMakeUserPresets.json`. It ensures that a
+  reasonable set of developer presets are checked into version control and easily
+  available for everyone. The presets include configure, build, test and workflow presets.
 - Increase minimum required CMake version and get rid of some code that became obsolete
   because of that.
 - Use [doctest](https://github.com/doctest/doctest) instead of
