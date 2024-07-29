@@ -32,6 +32,16 @@
       }
     },
     {
+      "name": "dev-linux-sanitize",
+      "inherits": [
+        "sanitize",
+        "common-linux"
+      ],
+      "cacheVariables": {
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+      }
+    },
+    {
       "name": "dev-linux-coverage",
       "inherits": [
         "coverage",

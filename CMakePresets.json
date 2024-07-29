@@ -134,17 +134,23 @@
       ]
     },
     {
-      "name": "ci-sanitize",
-      "description": "For running sanitizers on Ubuntu runners with GCC or Clang",
-      "inherits": [
-        "common-linux"
-      ],
+      "name": "sanitize",
+      "description": "These sanitizer flags are supported by both GCC and Clang",
+      "hidden": true,
       "generator": "Ninja",
       "cacheVariables": {
         "CMAKE_BUILD_TYPE": "Sanitize",
         "CMAKE_CXX_FLAGS_SANITIZE": "-U_FORTIFY_SOURCE -O2 -g -fsanitize=address,undefined -fno-omit-frame-pointer -fno-common",
         "CMAKE_MAP_IMPORTED_CONFIG_SANITIZE": "Sanitize;RelWithDebInfo;Release;Debug;"
       }
+    },
+    {
+      "name": "ci-sanitize",
+      "description": "For running sanitizers on Ubuntu runners with GCC or Clang",
+      "inherits": [
+        "sanitize",
+        "common-linux"
+      ]
     },
     {
       "name": "common-windows",
