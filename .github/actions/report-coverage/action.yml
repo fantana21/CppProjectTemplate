@@ -45,7 +45,8 @@ runs:
   steps:
     - name: Show Markdown coverage report as job summary
       if: ${{ inputs.add-job-summary }}
-      run: cat ${{ inputs.markdown-path }} > $GITHUB_STEP_SUMMARY
+      shell: pwsh
+      run: cat ${{ inputs.markdown-path }} > $env:GITHUB_STEP_SUMMARY
 
     - name: Show Markdown coverage report as sticky PR comment
       if: ${{ inputs.add-pr-comment && github.event_name == 'pull_request' }}
