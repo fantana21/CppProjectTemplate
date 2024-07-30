@@ -1,5 +1,3 @@
-set_property(GLOBAL PROPERTY USE_FOLDERS YES)
-
 # Call this function at the end of a directory scope to assign a folder to targets created in that
 # directory. Utility targets will be assigned to the UtilityTargets folder, otherwise to the
 # ${name}Targets folder. If a target already has a folder assigned, then that target will be
