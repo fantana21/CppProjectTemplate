@@ -116,7 +116,7 @@ to
 
 ## Dependency manager
 
-The presets make use of the [vcpkg][https://github.com/microsoft/vcpkg] dependency
+The presets make use of the [vcpkg](https://github.com/microsoft/vcpkg) dependency
 manager. After installing it, make sure the `VCPKG_ROOT` environment variable is pointing
 at the directory where the vcpkg executable is.
 
