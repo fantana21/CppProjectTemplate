@@ -47,12 +47,16 @@ preferences. The following is a non-exhaustive list of changes.
 - Change a few names, descriptions, comments, and error messages.
 
 
-# Building and installing
+## Building
 
-See the [BUILDING](BUILDING.md) document. If you are a developer check out
-[HACKING.md](HACKING.md).
+If you are a user of this project see the [BUILDING](BUILDING.md) document.
 
 
-# Licensing
+## Developing
+
+If you are a developer of this project see the [HACKING](HACKING.md) document.
+
+
+## Licensing
 
 See the [LICENSE](LICENSE) document.

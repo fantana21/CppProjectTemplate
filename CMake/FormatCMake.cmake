@@ -13,6 +13,7 @@ else()
     set(flag --check)
 endif()
 
+# Here we glob all CMake files that should be formatted
 file(GLOB_RECURSE files CMake/*.cmake CppProjectTemplate/CMakeLists.txt Tests/CMakeLists.txt)
 # GLOB_RECURSE needs a directory so we have to manually add the top-level CMakeLists.txt
 file(GLOB top_level_cml_file CMakeLists.txt)
