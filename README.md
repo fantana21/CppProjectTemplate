@@ -1,5 +1,8 @@
 # CppProjectTemplate
 
+[![CI status
+badge](https://github.com/fantana21/CppProjectTemplate/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/fantana21/CppProjectTemplate/actions/workflows/ci.yml)
+
 This is Fantana's CppProjectTemplate. It is based on
 [cmake-init](https://github.com/friendlyanon/cmake-init) and adapted to our needs and
 preferences. The following is a non-exhaustive list of changes.
