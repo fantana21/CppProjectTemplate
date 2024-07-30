@@ -63,14 +63,16 @@ jobs:
           cmake --version
           ninja --version
 
-      - name: Install vcpkg
-        uses: friendlyanon/setup-vcpkg@v1
+      - name: Set up vcpkg
+        uses: fantana21/set-up-vcpkg@v1
         with:
           committish: ${{ env.VCPKG_COMMITTISH }}
           cache-key: vcpkg-${{ runner.os }}-${{ env.VCPKG_COMMITTISH }}-${{ hashFiles('vcpkg.json', 'CMakePresets.json') }}
           cache-restore-keys: |
             vcpkg-${{ runner.os }}-${{ env.VCPKG_COMMITTISH }}
             vcpkg-${{ runner.os }}
+          use-private-registry: true
+          private-registry-pat: ${{ secrets.VCPKG_REGISTRY_PAT }}
 
       - name: Set up MultiToolTask
         run: |
