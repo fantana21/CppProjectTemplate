@@ -5,6 +5,10 @@
     {
       "name": "fmt",
       "version>=": "10.2.1#1"
+    },
+    {
+      "name": "namedtype",
+      "version>=": "1.1.0-dev-1#1"
     }
   ],
   "default-features": [],
@@ -19,5 +23,20 @@
       ]
     }
   },
-  "builtin-baseline": "46e4c4c78c347ded6add526b0c2bb66db35d4710"
+  "vcpkg-configuration": {
+    "default-registry": {
+      "kind": "builtin",
+      "baseline": "46e4c4c78c347ded6add526b0c2bb66db35d4710"
+    },
+    "registries": [
+      {
+        "kind": "git",
+        "baseline": "c016d2fdeec32d3df0dd37fbb90ff033a4597d83",
+        "repository": "https://github.com/fantana21/vcpkg-registry",
+        "packages": [
+          "namedtype"
+        ]
+      }
+    ]
+  }
 }

@@ -12,5 +12,6 @@ target_sources(
 
 target_sources(CppProjectTemplate_Main PRIVATE Main.cpp)
 target_link_libraries(
-    CppProjectTemplate_Main PRIVATE CppProjectTemplate::Library CppProjectTemplate::Square
+    CppProjectTemplate_Main
+    PRIVATE CppProjectTemplate::Library CppProjectTemplate::Square NamedType
 )
