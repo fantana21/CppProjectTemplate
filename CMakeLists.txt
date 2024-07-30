@@ -16,6 +16,7 @@ include(CMake/AddAndSetUpTargets.cmake)
 # ---- Find dependencies ----
 
 find_package(fmt CONFIG REQUIRED)
+find_package(NamedType CONFIG REQUIRED)
 
 # ---- Declare targets ----
 
