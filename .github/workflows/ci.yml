@@ -96,10 +96,20 @@ jobs:
         with:
           compiler: gcc-${{ env.GCC_VERSION }}
 
-      - name: Install LLVM ${{ env.LLVM_VERSION }} and tools
+      - name: Install LLVM ${{ env.LLVM_VERSION }}
         uses: aminya/setup-cpp@v1
         with:
           compiler: llvm-${{ env.LLVM_VERSION }}
+
+      - name: Print versions
+        run: |
+          g++ --version
+          clang++ --version
+          clang-tidy --version || true
+
+      - name: Install tools
+        uses: aminya/setup-cpp@v1
+        with:
           cmake: ${{ env.CMAKE_VERSION }}
           ninja: ${{ env.NINJA_VERSION }}
           clangtidy: ${{ env.LLVM_VERSION }}
