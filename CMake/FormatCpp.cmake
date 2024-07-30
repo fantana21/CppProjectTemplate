@@ -15,6 +15,7 @@ if(FIX)
     set(args "")
 endif()
 
+# Here we glob all C++ files that should be formatted
 file(GLOB_RECURSE files CppProjectTemplate/*.[chi]pp Tests/*.[chi]pp)
 set(badly_formatted "")
 set(output "")

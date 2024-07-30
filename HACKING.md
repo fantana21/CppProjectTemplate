@@ -1,151 +1,175 @@
 # Hacking
 
-Here is some wisdom to help you build and test this project as a developer.
+Here is some wisdom to help you build and test this project as a developer. If you are a
+user and just want to build and install the project, please refer to
+[BUILDING.md](BUILDING.md).
 
 
 ## Developer mode
 
-Build system targets that are only useful for developers of this project are
-hidden if the `CppProjectTemplate_DEVELOPER_MODE` option is disabled. Enabling this
-option makes tests and other developer targets and options available. Not
-enabling this option means that you are a consumer of this project and thus you
-have no need for these targets and options.
+Build system targets that are only useful for developers of this project are hidden if the
+`CppProjectTemplate_DEVELOPER_MODE` option is disabled. Enabling this option makes tests
+and other developer targets and options available. Not enabling this option means that you
+are a consumer of this project, and thus you have no need for these targets and options.
 
 Developer mode is always set to on in CI workflows.
 
-### Presets
 
-This project makes use of [presets][1] to simplify the process of configuring
-the project. As a developer, you are recommended to always have the [latest
-CMake version][2] installed to make use of the latest Quality-of-Life
-additions.
+## Presets
 
-You have a few options to pass `CppProjectTemplate_DEVELOPER_MODE` to the configure
-command, but this project prefers to use presets.
+This project makes use of
+[presets](https://cmake.org/cmake/help/latest/manual/cmake-presets.7.html) to simplify the
+process of configuring the project. You are recommended to always have the latest CMake
+version installed to make use of the latest quality-of-life additions. (The same goes for
+compilers and other tools.)
 
-As a developer, you should create a `CMakeUserPresets.json` file at the root of
-the project:
+As a developer, you should create a `CMakeUserPresets.json` file at the root of the
+project. To get you started more quickly
+[`CMakeDeveloperPresets.json`](CMakeDeveloperPresets.json) already contains a convenient
+set of configure, build, test, and workflow presets for you. Just include it in your
+user preset file and optionally create aliases with shorter names for those you use
+often. The following shows an example `CMakeUserPresets.json`.
 
-```json
+<details>
+<summary>CMakeUserPresets.json</summary>
+
+~~~json
 {
-  "version": 2,
+  "version": 6,
   "cmakeMinimumRequired": {
     "major": 3,
-    "minor": 14,
+    "minor": 25,
     "patch": 0
   },
+  "include": [
+    "CMakeDeveloperPresets.json"
+  ],
   "configurePresets": [
     {
       "name": "dev",
-      "binaryDir": "${sourceDir}/build/dev",
-      "inherits": ["dev-mode", "vcpkg", "ci-<os>"],
-      "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Debug"
-      }
+      "inherits": "dev-windows-clang-cl"
     }
   ],
   "buildPresets": [
     {
-      "name": "dev",
-      "configurePreset": "dev",
-      "configuration": "Debug"
+      "name": "dev-debug",
+      "inherits": "dev-windows-clang-cl-debug",
+      "configurePreset": "dev"
+    },
+    {
+      "name": "dev-release",
+      "inherits": "dev-windows-clang-cl-release",
+      "configurePreset": "dev"
     }
   ],
   "testPresets": [
     {
       "name": "dev",
-      "configurePreset": "dev",
-      "configuration": "Debug",
-      "output": {
-        "outputOnFailure": true
-      }
+      "configurePreset": "dev"
+    }
+  ],
+  "workflowPresets": [
+    {
+      "name": "dev",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "dev"
+        },
+        {
+          "type": "build",
+          "name": "dev-debug"
+        },
+        {
+          "type": "test",
+          "name": "dev"
+        },
+        {
+          "type": "build",
+          "name": "dev-release"
+        },
+        {
+          "type": "test",
+          "name": "dev"
+        }
+      ]
     }
   ]
 }
-```
+~~~
 
-You should replace `<os>` in your newly created presets file with the name of
-the operating system you have, which may be `win64`, `linux` or `darwin`. You
-can see what these correspond to in the
-[`CMakePresets.json`](CMakePresets.json) file.
+</details>
 
-`CMakeUserPresets.json` is also the perfect place in which you can put all
-sorts of things that you would otherwise want to pass to the configure command
-in the terminal.
+`CMakeUserPresets.json` is also the perfect place in which you can put all sorts of things
+that you would otherwise want to pass to the configure command in the terminal.
 
-> **Note**
-> Some editors are pretty greedy with how they open projects with presets.
-> Some just randomly pick a preset and start configuring without your consent,
-> which can be confusing. Make sure that your editor configures when you
-> actually want it to, for example in CLion you have to make sure only the
-> `dev-dev preset` has `Enable profile` ticked in
-> `File > Settings... > Build, Execution, Deployment > CMake` and in Visual
-> Studio you have to set the option `Never run configure step automatically`
-> in `Tools > Options > CMake` **prior to opening the project**, after which
-> you can manually configure using `Project > Configure Cache`.
+**Note for Windows developers**: The developer presets for Windows make use of custom
+toolchain files from
+[MarkSchofield/WindowsToolchain](https://github.com/MarkSchofield/WindowsToolchain) as
+well as overlay triplets for vcpkg from
+[Neumann-A/my-vcpkg-triplets](https://github.com/Neumann-A/my-vcpkg-triplets). To use them
+clone both repositories. Then set the environment variable `WINDOWS_TOOLCHAIN_ROOT` to
+point to the directory with the toolchain files and add the path to the triplet repository
+to
+[`VCPKG_OVERLAY_TRIPLETS`](https://learn.microsoft.com/en-us/vcpkg/users/config-environment#vcpkg_overlay_triplets).
 
-### Dependency manager
 
-The above preset will make use of the [vcpkg][vcpkg] dependency manager. After
-installing it, make sure the `VCPKG_ROOT` environment variable is pointing at
-the directory where the vcpkg executable is. On Windows, you might also want
-to inherit from the `vcpkg-win64-static` preset, which will make vcpkg install
-the dependencies as static libraries. This is only necessary if you don't want
-to setup `PATH` to run tests.
+## Dependency manager
 
-[vcpkg]: https://github.com/microsoft/vcpkg
+The presets make use of the [vcpkg](https://github.com/microsoft/vcpkg) dependency
+manager. After installing it, make sure the `VCPKG_ROOT` environment variable is pointing
+at the directory where the vcpkg executable is.
 
-### Configure, build and test
 
-If you followed the above instructions, then you can configure, build and test
-the project respectively with the following commands from the project root on
-any operating system with any build system:
+## Configure, build and test
 
-```sh
-cmake --preset=dev
-cmake --build --preset=dev
-ctest --preset=dev
-```
+If you followed the above instructions, then you can configure, build and test the project
+respectively with the following commands from the project root.
 
-If you are using a compatible editor (e.g. VSCode) or IDE (e.g. CLion, VS), you
-will also be able to select the above created user presets for automatic
-integration.
+~~~shell
+cmake --preset dev
+cmake --build --preset dev-debug
+ctest --preset dev
+~~~
 
-Please note that both the build and test commands accept a `-j` flag to specify
-the number of jobs to use, which should ideally be specified to the number of
-threads your CPU has. You may also want to add that to your preset using the
-`jobs` property, see the [presets documentation][1] for more details.
+To configure, build and test both the debug and release configuration in one step you can
+use a workflow preset.
 
-### Developer mode targets
+~~~shell
+cmake --workflow --preset dev
+~~~
 
-These are targets you may invoke using the build command from above, with an
-additional `-t <target>` flag:
+Note that both builds and tests can be run in parallel using multiple threads. The ninja
+build tool automatically uses all available cores. To run tests in parallel either specify
+the command line option `-j/--parallel`, set the `jobs` property in your preset, or set
+the environment variable
+[`CTEST_PARALLEL_LEVEL`](https://cmake.org/cmake/help/latest/envvar/CTEST_PARALLEL_LEVEL.html).
 
-#### `coverage`
 
-Available if `ENABLE_COVERAGE` is enabled. This target processes the output of
-the previously run tests when built with coverage configuration. The commands
-this target runs can be found in the `COVERAGE_TRACE_COMMAND` and
-`COVERAGE_HTML_COMMAND` cache variables. The trace command produces an info
-file by default, which can be submitted to services with CI integration. The
-HTML command uses the trace command's output to generate an HTML document to
-`<binary-dir>/coverage_html` by default.
+## Developer mode targets
 
-#### `format-check` and `format-fix`
+These are targets you may invoke using the build command from above, with an additional
+`-t <target>` flag.
 
-These targets run the clang-format tool on the codebase to check errors and to
-fix them respectively. Customization available using the `FORMAT_PATTERNS` and
-`FORMAT_COMMAND` cache variables.
 
-#### `run-exe`
+### `coverage`
 
-Runs the executable target `CppProjectTemplate_exe`.
+Available if `ENABLE_COVERAGE` is enabled. This target processes the output of the
+previously run tests when built with coverage configuration. It generates plain text,
+Markdown, HTML, and XML coverage reports. See [Coverage.cmake](CMake/Coverage.cmake) for
+more details. Note that this target currently only works on Linux. On Windows I have yet
+to figure out how to tell the linker where to find `clang_rt.profile-x86_64.lib`.
 
-#### `spell-check` and `spell-fix`
 
-These targets run the codespell tool on the codebase to check errors and to fix
-them respectively. Customization available using the `SPELL_COMMAND` cache
-variable.
+### `format-check` and `format-fix`
 
-[1]: https://cmake.org/cmake/help/latest/manual/cmake-presets.7.html
-[2]: https://cmake.org/download/
+These targets run the clang-format and cmake-format tools on the codebase to check
+formatting errors and to fix them respectively. See
+[`FormatCpp.cmake`](CMake/FormatCpp.cmake) and
+[`FormatCMake.cmake`](CMake/FormatCMake.cmake) for more details.
+
+
+### `spell-check` and `spell-fix`
+
+These targets run the codespell tool on the codebase to check errors and to fix them
+respectively. See [`Spell.cmake`](CMake/Spell.cmake) for more details.
