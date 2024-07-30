@@ -5,7 +5,7 @@ include(CMake/Prelude.cmake)
 project(
     CppProjectTemplate
     VERSION 0.1.0
-    DESCRIPTION "Based on cmake-init but with PascalCase, doctest, cmake-format, ..."
+    DESCRIPTION "Based on cmake-init but adapted to our needs and preferences"
     HOMEPAGE_URL "https://github.com/fantana21/CppProjectTemplate"
     LANGUAGES CXX
 )
