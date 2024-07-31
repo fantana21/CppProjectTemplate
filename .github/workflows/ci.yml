@@ -18,19 +18,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install codespell and cmake-format
+        run: pipx install codespell cmakelang
+
       - name: Print versions
         run: |
-          python --version || true
-          python3 --version || true
-          pip --version
+          python --version
+          pipx --version
           cmake --version
           clang-format --version
-
-      - name: Install codespell and cmake-format
-        run: python -m pip install codespell cmakelang
-
-      - name: Print versions
-        run: |
           cmake-format --version
           codespell --version
 
@@ -91,7 +87,7 @@ jobs:
         run: |
           sudo apt update -q
           sudo apt install -y cppcheck ninja valgrind
-          pip install gcovr
+          pipx install gcovr
 
       - name: Print and store version info
         shell: pwsh
