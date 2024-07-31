@@ -111,6 +111,7 @@ jobs:
 
       - name: Install Include What You Use
         run: |
+          sudo apt-get install -y llvm-${{ env.CLANG_MAJOR_VERSION }}-dev libclang-${{ env.CLANG_MAJOR_VERSION }}-dev
           git clone --depth 1 --branch clang_${{ env.CLANG_MAJOR_VERSION }} https://github.com/include-what-you-use/include-what-you-use.git
           cd include-what-you-use
           cmake -B build -S . -G Ninja -DCMAKE_PREFIX_PATH=/usr/lib/llvm-${{ env.CLANG_MAJOR_VERSION }}
