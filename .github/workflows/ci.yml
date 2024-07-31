@@ -138,7 +138,7 @@ jobs:
           cmake --workflow --preset ci-coverage
 
       - name: Report coverage results as job summary, PR comment, and artifact (GCC)
-        uses: ./.github/actions/report-coverage
+        uses: fantana21/report-coverage@v1
         with:
           pr-comment-header: gcc
           artifact-name: CoverageReportsGcc
@@ -175,7 +175,7 @@ jobs:
 
       - name: Report coverage results as job summary, PR comment, and artifact (Clang)
         if: ${{ !cancelled() && steps.coverage-clang.conclusion == 'success' }}
-        uses: ./.github/actions/report-coverage
+        uses: fantana21/report-coverage@v1
         with:
           pr-comment-header: clang
           artifact-name: CoverageReportsClang
