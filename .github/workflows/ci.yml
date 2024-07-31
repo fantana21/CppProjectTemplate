@@ -93,9 +93,9 @@ jobs:
         run: |
           g++ --version
           clang++ --version
-          clang-tidy --version
           cmake --version
           ninja --version
+          clang-tidy --version
           cppcheck --version
           gcovr --version
           gcov --version
@@ -104,10 +104,6 @@ jobs:
 
           $CLANG_VERSIONS = (clang++ --version | Select-String -Pattern '([0-9]+)\.([0-9]+)\.([0-9]+)').Matches.Groups.Value
           "CLANG_MAJOR_VERSION=$($CLANG_VERSIONS[1])" | Out-File -FilePath $env:GITHUB_ENV -Append
-
-          $VALGRIND_VERSIONS = (valgrind --version | Select-String -Pattern '([0-9]+)\.([0-9]+)\.([0-9]+)').Matches.Groups.Value
-          "VALGRIND_MAJOR_VERSION=$($VALGRIND_VERSIONS[1])" | Out-File -FilePath $env:GITHUB_ENV -Append
-          "VALGRIND_MINOR_VERSION=$($VALGRIND_VERSIONS[2])" | Out-File -FilePath $env:GITHUB_ENV -Append
 
       - name: Install Include What You Use
         run: |
@@ -193,9 +189,8 @@ jobs:
 
       - name: Build and test debug and release mode with Valgrind (Clang)
         # Running tests with Valgrind is slow, so we only do it if running them with sanitizers
-        # succeeded. Also, at least Valgrind 3.20 is required because Clang >= 14 generates DWARF 5
-        # code by default, which is not supported by older versions of Valgrind.
-        if: ${{ !cancelled() && steps.sanitize-clang.conclusion == 'success' && env.VALGRIND_MAJOR_VERSION >= 3 && env.VALGRIND_MINOR_VERSION >= 20 }}
+        # succeeded.
+        if: ${{ !cancelled() && steps.sanitize-clang.conclusion == 'success' }}
         run: |
           export CXX=clang++
           cmake --workflow --preset ci-valgrind
