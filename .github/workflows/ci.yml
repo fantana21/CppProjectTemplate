@@ -91,15 +91,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install GCC ${{ env.GCC_VERSION }}
-        uses: aminya/setup-cpp@v1
-        with:
-          compiler: gcc-${{ env.GCC_VERSION }}
-
       - name: Install LLVM ${{ env.LLVM_VERSION }}
         uses: aminya/setup-cpp@v1
         with:
           compiler: llvm-${{ env.LLVM_VERSION }}
+
+      - name: Install GCC ${{ env.GCC_VERSION }}
+        uses: aminya/setup-cpp@v1
+        with:
+          compiler: gcc-${{ env.GCC_VERSION }}
 
       - name: Print versions
         run: |
