@@ -10,10 +10,6 @@ on:
       - main
 
 env:
-  # LLVM_VERSION: '18.1.7'
-  GCC_VERSION: '13'
-  CMAKE_VERSION: '3.30.1'
-  NINJA_VERSION: '1.10.1'
   VCPKG_COMMITTISH: 49ac2134b31b95b0ddf29d56873dcd24392691df
 
 jobs:
@@ -22,45 +18,25 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # - name: Set up clang-format
-      #   uses: aminya/setup-cpp@v1
-      #   with:
-      #     clangformat: ${{ env.LLVM_VERSION }}
+      - name: Install codespell and cmake-format
+        run: pip install codespell cmakelang
 
       - name: Print versions
         run: |
-          g++ --version
-          clang++ --version
-          clang-tidy --version
+          python --version
+          pip --version
+          cmake --version
           clang-format --version
-          g++-13 --version
-          clang++-18 --version
-          clang-tidy-18 --version
-          clang-format-18 --version
+          cmake-format --version
+          codespell --version
 
-      - name: Print installed apt packages
-        run: dpkg -l
+      - name: Format code
+        run: cmake -P CMake/Format.cmake
 
-      # - name: Install codespell and cmake-format
-      #   run: pip install codespell cmakelang
-
-      # - name: Print versions
-      #   run: |
-      #     python --version
-      #     pip --version
-      #     cmake --version
-      #     clang-format --version
-      #     cmake-format --version
-      #     codespell --version
-
-      # - name: Format code
-      #   run: cmake -P CMake/Format.cmake
-
-      # - name: Spell check
-      #   run: cmake -P CMake/Spell.cmake
+      - name: Spell check
+        run: cmake -P CMake/Spell.cmake
 
   test-windows:
-    if: false
     needs: format-and-spell
     runs-on: windows-2022
     steps:
@@ -107,66 +83,40 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # - name: Install LLVM ${{ env.LLVM_VERSION }}
-      #   uses: aminya/setup-cpp@v1
-      #   with:
-      #     compiler: llvm-${{ env.LLVM_VERSION }}
+      - name: Install tools
+        run: |
+          sudo apt update -q
+          sudo apt install -y cppcheck ninja valgrind
+          pip install gcovr
 
-      # - name: Install GCC ${{ env.GCC_VERSION }}
-      #   uses: aminya/setup-cpp@v1
-      #   with:
-      #     compiler: gcc-${{ env.GCC_VERSION }}
-
-      # Ubuntu 24.04 comes with GCC 12, 13 and 14 as well as Clang 12, 13 and 14. Let's see what the
-      # default versions are.
-      - name: Print versions
+      - name: Print and store version info
+        shell: pwsh
         run: |
           g++ --version
           clang++ --version
           clang-tidy --version
-          clang-format --verison
-          g++-13 --version
-          clang++-18 --version
-          clang-tidy-18 --version
-          clang-format-18 --version
-
-      - name: Install tools
-        uses: aminya/setup-cpp@v1
-        with:
-          cmake: ${{ env.CMAKE_VERSION }}
-          ninja: ${{ env.NINJA_VERSION }}
-          clangtidy: ${{ env.LLVM_VERSION }}
-          cppcheck: true
-          gcovr: 7
-
-      - name: Install Include What You Use
-        run: |
-          git clone --depth 1 --branch clang_${{ env.LLVM_VERSION }} https://github.com/include-what-you-use/include-what-you-use.git
-          cd include-what-you-use
-          cmake -B build -S . -G Ninja -DCMAKE_PREFIX_PATH=/usr/lib/llvm-${{ env.LLVM_VERSION }}
-          cmake --build build
-          sudo cmake --install build
-
-      - name: Install Valgrind and store version info
-        run: |
-          sudo apt-get install -y valgrind
-          export VALGRIND_VERSION=$(valgrind --version | sed -r 's/.*([0-9]+\.[0-9]+\.[0-9]+).*/\1/')
-          echo "VALGRIND_MAJOR_VERSION=$(echo $VALGRIND_VERSION | cut -d '.' -f 1)" >> $GITHUB_ENV
-          echo "VALGRIND_MINOR_VERSION=$(echo $VALGRIND_VERSION | cut -d '.' -f 2)" >> $GITHUB_ENV
-
-      - name: Print versions of compilers and tools
-        run: |
-          g++ --version
-          clang++ --version
           cmake --version
           ninja --version
-          clang-tidy --version
           cppcheck --version
           gcovr --version
           gcov --version
-          gcov-${{ env.GCC_VERSION }} --version || true
           llvm-cov --version
           valgrind --version
+
+          $CLANG_VERSIONS = (clang++ --version | Select-String -Pattern '([0-9]+)\.([0-9]+)\.([0-9]+)').Matches.Groups.Value
+          "CLANG_MAJOR_VERSION=$CLANG_VERSIONS[1]" | Out-File -FilePath $env:GITHUB_ENV -Append
+
+          $VALGRIND_VERSIONS = (valgrind --version | Select-String -Pattern '([0-9]+)\.([0-9]+)\.([0-9]+)').Matches.Groups.Value
+          "VALGRIND_MAJOR_VERSION=$VALGRIND_VERSIONS[1]" | Out-File -FilePath $env:GITHUB_ENV -Append
+          "VALGRIND_MINOR_VERSION=$VALGRIND_VERSIONS[2]" | Out-File -FilePath $env:GITHUB_ENV -Append
+
+      - name: Install Include What You Use
+        run: |
+          git clone --depth 1 --branch clang_${{ env.CLANG_MAJOR_VERSION }} https://github.com/include-what-you-use/include-what-you-use.git
+          cd include-what-you-use
+          cmake -B build -S . -G Ninja -DCMAKE_PREFIX_PATH=/usr/lib/llvm-${{ env.CLANG_MAJOR_VERSION }}
+          cmake --build build
+          sudo cmake --install build
 
       - name: Set up vcpkg
         id: set-up-vcpkg
