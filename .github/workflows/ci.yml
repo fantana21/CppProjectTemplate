@@ -85,7 +85,7 @@ jobs:
       - name: Install tools
         run: |
           sudo apt-get update -q
-          sudo apt-get install -y cppcheck ninja-build valgrind
+          sudo apt-get install -y cppcheck ninja-build valgrind llvm
           pipx install gcovr
 
       - name: Print and store version info
