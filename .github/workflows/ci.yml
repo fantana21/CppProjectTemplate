@@ -38,6 +38,9 @@ jobs:
           clang-tidy-18 --version
           clang-format-18 --version
 
+      - name: Print installed apt packages
+        run: dpkg -l
+
       # - name: Install codespell and cmake-format
       #   run: pip install codespell cmakelang
 
@@ -54,7 +57,7 @@ jobs:
       #   run: cmake -P CMake/Format.cmake
 
       # - name: Spell check
-        run: cmake -P CMake/Spell.cmake
+      #   run: cmake -P CMake/Spell.cmake
 
   test-windows:
     if: false
