@@ -32,7 +32,7 @@ jobs:
           g++ --version
           clang++ --version
           clang-tidy --version
-          clang-format --verison
+          clang-format --version
           g++-13 --version
           clang++-18 --version
           clang-tidy-18 --version
@@ -107,21 +107,28 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install LLVM ${{ env.LLVM_VERSION }}
-        uses: aminya/setup-cpp@v1
-        with:
-          compiler: llvm-${{ env.LLVM_VERSION }}
+      # - name: Install LLVM ${{ env.LLVM_VERSION }}
+      #   uses: aminya/setup-cpp@v1
+      #   with:
+      #     compiler: llvm-${{ env.LLVM_VERSION }}
 
-      - name: Install GCC ${{ env.GCC_VERSION }}
-        uses: aminya/setup-cpp@v1
-        with:
-          compiler: gcc-${{ env.GCC_VERSION }}
+      # - name: Install GCC ${{ env.GCC_VERSION }}
+      #   uses: aminya/setup-cpp@v1
+      #   with:
+      #     compiler: gcc-${{ env.GCC_VERSION }}
 
+      # Ubuntu 24.04 comes with GCC 12, 13 and 14 as well as Clang 12, 13 and 14. Let's see what the
+      # default versions are.
       - name: Print versions
         run: |
           g++ --version
           clang++ --version
-          clang-tidy --version || true
+          clang-tidy --version
+          clang-format --verison
+          g++-13 --version
+          clang++-18 --version
+          clang-tidy-18 --version
+          clang-format-18 --version
 
       - name: Install tools
         uses: aminya/setup-cpp@v1
