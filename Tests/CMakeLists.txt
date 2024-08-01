@@ -12,13 +12,13 @@ include(../CMake/DoctestWithMain.cmake)
 
 # ---- Tests ----
 
-add_and_set_up_test(Library)
+add_and_set_up_test(CppProjectTemplateTests_Library)
 target_link_libraries(
     CppProjectTemplateTests_Library PRIVATE CppProjectTemplate::Library doctest::doctestWithMain
 )
 doctest_discover_tests(CppProjectTemplateTests_Library)
 
-add_and_set_up_test(Square)
+add_and_set_up_test(CppProjectTemplateTests_Square)
 target_link_libraries(
     CppProjectTemplateTests_Square PRIVATE CppProjectTemplate::Square doctest::doctestWithMain
 )
