@@ -20,9 +20,9 @@ find_package(NamedType CONFIG REQUIRED)
 
 # ---- Declare targets ----
 
-add_and_set_up_library(Library STATIC)
-add_and_set_up_library(Square INTERFACE)
-add_and_set_up_executable(Main)
+add_and_set_up_library(CppProjectTemplate_Library STATIC)
+add_and_set_up_library(CppProjectTemplate_Square INTERFACE)
+add_and_set_up_executable(CppProjectTemplate_Main)
 
 add_subdirectory(CppProjectTemplate)
 
