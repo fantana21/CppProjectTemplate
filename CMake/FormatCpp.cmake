@@ -17,10 +17,14 @@ endif()
 
 # Here we glob all C++ files that should be formatted
 file(GLOB_RECURSE files CppProjectTemplate/*.[chi]pp Tests/*.[chi]pp)
+message("Formatting the following files:")
+foreach(file IN LISTS files)
+    message("  ${file}")
+endforeach()
+
 set(badly_formatted "")
 set(output "")
 string(LENGTH "${CMAKE_SOURCE_DIR}/" path_prefix_length)
-
 foreach(file IN LISTS files)
     execute_process(
         COMMAND clang-format --style=file "${flag}" "${file}"
