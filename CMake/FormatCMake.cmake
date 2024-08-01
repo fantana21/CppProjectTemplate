@@ -18,10 +18,14 @@ file(GLOB_RECURSE files CMake/*.cmake CppProjectTemplate/CMakeLists.txt Tests/CM
 # GLOB_RECURSE needs a directory so we have to manually add the top-level CMakeLists.txt
 file(GLOB top_level_cml_file CMakeLists.txt)
 list(APPEND files "${top_level_cml_file}")
+message("Formatting the following files:")
+foreach(file IN LISTS files)
+    message("  ${file}")
+endforeach()
+
 set(badly_formatted "")
 set(output "")
 string(LENGTH "${CMAKE_SOURCE_DIR}/" path_prefix_length)
-
 foreach(file IN LISTS files)
     execute_process(
         COMMAND cmake-format "${flag}" "${file}"
