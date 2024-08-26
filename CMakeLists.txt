@@ -17,6 +17,7 @@ include(CMake/AddAndSetUpTargets.cmake)
 
 find_package(fmt CONFIG REQUIRED)
 find_package(NamedType CONFIG REQUIRED)
+find_package(QuantNd CONFIG REQUIRED)
 
 # ---- Declare targets ----
 

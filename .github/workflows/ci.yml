@@ -4,13 +4,12 @@ on:
   push:
     branches:
       - main
-
   pull_request:
     branches:
       - main
 
 env:
-  CMAKE_VERSION: '3.29.6'
+  CMAKE_VERSION: "3.29.6"
   VCPKG_COMMITTISH: 49ac2134b31b95b0ddf29d56873dcd24392691df
 
 jobs:
