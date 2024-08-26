@@ -54,6 +54,10 @@ jobs:
           cmake --version
           ninja --version
 
+      - name: Pre-seed git credentials for private QuantNd repository
+        run: |
+          "url=https://github.com`npath=fantana21/QuantNd`nusername=unused`npassword=${{ secrets.QUANTND_PAT }}`n" | git credential approve
+
       - name: Set up vcpkg
         uses: fantana21/set-up-vcpkg@v1
         with:
@@ -117,6 +121,10 @@ jobs:
           cmake -B build -S . -G Ninja -DCMAKE_PREFIX_PATH=/usr/lib/llvm-${{ env.CLANG_MAJOR_VERSION }}
           cmake --build build
           sudo cmake --install build
+
+      - name: Pre-seed git credentials for private QuantNd repository
+        run: |
+          echo "url=https://github.com"$'\n'"path=fantana21/QuantNd"$'\n'"username=unused"$'\n'"password=${{ secrets.QUANTND_PAT }}"$'\n' | git credential approve
 
       - name: Set up vcpkg
         id: set-up-vcpkg
