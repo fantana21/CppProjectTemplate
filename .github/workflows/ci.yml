@@ -126,8 +126,8 @@ jobs:
 
       - name: Print Git config stuff
         run: |
-          git config --global credential.helper
-          git config credential.helper
+          git config --global credential.helper || echo "No global credential helper set"
+          git config credential.helper || echo "No credential helper set"
           git config --list
 
       - name: Set up vcpkg
