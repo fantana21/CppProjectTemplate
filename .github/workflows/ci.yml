@@ -54,11 +54,13 @@ jobs:
           cmake --version
           ninja --version
 
-      - name: Print Git config stuff
+      - name: Print Git credential stuff
         run: |
           git config --global credential.helper
           git config credential.helper
           git config --list
+          echo "---"
+          git help -a | Select-String -Pattern 'credential'
 
       - name: Set up vcpkg
         uses: fantana21/set-up-vcpkg@v1
@@ -124,11 +126,13 @@ jobs:
           cmake --build build
           sudo cmake --install build
 
-      - name: Print Git config stuff
+      - name: Print Git credential stuff
         run: |
           git config --global credential.helper || echo "No global credential helper set"
           git config credential.helper || echo "No credential helper set"
           git config --list
+          echo "---"
+          git help -a | grep credential
 
       - name: Set up vcpkg
         id: set-up-vcpkg
