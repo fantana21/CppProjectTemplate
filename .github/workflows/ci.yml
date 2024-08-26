@@ -54,6 +54,12 @@ jobs:
           cmake --version
           ninja --version
 
+      - name: Print Git config stuff
+        run: |
+          git config --global credential.helper
+          git config credential.helper
+          git config --list
+
       - name: Pre-seed git credentials for private QuantNd repository
         run: |
           "url=https://github.com`npath=fantana21/QuantNd`nusername=unused`npassword=${{ secrets.QUANTND_PAT }}`n" | git credential approve
@@ -121,6 +127,12 @@ jobs:
           cmake -B build -S . -G Ninja -DCMAKE_PREFIX_PATH=/usr/lib/llvm-${{ env.CLANG_MAJOR_VERSION }}
           cmake --build build
           sudo cmake --install build
+
+      - name: Print Git config stuff
+        run: |
+          git config --global credential.helper
+          git config credential.helper
+          git config --list
 
       - name: Pre-seed git credentials for private QuantNd repository
         run: |
