@@ -73,11 +73,11 @@ jobs:
           use-private-registry: true
           private-registry-pat: ${{ secrets.VCPKG_REGISTRY_PAT }}
 
-      - name: Set credential helper for QuantNd
+      - name: Pre-seed credentials for QuantNd
         run: |
           git config --list
           echo "---"
-          git config --global credential.https://github.com/fantana21/QuantNd.helper '!f() { echo username=unused; echo password=${{ secrets.QUANTND_PAT }}; }; f'
+          "url=https://github.com`npath=fantana21/QuantNd`nusername=unused`npassword=${{ secrets.QUANTND_PAT }}`n" | git credential approve
           git config --list
 
       - name: Set up MultiToolTask
@@ -153,11 +153,11 @@ jobs:
           use-private-registry: true
           private-registry-pat: ${{ secrets.VCPKG_REGISTRY_PAT }}
 
-      - name: Set credential helper for QuantNd
+      - name: Pre-seed credentials for QuantNd
         run: |
           git config --list
           echo "---"
-          git config --global credential.https://github.com/fantana21/QuantNd.helper '!f() { echo username=unused; echo password=${{ secrets.QUANTND_PAT }}; }; f'
+          echo "url=https://github.com"$'\n'"path=fantana21/QuantNd"$'\n'"username=unused"$'\n'"password=${{ secrets.QUANTND_PAT }}"$'\n' | git credential approve
           git config --list
 
       - name: Build and test debug and release mode (GCC)
