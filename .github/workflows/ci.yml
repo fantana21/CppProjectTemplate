@@ -94,37 +94,15 @@ jobs:
 
       - name: Print local Git configs
         run: |
-          git config --list
+          git config --local --list
           echo "---"
           cd test/vcpkg-registry
-          git config --list
+          git config --local --list
           echo "---"
           cd ../../test/QuantNd
-          git config --list
+          git config --local --list
 
-      - name: Check which basic authorization token is set in config
-        shell: pwsh
-        run: |
-          $token1 = ("$(git config http.https://github.com/.extraheader)" -split '\s+')[2]
-          echo $token || true
-          $token1 -eq "${{ secrets.GITHUB_TOKEN }}"
-          $token1 -eq "${{ secrets.VCPKG_REGISTRY_PAT }}"
-          $token1 -eq "${{ secrets.QUANTND_PAT }}"
-          cd test/vcpkg-registry
-          $token2 = ("$(git config http.https://github.com/.extraheader)" -split '\s+')[2]
-          $token2 -eq "${{ secrets.GITHUB_TOKEN }}"
-          $token2 -eq "${{ secrets.VCPKG_REGISTRY_PAT }}"
-          $token2 -eq "${{ secrets.QUANTND_PAT }}"
-          cd ../../test/QuantNd
-          $token3 = ("$(git config http.https://github.com/.extraheader)" -split '\s+')[2]
-          $token3 -eq "${{ secrets.GITHUB_TOKEN }}"
-          $token3 -eq "${{ secrets.VCPKG_REGISTRY_PAT }}"
-          $token3 -eq "${{ secrets.QUANTND_PAT }}"
-          $token1 -eq $token2
-          $token1 -eq $token3
-          $token1 -eq $token1
-
-      - name: Set credential helper for QuantNd
+      - name: Set credential helper for QuantNd and remove extraheader
         shell: bash
         run: |
           git config --list
