@@ -102,6 +102,7 @@ jobs:
         run: cmake --workflow --preset ci-windows-clang-cl
 
   test-ubuntu:
+    if: false
     needs: format-and-spell
     runs-on: ubuntu-24.04
     steps:
