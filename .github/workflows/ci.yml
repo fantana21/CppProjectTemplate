@@ -84,7 +84,6 @@ jobs:
         run: |
           git config --global credential.useHttpPath true
           git config --system credential.useHttpPath true
-          git config --system credential.helper store
           echo --- global ---
           git config --global --list
           echo --- system ---
