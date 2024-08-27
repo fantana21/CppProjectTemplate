@@ -113,10 +113,12 @@ jobs:
           git config --unset http.https://github.com/.extraheader
           git config --list
 
-      - name: Git clone vcpkg-registry and QuantNd
-        run: |
-          git clone https://github.com/fantana21/vcpkg-registry.git test/clone/vcpkg-registry || true
-          git clone https://github.com/fantana21/QuantNd.git test/clone/QuantNd || true
+      - name: Git clone vcpkg-registry
+        run: git clone https://github.com/fantana21/vcpkg-registry.git test/clone/vcpkg-registry
+
+      - name: Git clone QuantNd
+        if: ${{ !cancelled() }}
+        run: git clone https://github.com/fantana21/QuantNd.git test/clone/QuantNd
 
       # - name: Set up MultiToolTask
       #   run: |
