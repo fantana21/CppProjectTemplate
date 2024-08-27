@@ -83,6 +83,11 @@ jobs:
       # - name: Git clone vcpkg-registry
       #   run: git clone https://github.com/fantana21/vcpkg-registry.git test/clone/vcpkg-registry
 
+      - name: Use Git credential helper "cache"
+        run: |
+          git config --global credential.helper cache
+          git config --list
+
       - name: Pre-seed credentials for private repos
         if: ${{ !cancelled() }}
         run: |
