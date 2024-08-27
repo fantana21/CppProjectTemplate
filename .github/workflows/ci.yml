@@ -80,28 +80,28 @@ jobs:
           use-private-registry: true
           private-registry-pat: ${{ secrets.VCPKG_REGISTRY_PAT }}
 
-      - name: Clone vcpkg-registry
+      - name: Checkout vcpkg-registry
         uses: actions/checkout@v4
         with:
           repository: fantana21/vcpkg-registry
           token: ${{ secrets.VCPKG_REGISTRY_PAT }}
-          path: test/vcpkg-registry
+          path: test/checkout/vcpkg-registry
 
-      - name: Clone QuantNd
+      - name: Checkout QuantNd
         uses: actions/checkout@v4
         with:
           repository: fantana21/QuantNd
           token: ${{ secrets.QUANTND_PAT }}
-          path: test/QuantNd
+          path: test/checkout/QuantNd
 
       - name: Print local Git configs
         run: |
           git config --local --list
           echo "---"
-          cd test/vcpkg-registry
+          cd test/checkout/vcpkg-registry
           git config --local --list
           echo "---"
-          cd ../../test/QuantNd
+          cd ../../../test/checkout/QuantNd
           git config --local --list
 
       - name: Set credential helper for QuantNd and remove extraheader
@@ -112,6 +112,11 @@ jobs:
           git config --global credential.https://github.com/fantana21/QuantNd.helper '!f() { echo username=unused; echo password=${{ secrets.QUANTND_WRITE_PAT }}; }; f'
           git config --unset http.https://github.com/.extraheader
           git config --list
+
+      - name: Git clone vcpkg-registry and QuantNd
+        run: |
+          git clone https://github.com/fantana21/vcpkg-registry.git test/clone/vcpkg-registry || true
+          git clone https://github.com/fantana21/QuantNd.git test/clone/QuantNd || true
 
       # - name: Set up MultiToolTask
       #   run: |
