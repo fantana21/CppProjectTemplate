@@ -108,6 +108,7 @@ jobs:
           git config --list
           echo "---"
           git config --global credential.https://github.com/fantana21/QuantNd.helper '!f() { echo username=unused; echo password=${{ secrets.QUANTND_WRITE_PAT }}; }; f'
+          git config --unset http.https://github.com/.extraheader
           git config --list
 
       # - name: Set up MultiToolTask
