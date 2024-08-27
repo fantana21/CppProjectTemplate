@@ -88,7 +88,7 @@ jobs:
         run: |
           git config --list
           echo "---"
-          "url=https://github.com`npath=fantana21/vcpkg-registry`nusername=unused`npassword=${{ secrets.VCPKG_REGISTRY_PAT }}`n" | git credential approve
+          "url=https://github.com`npath=fantana21/vcpkg-registry`nusername=vcpkg-registry-pat`npassword=${{ secrets.VCPKG_REGISTRY_PAT }}`n" | git credential approve
           git config --list
 
       - name: Git clone vcpkg-registry, attempt 1
