@@ -90,17 +90,17 @@ jobs:
           cd ../../../test/checkout/QuantNd
           git config --local --list
 
-      - name: Set credential helper for QuantNd and remove extraheader
-        shell: bash
+      - name: Git clone vcpkg-registry
+        run: git clone https://github.com/fantana21/vcpkg-registry.git test/clone/vcpkg-registry
+
+      - name: Pre-seed credentials for QuantNd and remove extraheader
+        if: ${{ !cancelled() }}
         run: |
           git config --list
           echo "---"
-          git config --global credential.https://github.com/fantana21/QuantNd.helper '!f() { echo username=unused; echo password=${{ secrets.QUANTND_WRITE_PAT }}; }; f'
+          "url=https://github.com`npath=fantana21/QuantNd`nusername=unused`npassword=${{ secrets.QUANTND_PAT }}`n" | git credential approve
           git config --unset http.https://github.com/.extraheader
           git config --list
-
-      - name: Git clone vcpkg-registry
-        run: git clone https://github.com/fantana21/vcpkg-registry.git test/clone/vcpkg-registry
 
       - name: Git clone QuantNd
         if: ${{ !cancelled() }}
