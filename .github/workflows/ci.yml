@@ -83,17 +83,15 @@ jobs:
       # - name: Git clone vcpkg-registry
       #   run: git clone https://github.com/fantana21/vcpkg-registry.git test/clone/vcpkg-registry
 
-      - name: Use Git credential helper "cache"
+      - name: Use Git credential helper "store"
         run: |
           git config credential.helper || true
           git config --global credential.helper || true
           git config --system credential.helper || true
           git config --local credential.helper || true
-          git config --unset credential.helper
-          git config credential.helper
-          git config --system credential.helper cache
-          git config credential.helper
+          git config --system credential.helper store
           git config --list
+          cat ~/.git-credentials || true
 
       - name: Pre-seed credentials for private repos
         if: ${{ !cancelled() }}
