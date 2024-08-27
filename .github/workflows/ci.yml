@@ -105,19 +105,20 @@ jobs:
         shell: pwsh
         run: |
           $token = ("$(git config http.https://github.com/.extraheader)" -split '\s+')[2]
-          $token -eq ${{ secrets.GITHUB_TOKEN }}
-          $token -eq ${{ secrets.VCPKG_REGISTRY_PAT }}
-          $token -eq ${{ secrets.QUANTND_PAT }}
+          echo $token || true
+          $token -eq "${{ secrets.GITHUB_TOKEN }}"
+          $token -eq "${{ secrets.VCPKG_REGISTRY_PAT }}"
+          $token -eq "${{ secrets.QUANTND_PAT }}"
           cd test/vcpkg-registry
           $token = ("$(git config http.https://github.com/.extraheader)" -split '\s+')[2]
-          $token -eq ${{ secrets.GITHUB_TOKEN }}
-          $token -eq ${{ secrets.VCPKG_REGISTRY_PAT }}
-          $token -eq ${{ secrets.QUANTND_PAT }}
+          $token -eq "${{ secrets.GITHUB_TOKEN }}"
+          $token -eq "${{ secrets.VCPKG_REGISTRY_PAT }}"
+          $token -eq "${{ secrets.QUANTND_PAT }}"
           cd ../../test/QuantNd
           $token = ("$(git config http.https://github.com/.extraheader)" -split '\s+')[2]
-          $token -eq ${{ secrets.GITHUB_TOKEN }}
-          $token -eq ${{ secrets.VCPKG_REGISTRY_PAT }}
-          $token -eq ${{ secrets.QUANTND_PAT }}
+          $token -eq "${{ secrets.GITHUB_TOKEN }}"
+          $token -eq "${{ secrets.VCPKG_REGISTRY_PAT }}"
+          $token -eq "${{ secrets.QUANTND_PAT }}"
 
       - name: Set credential helper for QuantNd
         shell: bash
