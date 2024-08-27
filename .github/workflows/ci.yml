@@ -122,6 +122,7 @@ jobs:
           $token3 -eq "${{ secrets.QUANTND_PAT }}"
           $token1 -eq $token2
           $token1 -eq $token3
+          $token1 -eq $token1
 
       - name: Set credential helper for QuantNd
         shell: bash
