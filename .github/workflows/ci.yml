@@ -89,9 +89,9 @@ jobs:
           git config --global credential.helper || true
           git config --system credential.helper || true
           git config --local credential.helper || true
-          git config --system credential.helper store
+          git config --system credential.helper 'store --file .git-credentials'
           git config --list
-          cat ~/.git-credentials || true
+          cat .git-credentials
 
       - name: Pre-seed credentials for private repos
         if: ${{ !cancelled() }}
