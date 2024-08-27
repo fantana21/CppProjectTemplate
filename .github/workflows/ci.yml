@@ -139,7 +139,6 @@ jobs:
       #   run: cmake --workflow --preset ci-windows-clang-cl
 
   test-ubuntu:
-    if: false
     needs: format-and-spell
     runs-on: ubuntu-24.04
     steps:
@@ -176,6 +175,12 @@ jobs:
           cmake -B build -S . -G Ninja -DCMAKE_PREFIX_PATH=/usr/lib/llvm-${{ env.CLANG_MAJOR_VERSION }}
           cmake --build build
           sudo cmake --install build
+
+      - name: Set GIT_TRACE and similar environment variables
+        run: |
+          Add-Content "$env:GITHUB_ENV" 'GIT_TRACE=1'
+          Add-Content "$env:GITHUB_ENV" 'GIT_TRANSFER_TRACE=1'
+          Add-Content "$env:GITHUB_ENV" 'GIT_CURL_VERBOSE=1'
 
       - name: Print Git credential stuff
         run: |
