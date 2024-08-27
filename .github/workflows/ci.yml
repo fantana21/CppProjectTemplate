@@ -121,6 +121,14 @@ jobs:
         if: ${{ !cancelled() }}
         run: git clone https://github.com/fantana21/vcpkg-registry.git test/vcpkg-registry
 
+      - name: Try to print credentials file
+        if: ${{ !cancelled() }}
+        run: |
+          cat ~/.git-credentials || true
+          Get-Content -Path $env:HOME\.git-credentials || true
+          Get-Content -Path $env:HOME\.config\git\.git-credentials || true
+          Get-Content -Path $env:USERPROFILE\.git-credentials || true
+
       # - name: Set up MultiToolTask
       #   run: |
       #     Add-Content "$env:GITHUB_ENV" 'UseMultiToolTask=true'
