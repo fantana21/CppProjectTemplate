@@ -90,20 +90,13 @@ jobs:
           git config --system credential.helper || true
           git config --local credential.helper || true
           pwd
-          git config --system credential.helper 'store --file=${{ github.workspace }}\.git-credentials'
+          git config --system credential.helper store
           git config --list
-
-      - name: Print current working directory
-        run: |
-          echo ${{ github.workspace }}
-          (Get-Item .).FullName
 
       - name: Pre-seed credentials for private repos
         if: ${{ !cancelled() }}
         run: |
           "url=https://github.com`npath=fantana21/BaumerGapiSdk`nusername=BaumerGapiSdk`npassword=${{ secrets.BAUMER_GAPI_SDK_PAT }}`n" | git credential approve
-          cat ${{ github.workspace }}\.git-credentials
-          cat .git-credentials
 
       - name: Git clone BaumerGapiSdk
         if: ${{ !cancelled() }}
@@ -114,8 +107,6 @@ jobs:
         if: ${{ !cancelled() }}
         run: |
           "url=https://github.com`npath=fantana21/QuantNd`nusername=QuantNd`npassword=${{ secrets.QUANTND_PAT }}`n" | git credential approve
-          cat ${{ github.workspace }}\.git-credentials
-          cat .git-credentials
 
       - name: Git clone QuantNd
         if: ${{ !cancelled() }}
