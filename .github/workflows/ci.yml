@@ -98,7 +98,7 @@ jobs:
           cd test/vcpkg-registry
           git config --list
           echo "---"
-          cd test/quandnd
+          cd ../../test/QuantNd
           git config --list
 
       - name: Set credential helper for QuantNd
