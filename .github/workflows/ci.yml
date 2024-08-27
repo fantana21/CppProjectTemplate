@@ -74,6 +74,7 @@ jobs:
           private-registry-pat: ${{ secrets.VCPKG_REGISTRY_PAT }}
 
       - name: Set credential helper for QuantNd
+        shell: bash
         run: |
           git config --list
           echo "---"
