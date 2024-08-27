@@ -80,20 +80,6 @@ jobs:
           use-private-registry: true
           private-registry-pat: ${{ secrets.VCPKG_REGISTRY_PAT }}
 
-      - name: Checkout vcpkg-registry
-        uses: actions/checkout@v4
-        with:
-          repository: fantana21/vcpkg-registry
-          token: ${{ secrets.VCPKG_REGISTRY_PAT }}
-          path: test/checkout/vcpkg-registry
-
-      - name: Checkout QuantNd
-        uses: actions/checkout@v4
-        with:
-          repository: fantana21/QuantNd
-          token: ${{ secrets.QUANTND_PAT }}
-          path: test/checkout/QuantNd
-
       - name: Print local Git configs
         run: |
           git config --local --list
