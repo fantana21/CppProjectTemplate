@@ -83,25 +83,25 @@ jobs:
       # - name: Git clone vcpkg-registry
       #   run: git clone https://github.com/fantana21/vcpkg-registry.git test/clone/vcpkg-registry
 
-      - name: Pre-seed credentials for QuantNd
+      - name: Pre-seed credentials for vcpkg-registry
         continue-on-error: true
         run: |
           git config --list
           echo "---"
-          "url=https://github.com`npath=fantana21/QuantNd`nusername=unused`npassword=${{ secrets.QUANTND_PAT }}`n" | git credential approve
+          "url=https://github.com`npath=fantana21/vcpkg-registry`nusername=unused`npassword=${{ secrets.vcpkg-registry_PAT }}`n" | git credential approve
           git config --list
 
-      - name: Git clone QuantNd, attempt 1
+      - name: Git clone vcpkg-registry, attempt 1
         continue-on-error: true
-        run: git clone https://github.com/fantana21/QuantNd.git test/1/QuantNd
+        run: git clone https://github.com/fantana21/vcpkg-registry.git test/1/vcpkg-registry
 
-      - name: Git clone QuantNd, attempt 2
+      - name: Git clone vcpkg-registry, attempt 2
         continue-on-error: true
-        run: git clone https://github.com/fantana21/QuantNd.git test/2/QuantNd
+        run: git clone https://github.com/fantana21/vcpkg-registry.git test/2/vcpkg-registry
 
-      - name: Git clone QuantNd, attempt 3
+      - name: Git clone vcpkg-registry, attempt 3
         continue-on-error: true
-        run: git clone https://github.com/fantana21/QuantNd.git test/3/QuantNd
+        run: git clone https://github.com/fantana21/vcpkg-registry.git test/3/vcpkg-registry
 
       # - name: Set up MultiToolTask
       #   run: |
