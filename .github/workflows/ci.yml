@@ -55,6 +55,12 @@ jobs:
           cmake --version
           ninja --version
 
+      - name: Set GIT_TRACE and similar environment variables
+        run: |
+          Add-Content "$env:GITHUB_ENV" 'GIT_TRACE=1'
+          Add-Content "$env:GITHUB_ENV" 'GIT_TRANSFER_TRACE=1'
+          Add-Content "$env:GITHUB_ENV" 'GIT_CURL_VERBOSE=1'
+
       - name: Print Git credential stuff
         run: |
           git config --global credential.helper
