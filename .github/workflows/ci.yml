@@ -83,7 +83,6 @@ jobs:
       - name: Configure credential helper
         run: |
           git config --global credential.useHttpPath true
-          git config --system credential.useHttpPath true
           echo --- global ---
           git config --global --list
           echo --- system ---
