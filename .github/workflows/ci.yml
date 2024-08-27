@@ -83,21 +83,24 @@ jobs:
       # - name: Git clone vcpkg-registry
       #   run: git clone https://github.com/fantana21/vcpkg-registry.git test/clone/vcpkg-registry
 
-      - name: Pre-seed credentials for BaumerGapiSdk
+      - name: Pre-seed credentials for private repos
         if: ${{ !cancelled() }}
         run: |
-          git config --list
-          echo "---"
           "url=https://github.com`npath=fantana21/BaumerGapiSdk`nusername=BaumerGapiSdk`npassword=${{ secrets.BAUMER_GAPI_SDK_PAT }}`n" | git credential approve
-          git config --list
+          "url=https://github.com`npath=fantana21/QuantNd`nusername=QuantNd`npassword=${{ secrets.QUANTND_PAT }}`n" | git credential approve
+          "url=https://github.com`npath=fantana21/vcpkg-registry`nusername=vcpkg-registry`npassword=${{ secrets.VCPKG_REGISTRY_PAT }}`n" | git credential approve
 
-      - name: Git clone BaumerGapiSdk, attempt 1
+      - name: Git clone BaumerGapiSdk
         if: ${{ !cancelled() }}
-        run: git clone https://github.com/fantana21/BaumerGapiSdk.git test/1/BaumerGapiSdk
+        run: git clone https://github.com/fantana21/BaumerGapiSdk.git test/BaumerGapiSdk
 
-      - name: Git clone BaumerGapiSdk, attempt 2
+      - name: Git clone QuantNd
         if: ${{ !cancelled() }}
-        run: git clone https://github.com/fantana21/BaumerGapiSdk.git test/2/BaumerGapiSdk
+        run: git clone https://github.com/fantana21/QuantNd.git test/QuantNd
+
+      - name: Git clone vcpkg-registry
+        if: ${{ !cancelled() }}
+        run: git clone https://github.com/fantana21/vcpkg-registry.git test/vcpkg-registry
 
       # - name: Set up MultiToolTask
       #   run: |
