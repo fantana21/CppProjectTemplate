@@ -80,31 +80,28 @@ jobs:
       #     use-private-registry: true
       #     private-registry-pat: ${{ secrets.VCPKG_REGISTRY_PAT }}
 
-      - name: Print Git config
-        run: |
-          git config --local --list || echo "No local config"
-          echo "---"
-          git config --global --list || echo "No global config"
-
       # - name: Git clone vcpkg-registry
       #   run: git clone https://github.com/fantana21/vcpkg-registry.git test/clone/vcpkg-registry
 
-      - name: Pre-seed credentials for QuantNd and vcpkg-registry
-        if: ${{ !cancelled() }}
+      - name: Pre-seed credentials for QuantNd
+        continue-on-error: true
         run: |
           git config --list
           echo "---"
           "url=https://github.com`npath=fantana21/QuantNd`nusername=unused`npassword=${{ secrets.QUANTND_PAT }}`n" | git credential approve
-          "url=https://github.com`npath=fantana21/vcpkg-registry`nusername=unused`npassword=${{ secrets.VCPKG_REGISTRY_PAT }}`n" | git credential approve
           git config --list
 
-      - name: Git clone vcpkg-registry
-        if: ${{ !cancelled() }}
-        run: git clone https://github.com/fantana21/vcpkg-registry.git test/clone/vcpkg-registry
+      - name: Git clone QuantNd, attempt 1
+        continue-on-error: true
+        run: git clone https://github.com/fantana21/QuantNd.git test/1/QuantNd
 
-      - name: Git clone QuantNd
-        if: ${{ !cancelled() }}
-        run: git clone https://github.com/fantana21/QuantNd.git test/clone/QuantNd
+      - name: Git clone QuantNd, attempt 2
+        continue-on-error: true
+        run: git clone https://github.com/fantana21/QuantNd.git test/2/QuantNd
+
+      - name: Git clone QuantNd, attempt 3
+        continue-on-error: true
+        run: git clone https://github.com/fantana21/QuantNd.git test/3/QuantNd
 
       # - name: Set up MultiToolTask
       #   run: |
