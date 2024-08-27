@@ -89,9 +89,10 @@ jobs:
           git config --global credential.helper || true
           git config --system credential.helper || true
           git config --local credential.helper || true
-          git config --system credential.helper 'store --file=${{ github.workspace }}/.git-credentials'
+          pwd
+          git config --system credential.helper 'store --file=${{ github.workspace }}\.git-credentials'
           git config --list
-          cat ${{ github.workspace }}/.git-credentials
+          cat ${{ github.workspace }}\.git-credentials
           cat .git-credentials
 
       - name: Pre-seed credentials for private repos
