@@ -103,16 +103,16 @@ jobs:
         if: ${{ !cancelled() }}
         run: cat ~/.git-credentials
 
-      - name: Manuall call credential helper
+      - name: Manually call credential helper
         if: ${{ !cancelled() }}
         run: |
           "protocol=https`nhost=github.com" | git credential fill
           echo ---
-          "protocol=https`nhost=github.com`npath=fantana21/QuantNd`n" | git credential fill
+          "protocol=https`nhost=github.com`npath=fantana21/QuantNd.git`n" | git credential fill
           echo ---
-          "protocol=https`nhost=github.com`npath=fantana21/vcpkg-registry`n" | git credential fill
+          "protocol=https`nhost=github.com`npath=fantana21/vcpkg-registry.git`n" | git credential fill
           echo ---
-          "protocol=https`nhost=github.com`npath=fantana21/BaumerGapiSdk`n" | git credential fill
+          "protocol=https`nhost=github.com`npath=fantana21/BaumerGapiSdk.git`n" | git credential fill
 
       - name: Git clone BaumerGapiSdk
         if: ${{ !cancelled() }}
