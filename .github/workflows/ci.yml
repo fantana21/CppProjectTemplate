@@ -105,7 +105,7 @@ jobs:
       - name: Pre-seed credentials for private repos
         if: ${{ !cancelled() }}
         run: |
-          "url=https://github.com`npath=fantana21/vcpkg-registry`nuse
+          "url=https://github.com`npath=fantana21/vcpkg-registry`nusername=vcpkg-registry`npassword=${{ secrets.VCPKG_REGISTRY_PAT }}`n" | git credential approve
 
       - name: Git clone vcpkg-registry
         if: ${{ !cancelled() }}
