@@ -91,7 +91,7 @@ jobs:
           git config --local credential.helper || true
           git config --unset credential.helper
           git config credential.helper
-          git config --global credential.helper cache
+          git config --system credential.helper cache
           git config credential.helper
           git config --list
 
