@@ -77,12 +77,25 @@ jobs:
         run: |
           git config --global --unset credential.https://github.com/fantana21/vcpkg-registry.helper
 
+      - name: Clone vcpkg-registry
+        uses: actions/checkout@v4
+        with:
+          repository: fantana21/vcpkg-registry
+          token: ${{ secrets.VCPKG_REGISTRY_PAT }}
+          path: test/vcpkg-registry
+
+      - name: Clone QuantNd
+        uses: actions/checkout@v4
+        with:
+          repository: fantana21/QuantNd
+          token: ${{ secrets.QUANTND_PAT }}
+          path: test/QuantNd
+
       - name: Set credential helper for QuantNd and vcpkg-registry
         shell: bash
         run: |
           git config --list
           echo "---"
-          git config --global credential.https://github.com/fantana21/vcpkg-registry.helper '!f() { echo username=unused; echo password=${{ secrets.VCPKG_REGISTRY_PAT }}; }; f'
           git config --global credential.https://github.com/fantana21/QuantNd.helper '!f() { echo username=unused; echo password=${{ secrets.QUANTND_WRITE_PAT }}; }; f'
           git config --list
 
