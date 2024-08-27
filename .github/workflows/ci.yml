@@ -93,6 +93,11 @@ jobs:
           git config --system credential.helper 'store --file=${{ github.workspace }}\.git-credentials'
           git config --list
 
+      - name: Print current working directory
+        run: |
+          echo ${{ github.workspace }}
+          (Get-Item .).FullName
+
       - name: Pre-seed credentials for private repos
         if: ${{ !cancelled() }}
         run: |
