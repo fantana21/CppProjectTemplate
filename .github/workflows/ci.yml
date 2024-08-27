@@ -85,7 +85,11 @@ jobs:
 
       - name: Use Git credential helper "cache"
         run: |
+          git config credential.helper
+          git config --unset credential.helper
+          git config credential.helper
           git config --global credential.helper cache
+          git config credential.helper
           git config --list
 
       - name: Pre-seed credentials for private repos
