@@ -98,13 +98,13 @@ jobs:
           "url=https://github.com`npath=fantana21/vcpkg-registry`nusername=unused`npassword=${{ secrets.VCPKG_REGISTRY_PAT }}`n" | git credential approve
           git config --list
 
-      - name: Git clone QuantNd
-        if: ${{ !cancelled() }}
-        run: git clone https://github.com/fantana21/QuantNd.git test/clone/QuantNd
-
       - name: Git clone vcpkg-registry
         if: ${{ !cancelled() }}
         run: git clone https://github.com/fantana21/vcpkg-registry.git test/clone/vcpkg-registry
+
+      - name: Git clone QuantNd
+        if: ${{ !cancelled() }}
+        run: git clone https://github.com/fantana21/QuantNd.git test/clone/QuantNd
 
       # - name: Set up MultiToolTask
       #   run: |
