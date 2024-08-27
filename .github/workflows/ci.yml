@@ -95,9 +95,9 @@ jobs:
       - name: Pre-seed credentials for private repos
         if: ${{ !cancelled() }}
         run: |
-          "url=https://github.com`npath=fantana21/BaumerGapiSdk.git`nusername=BaumerGapiSdk`npassword=${{ secrets.BAUMER_GAPI_SDK_PAT }}`n" | git credential approve
-          "url=https://github.com`npath=fantana21/QuantNd.git`nusername=QuantNd`npassword=${{ secrets.QUANTND_PAT }}`n" | git credential approve
-          "url=https://github.com`npath=fantana21/vcpkg-registry.git`nusername=vcpkg-registry`npassword=${{ secrets.VCPKG_REGISTRY_PAT }}`n" | git credential approve
+          "url=https://github.com`npath=fantana21/BaumerGapiSdk`nusername=BaumerGapiSdk`npassword=${{ secrets.BAUMER_GAPI_SDK_PAT }}`n" | git credential approve
+          "url=https://github.com`npath=fantana21/QuantNd`nusername=QuantNd`npassword=${{ secrets.QUANTND_PAT }}`n" | git credential approve
+          "url=https://github.com`npath=fantana21/vcpkg-registry`nusername=vcpkg-registry`npassword=${{ secrets.VCPKG_REGISTRY_PAT }}`n" | git credential approve
 
       - name: Print credentials file
         if: ${{ !cancelled() }}
