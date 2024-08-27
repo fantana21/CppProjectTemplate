@@ -80,15 +80,11 @@ jobs:
           use-private-registry: true
           private-registry-pat: ${{ secrets.VCPKG_REGISTRY_PAT }}
 
-      - name: Print local Git configs
+      - name: Print Git config
         run: |
           git config --local --list
           echo "---"
-          cd test/checkout/vcpkg-registry
-          git config --local --list
-          echo "---"
-          cd ../../../test/checkout/QuantNd
-          git config --local --list
+          git config --global --list
 
       - name: Git clone vcpkg-registry
         run: git clone https://github.com/fantana21/vcpkg-registry.git test/clone/vcpkg-registry
