@@ -73,9 +73,9 @@ jobs:
       #     use-private-registry: true
       #     private-registry-pat: ${{ secrets.VCPKG_REGISTRY_PAT }}
 
-      - name: Remove credential helper for private registry
-        run: |
-          git config --global --unset credential.https://github.com/fantana21/vcpkg-registry.helper
+      # - name: Remove credential helper for private registry
+      #   run: |
+      #     git config --global --unset credential.https://github.com/fantana21/vcpkg-registry.helper
 
       - name: Clone vcpkg-registry
         uses: actions/checkout@v4
