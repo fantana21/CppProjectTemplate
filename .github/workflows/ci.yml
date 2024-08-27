@@ -85,11 +85,10 @@ jobs:
 
       - name: Use Git credential helper "store"
         run: |
-          git config credential.helper || true
-          git config --global credential.helper || true
-          git config --system credential.helper || true
-          git config --local credential.helper || true
-          pwd
+          git config credential.helper
+          git config --global credential.helper
+          git config --system credential.helper
+          git config --local credential.helper
           git config --system credential.helper store
           git config --list
 
@@ -101,7 +100,6 @@ jobs:
       - name: Git clone BaumerGapiSdk
         if: ${{ !cancelled() }}
         run: git clone https://github.com/fantana21/BaumerGapiSdk.git test/BaumerGapiSdk
-
 
       - name: Pre-seed credentials for private repos
         if: ${{ !cancelled() }}
@@ -120,14 +118,6 @@ jobs:
       - name: Git clone vcpkg-registry
         if: ${{ !cancelled() }}
         run: git clone https://github.com/fantana21/vcpkg-registry.git test/vcpkg-registry
-
-      - name: Try to print credentials file
-        if: ${{ !cancelled() }}
-        run: |
-          cat ~/.git-credentials || true
-          Get-Content -Path $env:HOME\.git-credentials || true
-          Get-Content -Path $env:HOME\.config\git\.git-credentials || true
-          Get-Content -Path $env:USERPROFILE\.git-credentials || true
 
       # - name: Set up MultiToolTask
       #   run: |
