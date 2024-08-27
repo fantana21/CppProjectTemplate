@@ -82,9 +82,9 @@ jobs:
 
       - name: Print Git config
         run: |
-          git config --local --list
+          git config --local --list || echo "No local config"
           echo "---"
-          git config --global --list
+          git config --global --list || echo "No global config"
 
       # - name: Git clone vcpkg-registry
       #   run: git clone https://github.com/fantana21/vcpkg-registry.git test/clone/vcpkg-registry
