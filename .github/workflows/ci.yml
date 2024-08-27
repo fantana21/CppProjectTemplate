@@ -107,24 +107,21 @@ jobs:
         if: ${{ !cancelled() }}
         run: |
           "protocol=https`nhost=github.com" | git credential fill
-          echo ---
-          "protocol=https`nhost=github.com`npath=fantana21/QuantNd.git`n" | git credential fill
-          echo ---
-          "protocol=https`nhost=github.com`npath=fantana21/vcpkg-registry.git`n" | git credential fill
-          echo ---
-          "protocol=https`nhost=github.com`npath=fantana21/BaumerGapiSdk.git`n" | git credential fill
+          "protocol=https`nhost=github.com`npath=fantana21/QuantNd`n" | git credential fill
+          "protocol=https`nhost=github.com`npath=fantana21/vcpkg-registry`n" | git credential fill
+          "protocol=https`nhost=github.com`npath=fantana21/BaumerGapiSdk`n" | git credential fill
 
       - name: Git clone BaumerGapiSdk
         if: ${{ !cancelled() }}
-        run: git clone https://github.com/fantana21/BaumerGapiSdk.git test/BaumerGapiSdk
+        run: git clone https://github.com/fantana21/BaumerGapiSdk test/BaumerGapiSdk
 
       - name: Git clone QuantNd
         if: ${{ !cancelled() }}
-        run: git clone https://github.com/fantana21/QuantNd.git test/QuantNd
+        run: git clone https://github.com/fantana21/QuantNd test/QuantNd
 
       - name: Git clone vcpkg-registry
         if: ${{ !cancelled() }}
-        run: git clone https://github.com/fantana21/vcpkg-registry.git test/vcpkg-registry
+        run: git clone https://github.com/fantana21/vcpkg-registry test/vcpkg-registry
 
       - name: Print credentials file
         if: ${{ !cancelled() }}
