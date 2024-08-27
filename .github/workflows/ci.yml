@@ -85,7 +85,10 @@ jobs:
 
       - name: Use Git credential helper "cache"
         run: |
-          git config credential.helper
+          git config credential.helper || true
+          git config --global credential.helper || true
+          git config --system credential.helper || true
+          git config --local credential.helper || true
           git config --unset credential.helper
           git config credential.helper
           git config --global credential.helper cache
