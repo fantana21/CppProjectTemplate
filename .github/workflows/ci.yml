@@ -185,6 +185,8 @@ jobs:
       - name: Print Git credential stuff
         run: |
           git config --global credential.helper || echo "No global credential helper set"
+          git config --system credential.helper || echo "No system credential helper set"
+          git config --local credential.helper || echo "No local credential helper set"
           git config credential.helper || echo "No credential helper set"
           git config --list
           echo "---"
