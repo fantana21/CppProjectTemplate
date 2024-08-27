@@ -49,10 +49,10 @@ jobs:
       #     cmake: ${{ env.CMAKE_VERSION }}
       #     ninja: true
 
-      - name: Print version of build tools
-        run: |
-          cmake --version
-          ninja --version
+      # - name: Print version of build tools
+      #   run: |
+      #     cmake --version
+      #     ninja --version
 
       - name: Print Git credential stuff
         run: |
