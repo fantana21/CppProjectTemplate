@@ -87,15 +87,25 @@ jobs:
         if: ${{ !cancelled() }}
         run: |
           "url=https://github.com`npath=fantana21/BaumerGapiSdk`nusername=BaumerGapiSdk`npassword=${{ secrets.BAUMER_GAPI_SDK_PAT }}`n" | git credential approve
-          "url=https://github.com`npath=fantana21/QuantNd`nusername=QuantNd`npassword=${{ secrets.QUANTND_PAT }}`n" | git credential approve
 
       - name: Git clone BaumerGapiSdk
         if: ${{ !cancelled() }}
         run: git clone https://github.com/fantana21/BaumerGapiSdk.git test/BaumerGapiSdk
 
+
+      - name: Pre-seed credentials for private repos
+        if: ${{ !cancelled() }}
+        run: |
+          "url=https://github.com`npath=fantana21/QuantNd`nusername=QuantNd`npassword=${{ secrets.QUANTND_PAT }}`n" | git credential approve
+
       - name: Git clone QuantNd
         if: ${{ !cancelled() }}
         run: git clone https://github.com/fantana21/QuantNd.git test/QuantNd
+
+      - name: Pre-seed credentials for private repos
+        if: ${{ !cancelled() }}
+        run: |
+          "url=https://github.com`npath=fantana21/vcpkg-registry`nuse
 
       - name: Git clone vcpkg-registry
         if: ${{ !cancelled() }}
