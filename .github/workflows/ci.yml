@@ -89,13 +89,12 @@ jobs:
       - name: Git clone vcpkg-registry
         run: git clone https://github.com/fantana21/vcpkg-registry.git test/clone/vcpkg-registry
 
-      - name: Pre-seed credentials for QuantNd and remove extraheader
+      - name: Pre-seed credentials for QuantNd
         if: ${{ !cancelled() }}
         run: |
           git config --list
           echo "---"
           "url=https://github.com`npath=fantana21/QuantNd`nusername=unused`npassword=${{ secrets.QUANTND_PAT }}`n" | git credential approve
-          git config --unset http.https://github.com/.extraheader
           git config --list
 
       - name: Git clone QuantNd
