@@ -84,7 +84,7 @@ jobs:
       #   run: git clone https://github.com/fantana21/vcpkg-registry.git test/clone/vcpkg-registry
 
       - name: Pre-seed credentials for vcpkg-registry
-        continue-on-error: true
+        if: ${{ !cancelled() }}
         run: |
           git config --list
           echo "---"
@@ -92,15 +92,15 @@ jobs:
           git config --list
 
       - name: Git clone vcpkg-registry, attempt 1
-        continue-on-error: true
+        if: ${{ !cancelled() }}
         run: git clone https://github.com/fantana21/vcpkg-registry.git test/1/vcpkg-registry
 
       - name: Git clone vcpkg-registry, attempt 2
-        continue-on-error: true
+        if: ${{ !cancelled() }}
         run: git clone https://github.com/fantana21/vcpkg-registry.git test/2/vcpkg-registry
 
       - name: Git clone vcpkg-registry, attempt 3
-        continue-on-error: true
+        if: ${{ !cancelled() }}
         run: git clone https://github.com/fantana21/vcpkg-registry.git test/3/vcpkg-registry
 
       # - name: Set up MultiToolTask
