@@ -42,12 +42,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up build tools
-        uses: aminya/setup-cpp@v1
-        with:
-          vcvarsall: true
-          cmake: ${{ env.CMAKE_VERSION }}
-          ninja: true
+      # - name: Set up build tools
+      #   uses: aminya/setup-cpp@v1
+      #   with:
+      #     vcvarsall: true
+      #     cmake: ${{ env.CMAKE_VERSION }}
+      #     ninja: true
 
       - name: Print version of build tools
         run: |
@@ -62,16 +62,16 @@ jobs:
           echo "---"
           git help -a | Select-String -Pattern 'credential'
 
-      - name: Set up vcpkg
-        uses: fantana21/set-up-vcpkg@v1
-        with:
-          committish: ${{ env.VCPKG_COMMITTISH }}
-          cache-key: vcpkg-${{ runner.os }}-${{ env.VCPKG_COMMITTISH }}-${{ hashFiles('vcpkg.json', 'CMakePresets.json') }}
-          cache-restore-keys: |
-            vcpkg-${{ runner.os }}-${{ env.VCPKG_COMMITTISH }}
-            vcpkg-${{ runner.os }}
-          use-private-registry: true
-          private-registry-pat: ${{ secrets.VCPKG_REGISTRY_PAT }}
+      # - name: Set up vcpkg
+      #   uses: fantana21/set-up-vcpkg@v1
+      #   with:
+      #     committish: ${{ env.VCPKG_COMMITTISH }}
+      #     cache-key: vcpkg-${{ runner.os }}-${{ env.VCPKG_COMMITTISH }}-${{ hashFiles('vcpkg.json', 'CMakePresets.json') }}
+      #     cache-restore-keys: |
+      #       vcpkg-${{ runner.os }}-${{ env.VCPKG_COMMITTISH }}
+      #       vcpkg-${{ runner.os }}
+      #     use-private-registry: true
+      #     private-registry-pat: ${{ secrets.VCPKG_REGISTRY_PAT }}
 
       - name: Remove credential helper for private registry
         run: |
@@ -91,7 +91,17 @@ jobs:
           token: ${{ secrets.QUANTND_PAT }}
           path: test/QuantNd
 
-      - name: Set credential helper for QuantNd and vcpkg-registry
+      - name: Print local Git configs
+        run: |
+          git config --list
+          echo "---"
+          cd test/vcpkg-registry
+          git config --list
+          echo "---"
+          cd test/quandnd
+          git config --list
+
+      - name: Set credential helper for QuantNd
         shell: bash
         run: |
           git config --list
@@ -99,20 +109,20 @@ jobs:
           git config --global credential.https://github.com/fantana21/QuantNd.helper '!f() { echo username=unused; echo password=${{ secrets.QUANTND_WRITE_PAT }}; }; f'
           git config --list
 
-      - name: Set up MultiToolTask
-        run: |
-          Add-Content "$env:GITHUB_ENV" 'UseMultiToolTask=true'
-          Add-Content "$env:GITHUB_ENV" 'EnforceProcessCountAcrossBuilds=true'
+      # - name: Set up MultiToolTask
+      #   run: |
+      #     Add-Content "$env:GITHUB_ENV" 'UseMultiToolTask=true'
+      #     Add-Content "$env:GITHUB_ENV" 'EnforceProcessCountAcrossBuilds=true'
 
-      - name: Build and test debug and release mode (MSVC)
-        run: cmake --workflow --preset ci-windows-msvc
+      # - name: Build and test debug and release mode (MSVC)
+      #   run: cmake --workflow --preset ci-windows-msvc
 
-      - name: Print log
-        if: ${{ !cancelled() }}
-        run: Get-Content D:\a\CppProjectTemplate\CppProjectTemplate\vcpkg\buildtrees\quantnd\git-fetch-x64-windows-static-md-err.log
+      # - name: Print log
+      #   if: ${{ !cancelled() }}
+      #   run: Get-Content D:\a\CppProjectTemplate\CppProjectTemplate\vcpkg\buildtrees\quantnd\git-fetch-x64-windows-static-md-err.log
 
-      - name: Build and test debug and release mode (clang-cl)
-        run: cmake --workflow --preset ci-windows-clang-cl
+      # - name: Build and test debug and release mode (clang-cl)
+      #   run: cmake --workflow --preset ci-windows-clang-cl
 
   test-ubuntu:
     if: false
