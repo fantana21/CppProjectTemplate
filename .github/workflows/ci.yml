@@ -73,12 +73,11 @@ jobs:
           use-private-registry: true
           private-registry-pat: ${{ secrets.VCPKG_REGISTRY_PAT }}
 
-      - name: Pre-seed credentials for vcpkg-registry and QuantNd
+      - name: Set credential helper for QuantNd
         run: |
           git config --list
           echo "---"
-          "url=https://github.com`npath=fantana21/vcpkg-registry`nusername=unused`npassword=${{ secrets.VCPKG_REGISTRY_PAT }}`n" | git credential approve
-          "url=https://github.com`npath=fantana21/QuantNd`nusername=unused`npassword=${{ secrets.QUANTND_PAT }}`n" | git credential approve
+          git config --global credential.https://github.com/fantana21/QuantNd.helper '!f() { echo username=unused; echo password=${{ secrets.QUANTND_WRITE_PAT }}; }; f'
           git config --list
 
       - name: Set up MultiToolTask
