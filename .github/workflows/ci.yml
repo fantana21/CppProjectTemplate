@@ -57,9 +57,9 @@ jobs:
 
       - name: Set GIT_TRACE and similar environment variables
         run: |
-          Add-Content "$env:GITHUB_ENV" 'GIT_TRACE=1'
-          Add-Content "$env:GITHUB_ENV" 'GIT_TRANSFER_TRACE=1'
-          Add-Content "$env:GITHUB_ENV" 'GIT_CURL_VERBOSE=1'
+          Add-Content "$env:GITHUB_ENV" 'GIT_TRACE=2'
+          Add-Content "$env:GITHUB_ENV" 'GIT_TRANSFER_TRACE=2'
+          Add-Content "$env:GITHUB_ENV" 'GIT_CURL_VERBOSE=2'
 
       - name: Print Git credential stuff
         run: |
@@ -79,9 +79,6 @@ jobs:
       #       vcpkg-${{ runner.os }}
       #     use-private-registry: true
       #     private-registry-pat: ${{ secrets.VCPKG_REGISTRY_PAT }}
-
-      # - name: Git clone vcpkg-registry
-      #   run: git clone https://github.com/fantana21/vcpkg-registry.git test/clone/vcpkg-registry
 
       - name: Use Git credential helper "store"
         run: |
