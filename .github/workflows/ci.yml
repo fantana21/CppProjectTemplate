@@ -196,12 +196,15 @@ jobs:
       - name: Configure credential helper
         run: |
           git config --global credential.useHttpPath true
+          git config --global credential.helper store
           echo --- global ---
           git config --global --list
           echo --- system ---
           git config --system --list
           echo --- local ---
           git config --local --list
+          echo --- credentials ---
+          cat ~/.git-credentials || true
 
       - name: Pre-seed credentials for private repos
         if: ${{ !cancelled() }}
@@ -209,6 +212,10 @@ jobs:
           echo "url=https://github.com"$'\n'"path=fantana21/BaumerGapiSdk"$'\n'"username=BaumerGapiSdk"$'\n'"password=${{ secrets.BAUMER_GAPI_SDK_PAT }}"$'\n' | git credential approve
           echo "url=https://github.com"$'\n'"path=fantana21/QuantNd"$'\n'"username=QuantNd"$'\n'"password=${{ secrets.QUANTND_PAT }}"$'\n' | git credential approve
           echo "url=https://github.com"$'\n'"path=fantana21/vcpkg-registry"$'\n'"username=vcpkg-registry"$'\n'"password=${{ secrets.VCPKG_REGISTRY_PAT }}"$'\n' | git credential approve
+
+      - name: Try printing credentials file
+        run:
+          cat ~/.git-credentials || true
 
       - name: Manually call credential helper
         if: ${{ !cancelled() }}
