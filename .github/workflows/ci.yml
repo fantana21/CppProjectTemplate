@@ -130,21 +130,9 @@ jobs:
           use-private-registry: true
           private-registry-pat: ${{ secrets.VCPKG_REGISTRY_PAT }}
 
-      - name: Set up credential helpers for private repos
+      - name: Set up credential helper for private repos
         run: |
           git config --global credential.https://github.com/fantana21.helper '!f() { echo username=QuantNd; echo password=${{ secrets.ALL_REPOSITORIES_PAT }}; }; f'
-
-      - name: Git clone BaumerGapiSdk
-        if: ${{ !cancelled() }}
-        run: git clone https://github.com/fantana21/BaumerGapiSdk test/BaumerGapiSdk
-
-      - name: Git clone QuantNd
-        if: ${{ !cancelled() }}
-        run: git clone https://github.com/fantana21/QuantNd test/QuantNd
-
-      - name: Git clone vcpkg-registry
-        if: ${{ !cancelled() }}
-        run: git clone https://github.com/fantana21/vcpkg-registry test/vcpkg-registry
 
       - name: Build and test debug and release mode (GCC)
         id: test-gcc
