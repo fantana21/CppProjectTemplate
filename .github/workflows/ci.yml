@@ -70,6 +70,18 @@ jobs:
           git config --global credential.useHttpPath true
           "url=https://github.com`npath=fantana21`nusername=AllRepositories`npassword=${{ secrets.ALL_REPOSITORIES_PAT }}`n" | git credential approve
 
+      - name: Git clone BaumerGapiSdk
+        if: ${{ !cancelled() }}
+        run: git clone https://github.com/fantana21/BaumerGapiSdk test/BaumerGapiSdk
+
+      - name: Git clone QuantNd
+        if: ${{ !cancelled() }}
+        run: git clone https://github.com/fantana21/QuantNd test/QuantNd
+
+      - name: Git clone vcpkg-registry
+        if: ${{ !cancelled() }}
+        run: git clone https://github.com/fantana21/vcpkg-registry test/vcpkg-registry
+
       - name: Set up MultiToolTask
         run: |
           Add-Content "$env:GITHUB_ENV" 'UseMultiToolTask=true'
@@ -135,6 +147,17 @@ jobs:
         run: |
           git config --global credential.https://github.com/fantana21.helper '!f() { echo username=QuantNd; echo password=${{ secrets.ALL_REPOSITORIES_PAT }}; }; f'
 
+      - name: Git clone BaumerGapiSdk
+        if: ${{ !cancelled() }}
+        run: git clone https://github.com/fantana21/BaumerGapiSdk test/BaumerGapiSdk
+
+      - name: Git clone QuantNd
+        if: ${{ !cancelled() }}
+        run: git clone https://github.com/fantana21/QuantNd test/QuantNd
+
+      - name: Git clone vcpkg-registry
+        if: ${{ !cancelled() }}
+        run: git clone https://github.com/fantana21/vcpkg-registry test/vcpkg-registry
 
       - name: Build and test debug and release mode (GCC)
         id: test-gcc
