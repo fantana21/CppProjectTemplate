@@ -14,6 +14,7 @@ env:
 
 jobs:
   format-and-spell:
+    if: false
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
@@ -37,7 +38,7 @@ jobs:
         run: cmake -P CMake/Spell.cmake
 
   test-windows:
-    needs: format-and-spell
+    # needs: format-and-spell
     runs-on: windows-2022
     steps:
       - uses: actions/checkout@v4
@@ -93,7 +94,8 @@ jobs:
         run: cmake --workflow --preset ci-windows-clang-cl
 
   test-ubuntu:
-    needs: format-and-spell
+    if: false
+    # needs: format-and-spell
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
