@@ -14,7 +14,6 @@ env:
 
 jobs:
   format-and-spell:
-    if: false
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
@@ -38,8 +37,7 @@ jobs:
         run: cmake -P CMake/Spell.cmake
 
   test-windows:
-    if: false
-    # needs: format-and-spell
+    needs: format-and-spell
     runs-on: windows-2022
     steps:
       - uses: actions/checkout@v4
@@ -56,14 +54,6 @@ jobs:
           cmake --version
           ninja --version
 
-      - name: Print Git credential stuff
-        run: |
-          git config --global credential.helper
-          git config credential.helper
-          git config --list
-          echo "---"
-          git help -a | Select-String -Pattern 'credential'
-
       - name: Set up vcpkg
         uses: fantana21/set-up-vcpkg@v1
         with:
@@ -75,42 +65,10 @@ jobs:
           use-private-registry: true
           private-registry-pat: ${{ secrets.VCPKG_REGISTRY_PAT }}
 
-      - name: Configure credential helper
+      - name: Configure credential helper and pre-seed credentials for private repos
         run: |
           git config --global credential.useHttpPath true
-          echo --- global ---
-          git config --global --list
-          echo --- system ---
-          git config --system --list
-          echo --- local ---
-          git config --local --list
-
-      - name: Pre-seed credentials for private repos
-        if: ${{ !cancelled() }}
-        run: |
-          "url=https://github.com`npath=fantana21/BaumerGapiSdk`nusername=BaumerGapiSdk`npassword=${{ secrets.BAUMER_GAPI_SDK_PAT }}`n" | git credential approve
           "url=https://github.com`npath=fantana21/QuantNd`nusername=QuantNd`npassword=${{ secrets.QUANTND_PAT }}`n" | git credential approve
-          "url=https://github.com`npath=fantana21/vcpkg-registry`nusername=vcpkg-registry`npassword=${{ secrets.VCPKG_REGISTRY_PAT }}`n" | git credential approve
-
-      - name: Manually call credential helper
-        if: ${{ !cancelled() }}
-        run: |
-          "protocol=https`nhost=github.com" | git credential fill
-          "protocol=https`nhost=github.com`npath=fantana21/QuantNd`n" | git credential fill
-          "protocol=https`nhost=github.com`npath=fantana21/vcpkg-registry`n" | git credential fill
-          "protocol=https`nhost=github.com`npath=fantana21/BaumerGapiSdk`n" | git credential fill
-
-      - name: Git clone BaumerGapiSdk
-        if: ${{ !cancelled() }}
-        run: git clone https://github.com/fantana21/BaumerGapiSdk test/BaumerGapiSdk
-
-      - name: Git clone QuantNd
-        if: ${{ !cancelled() }}
-        run: git clone https://github.com/fantana21/QuantNd test/QuantNd
-
-      - name: Git clone vcpkg-registry
-        if: ${{ !cancelled() }}
-        run: git clone https://github.com/fantana21/vcpkg-registry test/vcpkg-registry
 
       - name: Set up MultiToolTask
         run: |
@@ -120,15 +78,11 @@ jobs:
       - name: Build and test debug and release mode (MSVC)
         run: cmake --workflow --preset ci-windows-msvc
 
-      - name: Print log
-        if: ${{ !cancelled() }}
-        run: Get-Content D:\a\CppProjectTemplate\CppProjectTemplate\vcpkg\buildtrees\quantnd\git-fetch-x64-windows-static-md-err.log
-
       - name: Build and test debug and release mode (clang-cl)
         run: cmake --workflow --preset ci-windows-clang-cl
 
   test-ubuntu:
-    # needs: format-and-spell
+    needs: format-and-spell
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
@@ -165,16 +119,6 @@ jobs:
           cmake --build build
           sudo cmake --install build
 
-      - name: Print Git credential stuff
-        run: |
-          git config --global credential.helper || echo "No global credential helper set"
-          git config --system credential.helper || echo "No system credential helper set"
-          git config --local credential.helper || echo "No local credential helper set"
-          git config credential.helper || echo "No credential helper set"
-          git config --list
-          echo "---"
-          git help -a | grep credential
-
       - name: Set up vcpkg
         id: set-up-vcpkg
         uses: fantana21/set-up-vcpkg@v1
@@ -187,30 +131,9 @@ jobs:
           use-private-registry: true
           private-registry-pat: ${{ secrets.VCPKG_REGISTRY_PAT }}
 
-      - name: Set custom credential helpers for private repos
+      - name: Set up credential helpers for private repos
         run: |
           git config --global credential.https://github.com/fantana21/QuantNd.helper '!f() { echo username=QuantNd; echo password=${{ secrets.QUANTND_PAT }}; }; f'
-          git config --global credential.https://github.com/fantana21/BaumerGapiSdk.helper '!f() { echo username=BaumerGapiSdk; echo password=${{ secrets.BAUMER_GAPI_SDK_PAT }}; }; f'
-
-      - name: Manually call credential helper
-        if: ${{ !cancelled() }}
-        run: |
-          echo "protocol=https"$'\n'"host=github.com" | git credential fill || true
-          echo "protocol=https"$'\n'"host=github.com"$'\n'"path=fantana21/QuantNd"$'\n' | git credential fill || true
-          echo "protocol=https"$'\n'"host=github.com"$'\n'"path=fantana21/vcpkg-registry"$'\n' | git credential fill || true
-          echo "protocol=https"$'\n'"host=github.com"$'\n'"path=fantana21/BaumerGapiSdk"$'\n' | git credential fill || true
-
-      - name: Git clone BaumerGapiSdk
-        if: ${{ !cancelled() }}
-        run: git clone https://github.com/fantana21/BaumerGapiSdk test/BaumerGapiSdk
-
-      - name: Git clone QuantNd
-        if: ${{ !cancelled() }}
-        run: git clone https://github.com/fantana21/QuantNd test/QuantNd
-
-      - name: Git clone vcpkg-registry
-        if: ${{ !cancelled() }}
-        run: git clone https://github.com/fantana21/vcpkg-registry test/vcpkg-registry
 
       - name: Build and test debug and release mode (GCC)
         id: test-gcc
