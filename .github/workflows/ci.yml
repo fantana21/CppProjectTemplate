@@ -55,12 +55,6 @@ jobs:
           cmake --version
           ninja --version
 
-      # - name: Set GIT_TRACE and similar environment variables
-      #   run: |
-      #     Add-Content "$env:GITHUB_ENV" 'GIT_TRACE=2'
-      #     Add-Content "$env:GITHUB_ENV" 'GIT_TRANSFER_TRACE=2'
-      #     Add-Content "$env:GITHUB_ENV" 'GIT_CURL_VERBOSE=2'
-
       - name: Print Git credential stuff
         run: |
           git config --global credential.helper
@@ -133,7 +127,7 @@ jobs:
         run: cmake --workflow --preset ci-windows-clang-cl
 
   test-ubuntu:
-    needs: format-and-spell
+    # needs: format-and-spell
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
@@ -170,12 +164,6 @@ jobs:
           cmake --build build
           sudo cmake --install build
 
-      - name: Set GIT_TRACE and similar environment variables
-        run: |
-          Add-Content "$env:GITHUB_ENV" 'GIT_TRACE=1'
-          Add-Content "$env:GITHUB_ENV" 'GIT_TRANSFER_TRACE=1'
-          Add-Content "$env:GITHUB_ENV" 'GIT_CURL_VERBOSE=1'
-
       - name: Print Git credential stuff
         run: |
           git config --global credential.helper || echo "No global credential helper set"
@@ -198,22 +186,48 @@ jobs:
           use-private-registry: true
           private-registry-pat: ${{ secrets.VCPKG_REGISTRY_PAT }}
 
-      - name: Pre-seed credentials for QuantNd
+      - name: Configure credential helper
         run: |
-          git config --list
-          echo "---"
-          echo "url=https://github.com"$'\n'"path=fantana21/QuantNd"$'\n'"username=unused"$'\n'"password=${{ secrets.QUANTND_PAT }}"$'\n' | git credential approve
-          git config --list
+          git config --global credential.useHttpPath true
+          echo --- global ---
+          git config --global --list
+          echo --- system ---
+          git config --system --list
+          echo --- local ---
+          git config --local --list
+
+      - name: Pre-seed credentials for private repos
+        if: ${{ !cancelled() }}
+        run: |
+          echo "url=https://github.com"$'\n'"path=fantana21/BaumerGapiSdk"$'\n'"username=BaumerGapiSdk"$'\n'"password=${{ secrets.BAUMER_GAPI_SDK_PAT }}"$'\n' | git credential approve
+          echo "url=https://github.com"$'\n'"path=fantana21/QuantNd"$'\n'"username=QuantNd"$'\n'"password=${{ secrets.QUANTND_PAT }}"$'\n' | git credential approve
+          echo "url=https://github.com"$'\n'"path=fantana21/vcpkg-registry"$'\n'"username=vcpkg-registry"$'\n'"password=${{ secrets.VCPKG_REGISTRY_PAT }}"$'\n' | git credential approve
+
+      - name: Manually call credential helper
+        if: ${{ !cancelled() }}
+        run: |
+          "protocol=https`nhost=github.com" | git credential fill
+          "protocol=https`nhost=github.com`npath=fantana21/QuantNd`n" | git credential fill
+          "protocol=https`nhost=github.com`npath=fantana21/vcpkg-registry`n" | git credential fill
+          "protocol=https`nhost=github.com`npath=fantana21/BaumerGapiSdk`n" | git credential fill
+
+      - name: Git clone BaumerGapiSdk
+        if: ${{ !cancelled() }}
+        run: git clone https://github.com/fantana21/BaumerGapiSdk test/BaumerGapiSdk
+
+      - name: Git clone QuantNd
+        if: ${{ !cancelled() }}
+        run: git clone https://github.com/fantana21/QuantNd test/QuantNd
+
+      - name: Git clone vcpkg-registry
+        if: ${{ !cancelled() }}
+        run: git clone https://github.com/fantana21/vcpkg-registry test/vcpkg-registry
 
       - name: Build and test debug and release mode (GCC)
         id: test-gcc
         run: |
           export CXX=g++
           cmake --workflow --preset ci-ubuntu
-
-      - name: Print log
-        if: ${{ !cancelled() }}
-        run: cat /home/runner/work/CppProjectTemplate/CppProjectTemplate/vcpkg/buildtrees/quantnd/git-fetch-x64-linux-err.log
 
       - name: Build, test, and generate coverage reports (GCC)
         run: |
