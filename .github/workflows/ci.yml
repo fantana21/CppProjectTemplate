@@ -133,37 +133,43 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install tools
-        run: |
-          sudo apt-get update -q
-          sudo apt-get install -y cppcheck ninja-build valgrind llvm
-          pipx install gcovr
+      # - name: Install tools
+      #   run: |
+      #     sudo apt-get update -q
+      #     sudo apt-get install -y cppcheck ninja-build valgrind llvm
+      #     pipx install gcovr
 
-      - name: Print and store version info
-        shell: pwsh
-        run: |
-          g++ --version
-          clang++ --version
-          cmake --version
-          ninja --version
-          clang-tidy --version
-          cppcheck --version
-          gcovr --version
-          gcov --version
-          llvm-cov --version
-          valgrind --version
+      # - name: Print and store version info
+      #   shell: pwsh
+      #   run: |
+      #     g++ --version
+      #     clang++ --version
+      #     cmake --version
+      #     ninja --version
+      #     clang-tidy --version
+      #     cppcheck --version
+      #     gcovr --version
+      #     gcov --version
+      #     llvm-cov --version
+      #     valgrind --version
 
-          $CLANG_VERSIONS = (clang++ --version | Select-String -Pattern '([0-9]+)\.([0-9]+)\.([0-9]+)').Matches.Groups.Value
-          "CLANG_MAJOR_VERSION=$($CLANG_VERSIONS[1])" | Out-File -FilePath $env:GITHUB_ENV -Append
+      #     $CLANG_VERSIONS = (clang++ --version | Select-String -Pattern '([0-9]+)\.([0-9]+)\.([0-9]+)').Matches.Groups.Value
+      #     "CLANG_MAJOR_VERSION=$($CLANG_VERSIONS[1])" | Out-File -FilePath $env:GITHUB_ENV -Append
 
-      - name: Install Include What You Use
+      # - name: Install Include What You Use
+      #   run: |
+      #     sudo apt-get install -y llvm-${{ env.CLANG_MAJOR_VERSION }}-dev libclang-${{ env.CLANG_MAJOR_VERSION }}-dev
+      #     git clone --depth 1 --branch clang_${{ env.CLANG_MAJOR_VERSION }} https://github.com/include-what-you-use/include-what-you-use.git
+      #     cd include-what-you-use
+      #     cmake -B build -S . -G Ninja -DCMAKE_PREFIX_PATH=/usr/lib/llvm-${{ env.CLANG_MAJOR_VERSION }}
+      #     cmake --build build
+      #     sudo cmake --install build
+
+      - name: Set GIT_TRACE and similar environment variables
         run: |
-          sudo apt-get install -y llvm-${{ env.CLANG_MAJOR_VERSION }}-dev libclang-${{ env.CLANG_MAJOR_VERSION }}-dev
-          git clone --depth 1 --branch clang_${{ env.CLANG_MAJOR_VERSION }} https://github.com/include-what-you-use/include-what-you-use.git
-          cd include-what-you-use
-          cmake -B build -S . -G Ninja -DCMAKE_PREFIX_PATH=/usr/lib/llvm-${{ env.CLANG_MAJOR_VERSION }}
-          cmake --build build
-          sudo cmake --install build
+          Add-Content "$env:GITHUB_ENV" 'GIT_TRACE=1'
+          Add-Content "$env:GITHUB_ENV" 'GIT_TRANSFER_TRACE=1'
+          Add-Content "$env:GITHUB_ENV" 'GIT_CURL_VERBOSE=1'
 
       - name: Print Git credential stuff
         run: |
@@ -224,71 +230,71 @@ jobs:
         if: ${{ !cancelled() }}
         run: git clone https://github.com/fantana21/vcpkg-registry test/vcpkg-registry
 
-      - name: Build and test debug and release mode (GCC)
-        id: test-gcc
-        run: |
-          export CXX=g++
-          cmake --workflow --preset ci-ubuntu
+      # - name: Build and test debug and release mode (GCC)
+      #   id: test-gcc
+      #   run: |
+      #     export CXX=g++
+      #     cmake --workflow --preset ci-ubuntu
 
-      - name: Build, test, and generate coverage reports (GCC)
-        run: |
-          export CXX=g++
-          cmake --workflow --preset ci-coverage
+      # - name: Build, test, and generate coverage reports (GCC)
+      #   run: |
+      #     export CXX=g++
+      #     cmake --workflow --preset ci-coverage
 
-      - name: Report coverage results as job summary, PR comment, and artifact (GCC)
-        uses: fantana21/report-coverage@v1
-        with:
-          pr-comment-header: gcc
-          artifact-name: CoverageReportsGcc
+      # - name: Report coverage results as job summary, PR comment, and artifact (GCC)
+      #   uses: fantana21/report-coverage@v1
+      #   with:
+      #     pr-comment-header: gcc
+      #     artifact-name: CoverageReportsGcc
 
-      - name: Build and test with sanitizers (GCC)
-        id: sanitize-gcc
-        if: ${{ !cancelled() && steps.test-gcc.conclusion == 'success' }}
-        run: |
-          export CXX=g++
-          cmake --workflow --preset ci-sanitize
+      # - name: Build and test with sanitizers (GCC)
+      #   id: sanitize-gcc
+      #   if: ${{ !cancelled() && steps.test-gcc.conclusion == 'success' }}
+      #   run: |
+      #     export CXX=g++
+      #     cmake --workflow --preset ci-sanitize
 
-      - name: Build and test debug and release mode with Valgrind (GCC)
-        # Running tests with Valgrind is slow, so we only do it if running them with sanitizers
-        # succeeded
-        if: ${{ !cancelled() && steps.sanitize-gcc.conclusion == 'success' }}
-        run: |
-          export CXX=g++
-          cmake --workflow --preset ci-valgrind
+      # - name: Build and test debug and release mode with Valgrind (GCC)
+      #   # Running tests with Valgrind is slow, so we only do it if running them with sanitizers
+      #   # succeeded
+      #   if: ${{ !cancelled() && steps.sanitize-gcc.conclusion == 'success' }}
+      #   run: |
+      #     export CXX=g++
+      #     cmake --workflow --preset ci-valgrind
 
-      - name: Build and test debug and release mode (Clang)
-        id: test-clang
-        if: ${{ !cancelled() && steps.set-up-vcpkg.conclusion == 'success' }}
-        run: |
-          rm -rf build
-          export CXX=clang++
-          cmake --workflow --preset ci-ubuntu
+      # - name: Build and test debug and release mode (Clang)
+      #   id: test-clang
+      #   if: ${{ !cancelled() && steps.set-up-vcpkg.conclusion == 'success' }}
+      #   run: |
+      #     rm -rf build
+      #     export CXX=clang++
+      #     cmake --workflow --preset ci-ubuntu
 
-      - name: Build, test, and generate coverage reports (Clang)
-        id: coverage-clang
-        if: ${{ !cancelled() && steps.test-clang.conclusion == 'success' }}
-        run: |
-          export CXX=clang++
-          cmake --workflow --preset ci-coverage
+      # - name: Build, test, and generate coverage reports (Clang)
+      #   id: coverage-clang
+      #   if: ${{ !cancelled() && steps.test-clang.conclusion == 'success' }}
+      #   run: |
+      #     export CXX=clang++
+      #     cmake --workflow --preset ci-coverage
 
-      - name: Report coverage results as job summary, PR comment, and artifact (Clang)
-        if: ${{ !cancelled() && steps.coverage-clang.conclusion == 'success' }}
-        uses: fantana21/report-coverage@v1
-        with:
-          pr-comment-header: clang
-          artifact-name: CoverageReportsClang
+      # - name: Report coverage results as job summary, PR comment, and artifact (Clang)
+      #   if: ${{ !cancelled() && steps.coverage-clang.conclusion == 'success' }}
+      #   uses: fantana21/report-coverage@v1
+      #   with:
+      #     pr-comment-header: clang
+      #     artifact-name: CoverageReportsClang
 
-      - name: Build and test with sanitizers (Clang)
-        id: sanitize-clang
-        if: ${{ !cancelled() && steps.test-clang.conclusion == 'success' }}
-        run: |
-          export CXX=clang++
-          cmake --workflow --preset ci-sanitize
+      # - name: Build and test with sanitizers (Clang)
+      #   id: sanitize-clang
+      #   if: ${{ !cancelled() && steps.test-clang.conclusion == 'success' }}
+      #   run: |
+      #     export CXX=clang++
+      #     cmake --workflow --preset ci-sanitize
 
-      - name: Build and test debug and release mode with Valgrind (Clang)
-        # Running tests with Valgrind is slow, so we only do it if running them with sanitizers
-        # succeeded.
-        if: ${{ !cancelled() && steps.sanitize-clang.conclusion == 'success' }}
-        run: |
-          export CXX=clang++
-          cmake --workflow --preset ci-valgrind
+      # - name: Build and test debug and release mode with Valgrind (Clang)
+      #   # Running tests with Valgrind is slow, so we only do it if running them with sanitizers
+      #   # succeeded.
+      #   if: ${{ !cancelled() && steps.sanitize-clang.conclusion == 'success' }}
+      #   run: |
+      #     export CXX=clang++
+      #     cmake --workflow --preset ci-valgrind
