@@ -2,6 +2,7 @@
 #include <CppProjectTemplate/Square.hpp>
 
 #include <NamedType/named_type.hpp>
+#include <QuantNd/Utility.hpp>
 
 #include <iostream>
 #include <string>
@@ -26,6 +27,7 @@ auto main() -> int
         std::cout << "Square(2) = " << Square(2) << "\n";
         auto const number = Number(41);
         std::cout << Increment(number) << "\n";
+        std::cout << "quantnd::allAreEqual<1, 1, 1> = " << quantnd::allAreEqual<1, 1, 1> << "\n";
     }
     catch(...)
     {

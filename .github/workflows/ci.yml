@@ -4,13 +4,12 @@ on:
   push:
     branches:
       - main
-
   pull_request:
     branches:
       - main
 
 env:
-  CMAKE_VERSION: '3.29.6'
+  CMAKE_VERSION: "3.29.6"
   VCPKG_COMMITTISH: 49ac2134b31b95b0ddf29d56873dcd24392691df
 
 jobs:
@@ -65,6 +64,10 @@ jobs:
             vcpkg-${{ runner.os }}
           use-private-registry: true
           private-registry-pat: ${{ secrets.VCPKG_REGISTRY_PAT }}
+
+      - name: Pre-seed credentials for private repos
+        run: |
+          "url=https://github.com`nusername=AllRepositories`npassword=${{ secrets.ALL_REPOSITORIES_PAT }}`n" | git credential approve
 
       - name: Set up MultiToolTask
         run: |
@@ -126,6 +129,10 @@ jobs:
             vcpkg-${{ runner.os }}
           use-private-registry: true
           private-registry-pat: ${{ secrets.VCPKG_REGISTRY_PAT }}
+
+      - name: Set up credential helper for private repos
+        run: |
+          git config --global credential.https://github.com/fantana21.helper '!f() { echo username=QuantNd; echo password=${{ secrets.ALL_REPOSITORIES_PAT }}; }; f'
 
       - name: Build and test debug and release mode (GCC)
         id: test-gcc

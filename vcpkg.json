@@ -9,6 +9,10 @@
     {
       "name": "namedtype",
       "version>=": "1.1.0-dev-1#1"
+    },
+    {
+      "name": "quantnd",
+      "version>=": "0.1.0"
     }
   ],
   "default-features": [],
@@ -31,10 +35,11 @@
     "registries": [
       {
         "kind": "git",
-        "baseline": "c016d2fdeec32d3df0dd37fbb90ff033a4597d83",
+        "baseline": "765752b6d9c24592a726641202c2cc23f2b17103",
         "repository": "https://github.com/fantana21/vcpkg-registry",
         "packages": [
-          "namedtype"
+          "namedtype",
+          "quantnd"
         ]
       }
     ]
