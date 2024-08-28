@@ -207,10 +207,10 @@ jobs:
       - name: Manually call credential helper
         if: ${{ !cancelled() }}
         run: |
-          echo "protocol=https"$'\n'"host=github.com" | git credential fill
-          echo "protocol=https"$'\n'"host=github.com"$'\n'"path=fantana21/QuantNd"$'\n' | git credential fill
-          echo "protocol=https"$'\n'"host=github.com"$'\n'"path=fantana21/vcpkg-registry"$'\n' | git credential fill
-          echo "protocol=https"$'\n'"host=github.com"$'\n'"path=fantana21/BaumerGapiSdk"$'\n' | git credential fill
+          echo "protocol=https"$'\n'"host=github.com" | git credential fill || true
+          echo "protocol=https"$'\n'"host=github.com"$'\n'"path=fantana21/QuantNd"$'\n' | git credential fill || true
+          echo "protocol=https"$'\n'"host=github.com"$'\n'"path=fantana21/vcpkg-registry"$'\n' | git credential fill || true
+          echo "protocol=https"$'\n'"host=github.com"$'\n'"path=fantana21/BaumerGapiSdk"$'\n' | git credential fill || true
 
       - name: Git clone BaumerGapiSdk
         if: ${{ !cancelled() }}
