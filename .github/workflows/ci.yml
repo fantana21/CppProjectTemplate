@@ -68,7 +68,7 @@ jobs:
       - name: Configure credential helper and pre-seed credentials for private repos
         run: |
           git config --global credential.useHttpPath true
-          "url=https://github.com`npath=fantana21`nusername=AllRepositories`npassword=${{ secrets.ALL_REPOSITORIES_PAT }}`n" | git credential approve
+          "url=https://github.com`nusername=AllRepositories`npassword=${{ secrets.ALL_REPOSITORIES_PAT }}`n" | git credential approve
 
       - name: Git clone BaumerGapiSdk
         if: ${{ !cancelled() }}
