@@ -238,15 +238,15 @@ jobs:
 
       - name: Git clone BaumerGapiSdk
         if: ${{ !cancelled() }}
-        run: git clone https://github.com/fantana21/BaumerGapiSdk test/BaumerGapiSdk
+        run: git clone https://github.com/fantana21/BaumerGapiSdk.git test/BaumerGapiSdk
 
       - name: Git clone QuantNd
         if: ${{ !cancelled() }}
-        run: git clone https://github.com/fantana21/QuantNd test/QuantNd
+        run: git clone https://github.com/fantana21/QuantNd.git test/QuantNd
 
       - name: Git clone vcpkg-registry
         if: ${{ !cancelled() }}
-        run: git clone https://github.com/fantana21/vcpkg-registry test/vcpkg-registry
+        run: git clone https://github.com/fantana21/vcpkg-registry.git test/vcpkg-registry
 
       # - name: Build and test debug and release mode (GCC)
       #   id: test-gcc
