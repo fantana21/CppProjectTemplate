@@ -167,9 +167,9 @@ jobs:
 
       - name: Set GIT_TRACE and similar environment variables
         run: |
-          Add-Content "$env:GITHUB_ENV" 'GIT_TRACE=1'
-          Add-Content "$env:GITHUB_ENV" 'GIT_TRANSFER_TRACE=1'
-          Add-Content "$env:GITHUB_ENV" 'GIT_CURL_VERBOSE=1'
+          echo "GIT_TRACE=1" >> $GITHUB_ENV
+          echo "GIT_TRANSFER_TRACE=1" >> $GITHUB_ENV
+          echo "GIT_CURL_VERBOSE=1" >> $GITHUB_ENV
 
       - name: Print Git credential stuff
         run: |
