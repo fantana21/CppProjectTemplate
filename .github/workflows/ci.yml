@@ -165,12 +165,6 @@ jobs:
       #     cmake --build build
       #     sudo cmake --install build
 
-      - name: Set GIT_TRACE and similar environment variables
-        run: |
-          echo "GIT_TRACE=1" >> $GITHUB_ENV
-          echo "GIT_TRANSFER_TRACE=1" >> $GITHUB_ENV
-          echo "GIT_CURL_VERBOSE=1" >> $GITHUB_ENV
-
       - name: Print Git credential stuff
         run: |
           git config --global credential.helper || echo "No global credential helper set"
