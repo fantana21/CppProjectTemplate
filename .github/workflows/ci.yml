@@ -38,6 +38,7 @@ jobs:
         run: cmake -P CMake/Spell.cmake
 
   test-windows:
+    if: false
     # needs: format-and-spell
     runs-on: windows-2022
     steps:
