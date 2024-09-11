@@ -349,7 +349,7 @@
         },
         {
           "type": "build",
-          "name": "ci-ubuntu-debug-valgrind"
+          "name": "ci-ubuntu-release-valgrind"
         }
       ]
     },
