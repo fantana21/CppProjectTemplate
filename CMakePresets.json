@@ -107,8 +107,7 @@
       "inherits": [
         "common-linux",
         "clang-tidy",
-        "cppcheck",
-        "include-what-you-use"
+        "cppcheck"
       ]
     },
     {
@@ -151,6 +150,18 @@
         "sanitize",
         "common-linux"
       ]
+    },
+    {
+      "name": "ci-include-what-you-use",
+      "description": "For running Include What You Use on Ubuntu runners with GCC or Clang",
+      "inherits": [
+        "include-what-you-use",
+        "common-linux"
+      ],
+      "generator": "Ninja",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
     },
     {
       "name": "common-windows",
@@ -231,6 +242,10 @@
     {
       "name": "ci-sanitize",
       "configurePreset": "ci-sanitize"
+    },
+    {
+      "name": "ci-include-what-you-use",
+      "configurePreset": "ci-include-what-you-use"
     },
     {
       "name": "ci-windows-msvc-debug",
@@ -390,6 +405,20 @@
         {
           "type": "test",
           "name": "ci-sanitize"
+        }
+      ]
+    },
+    {
+      "name": "ci-include-what-you-use",
+      "description": "Run include-what-you-use on Ubuntu runners",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "ci-include-what-you-use"
+        },
+        {
+          "type": "build",
+          "name": "ci-include-what-you-use"
         }
       ]
     },
