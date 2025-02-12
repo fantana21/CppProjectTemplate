@@ -1,13 +1,13 @@
 cmake_minimum_required(VERSION 3.29)
 
 include(CMake/Prelude.cmake)
-include(CMake/VersionFromVcpkg.cmake)
+include(CMake/MetadataFromVcpkg.cmake)
 
 project(
     CppProjectTemplate
     VERSION ${version_from_vcpkg}
-    DESCRIPTION "Based on cmake-init but adapted to our needs and preferences"
-    HOMEPAGE_URL "https://github.com/fantana21/CppProjectTemplate"
+    DESCRIPTION ${description_from_vcpkg}
+    HOMEPAGE_URL ${homepage_from_vcpkg}
     LANGUAGES CXX
 )
 

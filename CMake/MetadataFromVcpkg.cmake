@@ -1,0 +1,7 @@
+file(READ vcpkg.json vcpkg_json)
+string(JSON version_from_vcpkg GET "${vcpkg_json}" version-semver)
+string(JSON description_from_vcpkg GET "${vcpkg_json}" description)
+string(JSON homepage_from_vcpkg GET "${vcpkg_json}" homepage)
+message("Project version:     ${version_from_vcpkg}")
+message("Project description: ${description_from_vcpkg}")
+message("Project homepage:    ${homepage_from_vcpkg}")
