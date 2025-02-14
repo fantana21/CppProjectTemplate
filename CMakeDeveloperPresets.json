@@ -14,8 +14,7 @@
       "inherits": [
         "common-linux",
         "clang-tidy",
-        "cppcheck",
-        "include-what-you-use"
+        "cppcheck"
       ],
       "cacheVariables": {
         "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
@@ -29,6 +28,15 @@
       ],
       "cacheVariables": {
         "CMAKE_CXX_COMPILER": "clang++"
+      }
+    },
+    {
+      "name": "dev-linux-iwyu",
+      "inherits": [
+        "ci-include-what-you-use"
+      ],
+      "cacheVariables": {
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
       }
     },
     {

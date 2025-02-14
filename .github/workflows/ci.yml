@@ -163,10 +163,17 @@ jobs:
       - name: Build and test debug and release mode with Valgrind (GCC)
         # Running tests with Valgrind is slow, so we only do it if running them with sanitizers
         # succeeded
+        id: valgrind-gcc
         if: ${{ !cancelled() && steps.sanitize-gcc.conclusion == 'success' }}
         run: |
           export CXX=g++
           cmake --workflow --preset ci-valgrind
+
+      - name: Build with Include What You Use
+        if: ${{ !cancelled() && steps.valgrind-gcc.conclusion == 'success' }}
+        run: |
+          export CXX=g++
+          cmake --workflow --preset ci-include-what-you-use
 
       - name: Build and test debug and release mode (Clang)
         id: test-clang
