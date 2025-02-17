@@ -136,6 +136,11 @@ jobs:
         run: |
           git config --global credential.https://github.com/fantana21.helper '!f() { echo username=QuantNd; echo password=${{ secrets.ALL_REPOSITORIES_PAT }}; }; f'
 
+      - name: Build with Include What You Use
+        run: |
+          export CXX=g++
+          cmake --workflow --preset ci-include-what-you-use
+
       - name: Build and test debug and release mode (GCC)
         id: test-gcc
         run: |
@@ -168,12 +173,6 @@ jobs:
         run: |
           export CXX=g++
           cmake --workflow --preset ci-valgrind
-
-      - name: Build with Include What You Use
-        if: ${{ !cancelled() && steps.valgrind-gcc.conclusion == 'success' }}
-        run: |
-          export CXX=g++
-          cmake --workflow --preset ci-include-what-you-use
 
       - name: Build and test debug and release mode (Clang)
         id: test-clang
