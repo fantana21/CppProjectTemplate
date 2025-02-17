@@ -86,7 +86,7 @@
       "name": "include-what-you-use",
       "hidden": true,
       "cacheVariables": {
-        "CMAKE_CXX_INCLUDE_WHAT_YOU_USE": "include-what-you-use"
+        "CMAKE_CXX_INCLUDE_WHAT_YOU_USE": "include-what-you-use;-Xiwyu;--error;-Xiwyu;--mapping_file=${sourceDir}/iwyu.imp"
       }
     },
     {
