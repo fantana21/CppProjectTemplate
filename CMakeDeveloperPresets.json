@@ -112,6 +112,10 @@
       "configuration": "Release"
     },
     {
+      "name": "dev-linux-iwyu",
+      "configurePreset": "dev-linux-iwyu"
+    },
+    {
       "name": "dev-linux-coverage",
       "configurePreset": "dev-linux-coverage"
     },
