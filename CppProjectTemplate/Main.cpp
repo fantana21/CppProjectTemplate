@@ -28,6 +28,9 @@ auto main() -> int
         auto const number = Number(41);
         std::cout << Increment(number) << "\n";
         std::cout << "quantnd::allAreEqual<1, 1, 1> = " << quantnd::allAreEqual<1, 1, 1> << "\n";
+        auto aaa = 1U;
+        auto bbb = 2;
+        auto ccc = aaa + bbb;
     }
     catch(...)
     {

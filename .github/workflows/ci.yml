@@ -76,10 +76,31 @@ jobs:
           Add-Content "$env:GITHUB_ENV" 'EnforceProcessCountAcrossBuilds=true'
 
       - name: Build and test debug and release mode (MSVC)
-        run: cmake --workflow --preset ci-windows-msvc
+        run: |
+          cmake --preset ci-windows-msvc
+          cmake --build --preset ci-windows-msvc-debug | Tee-Object -FilePath MSVC_Debug_build.log
+          ctest --preset ci-windows-msvc
+          cmake --build --preset ci-windows-msvc-release | Tee-Object -FilePath MSVC_Release_build.log
+          ctest --preset ci-windows-msvc
 
       - name: Build and test debug and release mode (clang-cl)
-        run: cmake --workflow --preset ci-windows-clang-cl
+        run: |
+          cmake --preset ci-windows-clang-cl
+          cmake --build --preset ci-windows-clang-cl-debug | Tee-Object -FilePath Clang-cl_Debug_build.log
+          ctest --preset ci-windows-clang-cl
+          cmake --build --preset ci-windows-clang-cl-release | Tee-Object -FilePath Clang-cl_Release_build.log
+          ctest --preset ci-windows-clang-cl
+
+      - name: Count and report warnings
+        uses: fantana21/report-warnings@v1
+        with:
+          build-logs: |
+            MSVC_Debug_build.log
+            MSVC_Release_build.log
+            Clang-cl_Debug_build.log
+            Clang-cl_Release_build.log
+          artifact-name: WarningsReportWindows
+          pr-comment-header: windows warnings report
 
   test-ubuntu:
     needs: format-and-spell
@@ -145,18 +166,17 @@ jobs:
         id: test-gcc
         run: |
           export CXX=g++
-          cmake --workflow --preset ci-ubuntu
+          cmake --preset ci-ubuntu
+          cmake --build --preset ci-ubuntu-debug | tee GCC_Debug_build.log
+          ctest --preset ci-ubuntu
+          cmake --build --preset ci-ubuntu-release | tee GCC_Release_build.log
+          ctest --preset ci-ubuntu
 
       - name: Build, test, and generate coverage reports (GCC)
+        id: coverage-gcc
         run: |
           export CXX=g++
           cmake --workflow --preset ci-coverage
-
-      - name: Report coverage results as job summary, PR comment, and artifact (GCC)
-        uses: fantana21/report-coverage@v1
-        with:
-          pr-comment-header: gcc
-          artifact-name: CoverageReportsGcc
 
       - name: Build and test with sanitizers (GCC)
         id: sanitize-gcc
@@ -180,7 +200,11 @@ jobs:
         run: |
           rm -rf build
           export CXX=clang++
-          cmake --workflow --preset ci-ubuntu
+          cmake --preset ci-ubuntu
+          cmake --build --preset ci-ubuntu-debug | tee Clang_Debug_build.log
+          ctest --preset ci-ubuntu
+          cmake --build --preset ci-ubuntu-release | tee Clang_Release_build.log
+          ctest --preset ci-ubuntu
 
       - name: Build, test, and generate coverage reports (Clang)
         id: coverage-clang
@@ -188,13 +212,6 @@ jobs:
         run: |
           export CXX=clang++
           cmake --workflow --preset ci-coverage
-
-      - name: Report coverage results as job summary, PR comment, and artifact (Clang)
-        if: ${{ !cancelled() && steps.coverage-clang.conclusion == 'success' }}
-        uses: fantana21/report-coverage@v1
-        with:
-          pr-comment-header: clang
-          artifact-name: CoverageReportsClang
 
       - name: Build and test with sanitizers (Clang)
         id: sanitize-clang
@@ -210,3 +227,29 @@ jobs:
         run: |
           export CXX=clang++
           cmake --workflow --preset ci-valgrind
+
+      - name: Count and report warnings
+        if: ${{ !cancelled() && steps.test-gcc.conclusion == 'success' && steps.test-clang.conclusion == 'success' }}
+        uses: fantana21/report-warnings@v1
+        with:
+          build-logs: |
+            GCC_Debug_build.log
+            GCC_Release_build.log
+            Clang_Debug_build.log
+            Clang_Release_build.log
+          artifact-name: WarningsReportUbuntu
+          pr-comment-header: ubuntu warnings report
+
+      - name: Report coverage results as job summary, PR comment, and artifact (GCC)
+        if: ${{ !cancelled() && steps.coverage-gcc.conclusion == 'success' }}
+        uses: fantana21/report-coverage@v1
+        with:
+          pr-comment-header: gcc
+          artifact-name: CoverageReportsGcc
+
+      - name: Report coverage results as job summary, PR comment, and artifact (Clang)
+        if: ${{ !cancelled() && steps.coverage-clang.conclusion == 'success' }}
+        uses: fantana21/report-coverage@v1
+        with:
+          pr-comment-header: clang
+          artifact-name: CoverageReportsClang
