@@ -58,8 +58,9 @@ jobs:
         uses: fantana21/set-up-vcpkg@v1
         with:
           committish: ${{ env.VCPKG_COMMITTISH }}
-          cache-key: vcpkg-${{ runner.os }}-${{ env.VCPKG_COMMITTISH }}-${{ hashFiles('vcpkg.json', 'CMakePresets.json') }}
+          cache-key: vcpkg-${{ runner.os }}-${{ env.VCPKG_COMMITTISH }}-${{ hashFiles('vcpkg.json', 'CMakePresets.json') }}-${{ github.sha }}
           cache-restore-keys: |
+            vcpkg-${{ runner.os }}-${{ env.VCPKG_COMMITTISH }}-${{ hashFiles('vcpkg.json', 'CMakePresets.json') }}
             vcpkg-${{ runner.os }}-${{ env.VCPKG_COMMITTISH }}
             vcpkg-${{ runner.os }}
           save-always: true
@@ -145,8 +146,9 @@ jobs:
         uses: fantana21/set-up-vcpkg@v1
         with:
           committish: ${{ env.VCPKG_COMMITTISH }}
-          cache-key: vcpkg-${{ runner.os }}-${{ env.VCPKG_COMMITTISH }}-${{ hashFiles('vcpkg.json', 'CMakePresets.json') }}
+          cache-key: vcpkg-${{ runner.os }}-${{ env.VCPKG_COMMITTISH }}-${{ hashFiles('vcpkg.json', 'CMakePresets.json') }}-${{ github.sha }}
           cache-restore-keys: |
+            vcpkg-${{ runner.os }}-${{ env.VCPKG_COMMITTISH }}-${{ hashFiles('vcpkg.json', 'CMakePresets.json') }}
             vcpkg-${{ runner.os }}-${{ env.VCPKG_COMMITTISH }}
             vcpkg-${{ runner.os }}
           save-always: true
