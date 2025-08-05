@@ -33,7 +33,7 @@ Checks: "*,\
   -mpi-*,\
   -openmp-*"
 WarningsAsErrors: ''
-HeaderFilterRegex: ''
+HeaderFilterRegex: '.*\.hpp$'
 # AnalyzeTemporaryDtors: false
 FormatStyle: none
 CheckOptions:
