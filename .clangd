@@ -1,3 +1,2 @@
 Diagnostics:
-  UnusedIncludes: None
-  MissingIncludes: None
+  MissingIncludes: Strict

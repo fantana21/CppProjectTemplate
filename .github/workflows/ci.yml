@@ -132,15 +132,6 @@ jobs:
           $CLANG_VERSIONS = (clang++ --version | Select-String -Pattern '([0-9]+)\.([0-9]+)\.([0-9]+)').Matches.Groups.Value
           "CLANG_MAJOR_VERSION=$($CLANG_VERSIONS[1])" | Out-File -FilePath $env:GITHUB_ENV -Append
 
-      - name: Install Include What You Use
-        run: |
-          sudo apt-get install -y llvm-${{ env.CLANG_MAJOR_VERSION }}-dev libclang-${{ env.CLANG_MAJOR_VERSION }}-dev
-          git clone --depth 1 --branch clang_${{ env.CLANG_MAJOR_VERSION }} https://github.com/include-what-you-use/include-what-you-use.git
-          cd include-what-you-use
-          cmake -B build -S . -G Ninja -DCMAKE_PREFIX_PATH=/usr/lib/llvm-${{ env.CLANG_MAJOR_VERSION }}
-          cmake --build build
-          sudo cmake --install build
-
       - name: Set up vcpkg
         id: set-up-vcpkg
         uses: fantana21/set-up-vcpkg@v1
@@ -190,12 +181,6 @@ jobs:
         run: |
           export CXX=g++
           cmake --workflow --preset ci-valgrind
-
-      - name: Build with Include What You Use
-        if: ${{ !cancelled() && steps.valgrind-gcc.conclusion == 'success' }}
-        run: |
-          export CXX=g++
-          cmake --workflow --preset ci-include-what-you-use
 
       - name: Build and test debug and release mode (Clang)
         id: test-clang

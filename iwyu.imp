@@ -1,4 +1,0 @@
-[
-    # Only use NamedType's facade header
-    { include: ["@<NamedType/.*>", "private", "<NamedType/named_type.hpp>", "public"] },
-]
