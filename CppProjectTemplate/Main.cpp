@@ -1,11 +1,11 @@
 #include <CppProjectTemplate/Library.hpp>
 #include <CppProjectTemplate/Square.hpp>
 
-#include <NamedType/named_type.hpp>
+#include <NamedType/named_type_impl.hpp>
+#include <NamedType/underlying_functionalities.hpp>
 #include <QuantNd/Utility.hpp>
 
 #include <iostream>
-#include <string>
 
 
 using Number = fluent::NamedType<int, struct NumberTag, fluent::Addable, fluent::Printable>;

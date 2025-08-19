@@ -31,15 +31,6 @@
       }
     },
     {
-      "name": "dev-linux-iwyu",
-      "inherits": [
-        "ci-include-what-you-use"
-      ],
-      "cacheVariables": {
-        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
-      }
-    },
-    {
       "name": "dev-linux-sanitize",
       "inherits": [
         "sanitize",
@@ -110,10 +101,6 @@
       "name": "dev-linux-clang-release",
       "configurePreset": "dev-linux-clang",
       "configuration": "Release"
-    },
-    {
-      "name": "dev-linux-iwyu",
-      "configurePreset": "dev-linux-iwyu"
     },
     {
       "name": "dev-linux-coverage",

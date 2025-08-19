@@ -2,6 +2,8 @@
 
 #include <fmt/core.h>
 
+#include <string>
+
 
 Library::Library() : name_{fmt::format("{}", "CppProjectTemplate")}
 {}
