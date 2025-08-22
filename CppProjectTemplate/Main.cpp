@@ -8,6 +8,8 @@
 #include <iostream>
 
 
+namespace
+{
 using Number = fluent::NamedType<int, struct NumberTag, fluent::Addable, fluent::Printable>;
 
 
@@ -15,16 +17,17 @@ auto Increment(Number number) -> Number
 {
     return number + Number(1);
 }
+}
 
 
 auto main() -> int
 {
     try
     {
-        auto const library = Library{};
+        auto const library = cpt::Library{};
         auto const message = "Hello from " + library.Name() + "!";
         std::cout << message << "\n";
-        std::cout << "Square(2) = " << Square(2) << "\n";
+        std::cout << "Square(2) = " << cpt::Square(2) << "\n";
         auto const number = Number(41);
         std::cout << Increment(number) << "\n";
         std::cout << "quantnd::allAreEqual<1, 1, 1> = " << quantnd::allAreEqual<1, 1, 1> << "\n";

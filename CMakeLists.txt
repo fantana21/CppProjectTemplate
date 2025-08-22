@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.29)
+cmake_minimum_required(VERSION 3.31)
 
 include(CMake/Prelude.cmake)
 include(CMake/MetadataFromVcpkg.cmake)
@@ -10,6 +10,10 @@ project(
     HOMEPAGE_URL ${homepage_from_vcpkg}
     LANGUAGES CXX
 )
+
+# Disable scanning for modules because we don't use them and this causes errors when running clang
+# tools while compiling with GCC
+set(CMAKE_CXX_SCAN_FOR_MODULES OFF)
 
 include(CMake/OptionsAndVariables.cmake)
 include(CMake/AddAndSetUpTargets.cmake)

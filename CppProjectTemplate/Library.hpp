@@ -3,6 +3,8 @@
 #include <string>
 
 
+namespace cpt
+{
 //! @brief The core implementation of the executable
 //!
 //! This class makes up the library part of the executable, which means that the main logic is
@@ -20,3 +22,4 @@ public:
 private:
     std::string name_;
 };
+}

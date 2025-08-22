@@ -71,6 +71,6 @@ function(_set_include_directories_and_cxx_standard target scope)
     target_include_directories(
         ${target} ${warning_guard} ${scope} "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>"
     )
-    target_compile_features(${target} ${scope} cxx_std_20)
+    target_compile_features(${target} ${scope} cxx_std_23)
     set_property(TARGET ${target} PROPERTY CXX_EXTENSIONS OFF)
 endfunction()
