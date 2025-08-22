@@ -8,12 +8,15 @@
 #include <iostream>
 
 
+namespace
+{
 using Number = fluent::NamedType<int, struct NumberTag, fluent::Addable, fluent::Printable>;
 
 
 auto Increment(Number number) -> Number
 {
     return number + Number(1);
+}
 }
 
 

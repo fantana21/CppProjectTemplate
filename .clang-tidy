@@ -1,39 +1,253 @@
 ---
-# Enable ALL the things! Except not really. We don't use the abseil library, OpenCL (the altera
-# stuff), android, darwin (an Apple OS apparently), MPI or OpenMP. The fuchsia checks are just too
-# restrictive, we don't write Objective-C and don't develop the Linux kernel or LLVM-libc.
-# misc-non-private-member-variables-in-classes: the options don't do anything.
-# misc-const-correctness is not about const-correctness, but about const-ness of local variables and
-# I am not on the const-all-the-things bandwagon.
+# For clang-tidy 19
+#
+# Enable all the things! Except not really. We don't use/develop for
+#
+# - Abseil library
+# - Altera (OpenCL programming for FPGAs)
+# - Android
+# - Boost
+# - Darwin (Apple platforms)
+# - Fuchisa (but the inheritance checks are use)
+# - Google Test
+# - Objective-C (google-objc)
+# - Linux kernel
+# - LLVM
+# - LLVM-libc
+# - MPI
+# - OpenMP
+#
+# We also disable some specific checks that we don't like:
+#
+# - avoid-c-arrays: C arrays are fine if used only locally.
+# - bugprone-implicit-widening-of-multiplication-result: I am not sure anymore but I think this is
+#   too noisy.
+# - clang-analyzer-cplusplus.NewDeleteLeaks: I don't know how to silence potential false positives
+#   that it found in doctest.h, so I disable it completely. Also, we have Valgrind anyway.
+# - clang-diagnostic-unused-command-line-argument: I don't remember why I disabled this, but it
+#   doesn't sound like an important check.
+# - google-readability-todo: We don't require names and/or bug numbers in TODO comments.
+# - google-runtime-int: We don't require using std::int32_t, etc. instead of int, long, ...
+# - misc-const-correctness: It's not about const-correctness, but about const-ness of local
+#   variables and I am not on the const-all-the-things bandwagon.
+# - misc-header-include-cycle: Triggers in our .ipp files. For some reason I can't disable the
+#   warnings with NOLINT comments and the IgnoredFilesList option is too cumbersome to use.
+# - modernize-use-designated-initializers: This is too verbose since we try to use different strong
+#   types for every field.
+# - namespace-comment: We don't use namespace comments.
+# - performance-enum-size: The added noise outweighs the potential performance gains of reduced enum
+#   sizes in desktop applications. For embedded systems, this check should be enabled.
+# - readability-math-missing-parentheses: We are not that stupid.
+# - readability-static-accessed-through-instance: Accessing a static member through an instance is
+#   too convenient to give up.
+#
+# The rest are all alias checks according to the documentation of clang-tidy 19.1.0. Apparently,
+# they run like normal checks, so they do unnecessary duplicate work.
 Checks: "*,\
-  -*avoid-c-arrays,\
   -abseil-*,\
-  -altera-id-dependent-backward-branch,\
-  -altera-kernel-name-restriction,\
-  -altera-single-work-item-barrier,\
-  -altera-struct-pack-align,\
-  -altera-unroll-loops,\
+  -altera-*,\
   -android-*,\
-  -bugprone-implicit-widening-of-multiplication-result,\
-  -clang-diagnostic-unused-command-line-argument,\
+  -boost-*,\
   -darwin-*,\
   -fuchsia-*,\
-  fuchsia-multiple-inheritance,\
+  -*googletest*,\
   -google-objc-*,\
-  -google-readability-namespace-comments,\
+  -linuxkernel-*,\
+  -llvm-*,\
+  -llvmlibc-*,\
+  -mpi-*,\
+  -openmp-*,\
+  -*avoid-c-arrays,\
+  -bugprone-implicit-widening-of-multiplication-result,\
+  -clang-analyzer-cplusplus.NewDeleteLeaks,\
+  -clang-diagnostic-unused-command-line-argument,\
+  fuchsia-multiple-inheritance,\
+  fuchsia-virtual-inheritance,\
   -google-readability-todo,\
   -google-runtime-int,\
-  -linuxkernel-must-use-errs,\
-  -llvm-header-guard,\
-  -llvm-namespace-comment,\
-  -llvmlibc-*,\
   -misc-const-correctness,\
-  -mpi-*,\
-  -openmp-*"
+  -misc-header-include-cycle,\
+  -modernize-use-designated-initializers,\
+  -*namespace-comment*,\
+  -performance-enum-size,\
+  -readability-math-missing-parentheses,\
+  -readability-static-accessed-through-instance,\
+  -bugprone-narrowing-conversions,\
+  -cert-con36-c,\
+  -cert-con54-cpp,\
+  -cert-ctr56-cpp,\
+  -cert-dcl03-c,\
+  -cert-dcl16-c,\
+  -cert-dcl37-c,\
+  -cert-dcl51-cpp,\
+  -cert-dcl54-cpp,\
+  -cert-dcl59-cpp,\
+  -cert-err09-cpp,\
+  -cert-err61-cpp,\
+  -cert-exp42-c,\
+  -cert-fio38-c,\
+  -cert-flp37-c,\
+  -cert-int09-c,\
+  -cert-msc24-c,\
+  -cert-msc30-c,\
+  -cert-msc32-c,\
+  -cert-msc33-c,\
+  -cert-msc54-cpp,\
+  -cert-oop11-cpp,\
+  -cert-oop54-cpp,\
+  -cert-pos44-c,\
+  -cert-pos47-c,\
+  -cert-sig30-c,\
+  -cert-str34-c,\
+  -clang-analyzer-core.BitwiseShift,\
+  -clang-analyzer-core.CallAndMessage,\
+  -clang-analyzer-core.DivideZero,\
+  -clang-analyzer-core.NonNullParamChecker,\
+  -clang-analyzer-core.NullDereference,\
+  -clang-analyzer-core.StackAddressEscape,\
+  -clang-analyzer-core.UndefinedBinaryOperatorResult,\
+  -clang-analyzer-core.VLASize,\
+  -clang-analyzer-core.uninitialized.ArraySubscript,\
+  -clang-analyzer-core.uninitialized.Assign,\
+  -clang-analyzer-core.uninitialized.Branch,\
+  -clang-analyzer-core.uninitialized.CapturedBlockVariable,\
+  -clang-analyzer-core.uninitialized.NewArraySize,\
+  -clang-analyzer-core.uninitialized.UndefReturn,\
+  -clang-analyzer-cplusplus.ArrayDelete,\
+  -clang-analyzer-cplusplus.InnerPointer,\
+  -clang-analyzer-cplusplus.Move,\
+  -clang-analyzer-cplusplus.NewDelete,\
+  -clang-analyzer-cplusplus.NewDeleteLeaks,\
+  -clang-analyzer-cplusplus.PlacementNew,\
+  -clang-analyzer-cplusplus.PureVirtualCall,\
+  -clang-analyzer-cplusplus.StringChecker,\
+  -clang-analyzer-deadcode.DeadStores,\
+  -clang-analyzer-fuchsia.HandleChecker,\
+  -clang-analyzer-nullability.NullPassedToNonnull,\
+  -clang-analyzer-nullability.NullReturnedFromNonnull,\
+  -clang-analyzer-nullability.NullableDereferenced,\
+  -clang-analyzer-nullability.NullablePassedToNonnull,\
+  -clang-analyzer-nullability.NullableReturnedFromNonnull,\
+  -clang-analyzer-optin.core.EnumCastOutOfRange,\
+  -clang-analyzer-optin.cplusplus.UninitializedObject,\
+  -clang-analyzer-optin.cplusplus.VirtualCall,\
+  -clang-analyzer-optin.mpi.MPI-Checker,\
+  -clang-analyzer-optin.osx.OSObjectCStyleCast,\
+  -clang-analyzer-optin.osx.cocoa.localizability.EmptyLocalizationContextChecker,\
+  -clang-analyzer-optin.osx.cocoa.localizability.NonLocalizedStringChecker,\
+  -clang-analyzer-optin.performance.GCDAntipattern,\
+  -clang-analyzer-optin.performance.Padding,\
+  -clang-analyzer-optin.portability.UnixAPI,\
+  -clang-analyzer-optin.taint.TaintedAlloc,\
+  -clang-analyzer-osx.API,\
+  -clang-analyzer-osx.MIG,\
+  -clang-analyzer-osx.NumberObjectConversion,\
+  -clang-analyzer-osx.OSObjectRetainCount,\
+  -clang-analyzer-osx.ObjCProperty,\
+  -clang-analyzer-osx.SecKeychainAPI,\
+  -clang-analyzer-osx.cocoa.AtSync,\
+  -clang-analyzer-osx.cocoa.AutoreleaseWrite,\
+  -clang-analyzer-osx.cocoa.ClassRelease,\
+  -clang-analyzer-osx.cocoa.Dealloc,\
+  -clang-analyzer-osx.cocoa.IncompatibleMethodTypes,\
+  -clang-analyzer-osx.cocoa.Loops,\
+  -clang-analyzer-osx.cocoa.MissingSuperCall,\
+  -clang-analyzer-osx.cocoa.NSAutoreleasePool,\
+  -clang-analyzer-osx.cocoa.NSError,\
+  -clang-analyzer-osx.cocoa.NilArg,\
+  -clang-analyzer-osx.cocoa.NonNilReturnValue,\
+  -clang-analyzer-osx.cocoa.ObjCGenerics,\
+  -clang-analyzer-osx.cocoa.RetainCount,\
+  -clang-analyzer-osx.cocoa.RunLoopAutoreleaseLeak,\
+  -clang-analyzer-osx.cocoa.SelfInit,\
+  -clang-analyzer-osx.cocoa.SuperDealloc,\
+  -clang-analyzer-osx.cocoa.UnusedIvars,\
+  -clang-analyzer-osx.cocoa.VariadicMethodTypes,\
+  -clang-analyzer-osx.coreFoundation.CFError,\
+  -clang-analyzer-osx.coreFoundation.CFNumber,\
+  -clang-analyzer-osx.coreFoundation.CFRetainRelease,\
+  -clang-analyzer-osx.coreFoundation.containers.OutOfBounds,\
+  -clang-analyzer-osx.coreFoundation.containers.PointerSizedValues,\
+  -clang-analyzer-security.FloatLoopCounter,\
+  -clang-analyzer-security.PutenvStackArray,\
+  -clang-analyzer-security.SetgidSetuidOrder,\
+  -clang-analyzer-security.cert.env.InvalidPtr,\
+  -clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling,\
+  -clang-analyzer-security.insecureAPI.UncheckedReturn,\
+  -clang-analyzer-security.insecureAPI.bcmp,\
+  -clang-analyzer-security.insecureAPI.bcopy,\
+  -clang-analyzer-security.insecureAPI.bzero,\
+  -clang-analyzer-security.insecureAPI.decodeValueOfObjCType,\
+  -clang-analyzer-security.insecureAPI.getpw,\
+  -clang-analyzer-security.insecureAPI.gets,\
+  -clang-analyzer-security.insecureAPI.mkstemp,\
+  -clang-analyzer-security.insecureAPI.mktemp,\
+  -clang-analyzer-security.insecureAPI.rand,\
+  -clang-analyzer-security.insecureAPI.strcpy,\
+  -clang-analyzer-security.insecureAPI.vfork,\
+  -clang-analyzer-unix.API,\
+  -clang-analyzer-unix.BlockInCriticalSection,\
+  -clang-analyzer-unix.Errno,\
+  -clang-analyzer-unix.Malloc,\
+  -clang-analyzer-unix.MallocSizeof,\
+  -clang-analyzer-unix.MismatchedDeallocator,\
+  -clang-analyzer-unix.StdCLibraryFunctions,\
+  -clang-analyzer-unix.Stream,\
+  -clang-analyzer-unix.Vfork,\
+  -clang-analyzer-unix.cstring.BadSizeArg,\
+  -clang-analyzer-unix.cstring.NullArg,\
+  -clang-analyzer-valist.CopyToSelf,\
+  -clang-analyzer-valist.Uninitialized,\
+  -clang-analyzer-valist.Unterminated,\
+  -clang-analyzer-webkit.NoUncountedMemberChecker,\
+  -clang-analyzer-webkit.RefCntblBaseVirtualDtor,\
+  -clang-analyzer-webkit.UncountedLambdaCapturesChecker,\
+  -cppcoreguidelines-avoid-c-arrays,\
+  -cppcoreguidelines-avoid-magic-numbers,\
+  -cppcoreguidelines-c-copy-assignment-signature,\
+  -cppcoreguidelines-explicit-virtual-functions,\
+  -cppcoreguidelines-macro-to-enum,\
+  -cppcoreguidelines-noexcept-destructor,\
+  -cppcoreguidelines-noexcept-move-operations,\
+  -cppcoreguidelines-noexcept-swap,\
+  -cppcoreguidelines-non-private-member-variables-in-classes,\
+  -cppcoreguidelines-use-default-member-init,\
+  -fuchsia-header-anon-namespaces,\
+  -google-readability-braces-around-statements,\
+  -google-readability-function-size,\
+  -google-readability-namespace-comments,\
+  -hicpp-avoid-c-arrays,\
+  -hicpp-avoid-goto,\
+  -hicpp-braces-around-statements,\
+  -hicpp-deprecated-headers,\
+  -hicpp-explicit-conversions,\
+  -hicpp-function-size,\
+  -hicpp-invalid-access-moved,\
+  -hicpp-member-init,\
+  -hicpp-move-const-arg,\
+  -hicpp-named-parameter,\
+  -hicpp-new-delete-operators,\
+  -hicpp-no-array-decay,\
+  -hicpp-no-malloc,\
+  -hicpp-noexcept-move,\
+  -hicpp-special-member-functions,\
+  -hicpp-static-assert,\
+  -hicpp-undelegated-constructor,\
+  -hicpp-uppercase-literal-suffix,\
+  -hicpp-use-auto,\
+  -hicpp-use-emplace,\
+  -hicpp-use-equals-default,\
+  -hicpp-use-equals-delete,\
+  -hicpp-use-noexcept,\
+  -hicpp-use-nullptr,\
+  -hicpp-use-override,\
+  -hicpp-vararg,\
+  -llvm-else-after-return,\
+  -llvm-qualified-auto,\
+  "
 WarningsAsErrors: ''
 HeaderFilterRegex: '.*\.hpp$'
-# AnalyzeTemporaryDtors: false
-FormatStyle: none
+FormatStyle: 'file'
 CheckOptions:
   - key: 'bugprone-argument-comment.StrictMode'
     value: 'true'
@@ -56,6 +270,8 @@ CheckOptions:
     value: '<cmath>'
   - key: 'cppcoreguidelines-narrowing-conversions.PedanticMode'
     value: 'true'
+  - key: 'cppcoreguidelines-pro-type-member-init.UseAssignment'
+    value: 'true'
   - key: 'readability-else-after-return.WarnOnUnfixable'
     value: 'true'
   - key: 'readability-else-after-return.WarnOnConditionVariables'
@@ -68,15 +284,11 @@ CheckOptions:
     value: 'true'
   - key: 'readability-redundant-access-specifiers.CheckFirstDeclaration'
     value: 'true'
-  - key: 'readability-identifier-length.MinimumVariableNameLength'
-    value: 2
-  - key: 'readability-identifier-length.MinimumParameterNameLength'
-    value: 2
-# For variables of generic type T and common physical quantities
+# For variables of generic type T, common physical quantities
   - key: 'readability-identifier-length.IgnoredVariableNames'
-    value: '^(t|T|p|dt|x|y|z|g|v|i)$'
+    value: '^(t|T|p|dt|x|y|z|g|v|i|r)$'
   - key: 'readability-identifier-length.IgnoredParameterNames'
-    value: '^(t|T|p|dt|x|y|z|v)$'
+    value: '^(t|T|p|dt|x|y|z|v|r)$'
 # These seem to be the most common identifier styles
   - key: 'readability-identifier-naming.AbstractClassCase'
     value: 'CamelCase'
@@ -102,8 +314,6 @@ CheckOptions:
     value: 'CamelCase'
   - key: 'readability-identifier-naming.ConstexprVariableCase'
     value: 'camelBack'
-  - key: 'readability-identifier-naming.ConstexprVariableIgnoredRegexp'
-    value: '^T.*$'
   - key: 'readability-identifier-naming.EnumCase'
     value: 'CamelCase'
   - key: 'readability-identifier-naming.EnumConstantCase'
@@ -125,16 +335,12 @@ CheckOptions:
     value: 'camelBack'
   - key: 'readability-identifier-naming.LocalConstantCase'
     value: 'camelBack'
-  - key: 'readability-identifier-naming.LocalConstantIgnoredRegexp'
-    value: '^T.*$'
   - key: 'readability-identifier-naming.LocalConstantPointerCase'
     value: 'camelBack'
   - key: 'readability-identifier-naming.LocalPointerCase'
     value: 'camelBack'
   - key: 'readability-identifier-naming.LocalVariableCase'
     value: 'camelBack'
-  - key: 'readability-identifier-naming.LocalVariableIgnoredRegexp'
-    value: '^T.*$'
   - key: 'readability-identifier-naming.MacroDefinitionCase'
     value: 'UPPER_CASE'
   - key: 'readability-identifier-naming.MemberCase'
@@ -146,8 +352,6 @@ CheckOptions:
     value: 'camelBack'
   - key: 'readability-identifier-naming.ParameterCase'
     value: 'camelBack'
-  - key: 'readability-identifier-naming.ParameterIgnoredRegexp'
-    value: '^T.*$'
   - key: 'readability-identifier-naming.ParameterPackCase'
     value: 'camelBack'
   - key: 'readability-identifier-naming.PointerParameterCase'

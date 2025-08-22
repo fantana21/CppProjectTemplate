@@ -2,8 +2,6 @@
 
 #include <doctest/doctest.h>
 
-#include <string>
-
 
 TEST_CASE("Library name is CppProjectTemplate")
 {
