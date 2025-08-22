@@ -246,7 +246,7 @@ Checks: "*,\
   -llvm-qualified-auto,\
   "
 WarningsAsErrors: ''
-HeaderFilterRegex: '.*\.hpp$'
+HeaderFilterRegex: '.*\.[hi]pp$'
 FormatStyle: 'file'
 CheckOptions:
   - key: 'bugprone-argument-comment.StrictMode'
