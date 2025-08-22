@@ -9,17 +9,20 @@ on:
       - main
 
 env:
-  CMAKE_VERSION: "3.29.6"
   VCPKG_COMMITTISH: 49ac2134b31b95b0ddf29d56873dcd24392691df
 
 jobs:
-  format-and-spell:
+  check-formatting-and-spelling:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install codespell and cmake-format
-        run: pipx install codespell cmakelang
+      - name: Set up tools
+        run: |
+          sudo apt update -q
+          sudo apt install -y clang-format-19
+          pipx install cmakelang codespell
+          sudo update-alternatives --install /usr/bin/clang-format clang-format /usr/bin/clang-format-19 9999
 
       - name: Print versions
         run: |
@@ -27,33 +30,35 @@ jobs:
           pipx --version
           cmake --version
           clang-format --version
+          clang-format-19 --version
           cmake-format --version
           codespell --version
 
-      - name: Format code
+      - name: Check code formatting
         run: cmake -P CMake/Format.cmake
 
-      - name: Spell check
+      - name: Check spelling
         run: cmake -P CMake/Spell.cmake
 
   test-windows:
-    needs: format-and-spell
+    needs: check-formatting-and-spelling
     runs-on: windows-2022
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up build tools
+      - name: Set up MSVC environment
         uses: aminya/setup-cpp@v1
         with:
           vcvarsall: true
-          cmake: ${{ env.CMAKE_VERSION }}
-          ninja: true
 
-      - name: Print version of build tools
+      - name: Print versions
         run: |
           cmake --version
           ninja --version
+          cl --version || true
+          clang-cl --version || true
 
+        # TODO: Think about removing VCPKG_COMMITTISH from the cache key
       - name: Set up vcpkg
         uses: fantana21/set-up-vcpkg@v1
         with:
@@ -71,7 +76,7 @@ jobs:
         run: |
           "url=https://github.com`nusername=AllRepositories`npassword=${{ secrets.ALL_REPOSITORIES_PAT }}`n" | git credential approve
 
-      - name: Set up MultiToolTask
+      - name: Improve parallelism of MSBuild
         run: |
           Add-Content "$env:GITHUB_ENV" 'UseMultiToolTask=true'
           Add-Content "$env:GITHUB_ENV" 'EnforceProcessCountAcrossBuilds=true'
@@ -104,18 +109,27 @@ jobs:
           pr-comment-header: windows warnings report
 
   test-ubuntu:
-    needs: format-and-spell
+    needs: check-formatting-and-spelling
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install tools
+      - name: Set up tools
         run: |
-          sudo apt-get update -q
-          sudo apt-get install -y cppcheck ninja-build valgrind llvm
+          sudo apt update -q
+          sudo apt install -y gcc-14 g++-14
+          sudo apt install -y clang-19 clang-tidy-19 llvm-19
+          sudo apt install -y cppcheck valgrind
           pipx install gcovr
+          sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-14 9999
+          sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-14 9999
+          sudo update-alternatives --install /usr/bin/gcov gcov /usr/bin/gcov-14 9999
+          sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-19 9999
+          sudo update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-19 9999
+          sudo update-alternatives --install /usr/bin/clang-tidy clang-tidy /usr/bin/clang-tidy-19 9999
+          sudo update-alternatives --install /usr/bin/llvm-cov llvm-cov /usr/bin/llvm-cov-19 9999
 
-      - name: Print and store version info
+      - name: Print and store versions
         shell: pwsh
         run: |
           g++ --version
