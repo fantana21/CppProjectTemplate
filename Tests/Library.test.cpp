@@ -5,6 +5,6 @@
 
 TEST_CASE("Library name is CppProjectTemplate")
 {
-    auto const library = Library{};
+    auto const library = cpt::Library{};
     CHECK(library.Name() == "CppProjectTemplate");
 }
