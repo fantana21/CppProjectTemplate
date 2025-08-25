@@ -9,6 +9,7 @@ else()
         FATAL_ERROR "Unsupported compiler for generating coverage info: ${CMAKE_CXX_COMPILER_ID}"
     )
 endif()
+message("Selected Gcov executable: '${GCOV_EXECUTABLE}'")
 
 set(GENERATE_COVERAGE_REPORTS
     gcovr
