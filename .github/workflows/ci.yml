@@ -40,24 +40,39 @@ jobs:
       - name: Check spelling
         run: cmake -P CMake/Spell.cmake
 
-  build-and-test-windows:
+  build-and-test:
     needs: check-formatting-and-spelling
     strategy:
       fail-fast: false
       matrix:
-        # TODO: Try windows-2025
-        os:
-          - windows-2022
+        # Keeping only the `include:` part below would be sufficient to generate the same matrix
+        # combinations, but then the job names would contain all the variables, making them very
+        # long. Having just the compiler is much nicer.
         compiler:
           - MSVC
           - clang-cl
+          - GCC
+          - Clang
+        # TODO: Try windows-2025
         include:
           - compiler: MSVC
-            compiler-kebap-case: msvc
+            preset: ci-windows-msvc
             compiler-pascal-case: Msvc
+            os: windows-2022
           - compiler: clang-cl
-            compiler-kebap-case: clang-cl
+            preset: ci-windows-clang-cl
             compiler-pascal-case: ClangCl
+            os: windows-2022
+          - compiler: GCC
+            compiler-setup-cpp: gcc-14
+            preset: "ci-ubuntu"
+            compiler-pascal-case: Gcc
+            os: ubuntu-24.04
+          - compiler: Clang
+            compiler-setup-cpp: llvm-19
+            preset: "ci-ubuntu"
+            compiler-pascal-case: Clang
+            os: ubuntu-24.04
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -68,83 +83,26 @@ jobs:
         with:
           vcvarsall: true
 
-      - name: Print versions
-        shell: bash
-        run: |
-          cmake --version
-          ninja --version
-          cl || true
-          clang-cl --version || true
-
-      - name: Set up vcpkg
-        uses: fantana21/set-up-vcpkg@v1
-        with:
-          committish: ${{ env.VCPKG_COMMITTISH }}
-          cache-key: vcpkg-${{ runner.os }}-${{ matrix.compiler-kebap-case }}-${{ hashFiles('vcpkg.json', 'CMakePresets.json') }}-${{ github.sha }}
-          cache-restore-keys: |
-            vcpkg-${{ runner.os }}-${{ matrix.compiler-kebap-case }}-${{ hashFiles('vcpkg.json', 'CMakePresets.json') }}
-            vcpkg-${{ runner.os }}-${{ matrix.compiler-kebap-case }}
-            vcpkg-${{ runner.os }}
-          save-always: true
-          use-private-registry: true
-          private-registry-pat: ${{ secrets.VCPKG_REGISTRY_PAT }}
-
-      - name: Pre-seed credentials for private repos
-        run: |
-          "url=https://github.com`nusername=AllRepositories`npassword=${{ secrets.ALL_REPOSITORIES_PAT }}`n" | git credential approve
-
-      - name: Improve parallelism of MSBuild
-        if: ${{ matrix.compiler-kebap-case == 'msvc' }}
-        run: |
-          Add-Content "$env:GITHUB_ENV" 'UseMultiToolTask=true'
-          Add-Content "$env:GITHUB_ENV" 'EnforceProcessCountAcrossBuilds=true'
-
-      - name: Build and test debug and release mode
-        run: |
-          cmake --preset ci-windows-${{ matrix.compiler-kebap-case }}
-          cmake --build --preset ci-windows-${{ matrix.compiler-kebap-case }}-debug | Tee-Object -FilePath ${{ matrix.compiler }}_Debug_build.log
-          ctest --preset ci-windows-${{ matrix.compiler-kebap-case }}
-          cmake --build --preset ci-windows-${{ matrix.compiler-kebap-case }}-release | Tee-Object -FilePath ${{ matrix.compiler }}_Release_build.log
-          ctest --preset ci-windows-${{ matrix.compiler-kebap-case }}
-
-      - name: Count and report warnings
-        uses: fantana21/report-warnings@v1
-        with:
-          build-logs: |
-            ${{ matrix.compiler }}_Debug_build.log
-            ${{ matrix.compiler }}_Release_build.log
-          artifact-name: WarningsReport${{ matrix.compiler-pascal-case }}
-          pr-comment-header: ${{ matrix.compiler }} warnings report
-
-  build-and-test-ubuntu:
-    needs: check-formatting-and-spelling
-    strategy:
-      fail-fast: false
-      matrix:
-        os:
-          - ubuntu-24.04
-        compiler:
-          - gcc-14
-          - llvm-19
-    runs-on: ${{ matrix.os }}
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up C++ tools
+      - name: Set up C++ compiler and tools
+        if: ${{ runner.os == 'Linux' }}
         uses: aminya/setup-cpp@v1
         with:
-          compiler: ${{ matrix.compiler }}
+          compiler: ${{ matrix.compiler-setup-cpp }}
           clang-tidy: 19
           cppcheck: true
           gcovr: true
 
       - name: Install valgrind
+        if: ${{ runner.os == 'Linux' }}
         run: |
           sudo apt update -q
           sudo apt install -y valgrind
 
       - name: Print versions
+        shell: bash
         run: |
+          cl || true
+          clang-cl --version || true
           g++ --version || true
           clang++ --version || true
           cmake --version || true
@@ -160,45 +118,63 @@ jobs:
         uses: fantana21/set-up-vcpkg@v1
         with:
           committish: ${{ env.VCPKG_COMMITTISH }}
-          cache-key: vcpkg-${{ runner.os }}-${{ matrix.compiler }}-${{ hashFiles('vcpkg.json', 'CMakePresets.json') }}-${{ github.sha }}
+          cache-key: vcpkg-${{ matrix.os }}-${{ matrix.compiler }}-${{ hashFiles('vcpkg.json', 'CMakePresets.json') }}-${{ github.sha }}
           cache-restore-keys: |
-            vcpkg-${{ runner.os }}-${{ matrix.compiler }}-${{ hashFiles('vcpkg.json', 'CMakePresets.json') }}
-            vcpkg-${{ runner.os }}-${{ matrix.compiler }}
-            vcpkg-${{ runner.os }}
+            vcpkg-${{ matrix.os }}-${{ matrix.compiler }}-${{ hashFiles('vcpkg.json', 'CMakePresets.json') }}
+            vcpkg-${{ matrix.os }}-${{ matrix.compiler }}
+            vcpkg-${{ matrix.os }}
           save-always: true
           use-private-registry: true
           private-registry-pat: ${{ secrets.VCPKG_REGISTRY_PAT }}
 
+      - name: Pre-seed credentials for private repos
+        if: ${{ runner.os == 'Windows' }}
+        run: |
+          "url=https://github.com`nusername=AllRepositories`npassword=${{ secrets.ALL_REPOSITORIES_PAT }}`n" | git credential approve
+
       - name: Set up credential helper for private repos
+        if: ${{ runner.os == 'Linux' }}
         run: |
           git config --global credential.https://github.com/fantana21.helper '!f() { echo username=AllRepositories; echo password=${{ secrets.ALL_REPOSITORIES_PAT }}; }; f'
 
+      - name: Improve parallelism of MSBuild
+        if: ${{ matrix.compiler == 'MSVC' }}
+        run: |
+          Add-Content "$env:GITHUB_ENV" 'UseMultiToolTask=true'
+          Add-Content "$env:GITHUB_ENV" 'EnforceProcessCountAcrossBuilds=true'
+
       - name: Build and test debug and release mode
+        shell: bash
         id: test
         run: |
-          cmake --preset ci-ubuntu
-          cmake --build --preset ci-ubuntu-debug | tee ${{ matrix.compiler }}_Debug_build.log
-          ctest --preset ci-ubuntu
-          cmake --build --preset ci-ubuntu-release | tee ${{ matrix.compiler }}_Release_build.log
-          ctest --preset ci-ubuntu
+          cmake --preset ${{ matrix.preset }}
+          cmake --build --preset ${{ matrix.preset }}-debug | tee ${{ matrix.compiler }}_Debug_build.log
+          ctest --preset ${{ matrix.preset }}
+          cmake --build --preset ${{ matrix.preset }}-release | tee ${{ matrix.compiler }}_Release_build.log
+          ctest --preset ${{ matrix.preset }}
 
       - name: Build, test, and generate coverage reports
+        if: ${{ runner.os == 'Linux' }}
         id: coverage
-        run: |
-          cmake --workflow --preset ci-coverage
+        run: cmake --workflow --preset ci-coverage
 
       - name: Build and test with sanitizers
+        if: ${{ runner.os == 'Linux' && !cancelled() && steps.test.conclusion == 'success' }}
         id: sanitize
-        if: ${{ !cancelled() && steps.test.conclusion == 'success' }}
-        run: |
-          cmake --workflow --preset ci-sanitize
+        run: cmake --workflow --preset ci-sanitize
 
       - name: Build and test debug and release mode with Valgrind
         # Running tests with Valgrind is slow, so we only do it if running them with sanitizers
         # succeeded
-        if: ${{ !cancelled() && steps.sanitize.conclusion == 'success' }}
-        run: |
-          cmake --workflow --preset ci-valgrind
+        if: ${{ runner.os == 'Linux' && !cancelled() && steps.sanitize.conclusion == 'success' }}
+        run: cmake --workflow --preset ci-valgrind
+
+      - name: Report coverage results as job summary, PR comment, and artifact
+        if: ${{ runner.os == 'Linux' && !cancelled() && steps.coverage.conclusion == 'success' }}
+        uses: fantana21/report-coverage@v1
+        with:
+          artifact-name: CoverageReport${{ matrix.compiler-pascal-case }}
+          pr-comment-header: ${{ matrix.compiler }}
 
       - name: Count and report warnings
         if: ${{ !cancelled() && steps.test.conclusion == 'success' }}
@@ -207,12 +183,5 @@ jobs:
           build-logs: |
             ${{ matrix.compiler }}_Debug_build.log
             ${{ matrix.compiler }}_Release_build.log
-          artifact-name: WarningsReport${{ matrix.compiler }}
+          artifact-name: WarningsReport${{ matrix.compiler-pascal-case }}
           pr-comment-header: ${{ matrix.compiler }} warnings report
-
-      - name: Report coverage results as job summary, PR comment, and artifact
-        if: ${{ !cancelled() && steps.coverage.conclusion == 'success' }}
-        uses: fantana21/report-coverage@v1
-        with:
-          pr-comment-header: ${{ matrix.compiler }}
-          artifact-name: CoverageReports${{ matrix.compiler }}
