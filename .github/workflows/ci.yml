@@ -40,33 +40,50 @@ jobs:
       - name: Check spelling
         run: cmake -P CMake/Spell.cmake
 
-  test-windows:
+  build-and-test-windows:
     needs: check-formatting-and-spelling
-    runs-on: windows-2022
+    strategy:
+      fail-fast: false
+      matrix:
+        # TODO: Try windows-2025
+        os:
+          - windows-2022
+        compiler:
+          - MSVC
+          - clang-cl
+        include:
+          - compiler: MSVC
+            compiler-kebap-case: msvc
+            compiler-pascal-case: Msvc
+          - compiler: clang-cl
+            compiler-kebap-case: clang-cl
+            compiler-pascal-case: ClangCl
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
 
       - name: Set up MSVC environment
+        if: ${{ matrix.compiler == 'clang-cl' }}
         uses: aminya/setup-cpp@v1
         with:
           vcvarsall: true
 
       - name: Print versions
+        shell: bash
         run: |
           cmake --version
           ninja --version
-          cl --version || true
+          cl || true
           clang-cl --version || true
 
-        # TODO: Think about removing VCPKG_COMMITTISH from the cache key
       - name: Set up vcpkg
         uses: fantana21/set-up-vcpkg@v1
         with:
           committish: ${{ env.VCPKG_COMMITTISH }}
-          cache-key: vcpkg-${{ runner.os }}-${{ env.VCPKG_COMMITTISH }}-${{ hashFiles('vcpkg.json', 'CMakePresets.json') }}-${{ github.sha }}
+          cache-key: vcpkg-${{ runner.os }}-${{ matrix.compiler-kebap-case }}-${{ hashFiles('vcpkg.json', 'CMakePresets.json') }}-${{ github.sha }}
           cache-restore-keys: |
-            vcpkg-${{ runner.os }}-${{ env.VCPKG_COMMITTISH }}-${{ hashFiles('vcpkg.json', 'CMakePresets.json') }}
-            vcpkg-${{ runner.os }}-${{ env.VCPKG_COMMITTISH }}
+            vcpkg-${{ runner.os }}-${{ matrix.compiler-kebap-case }}-${{ hashFiles('vcpkg.json', 'CMakePresets.json') }}
+            vcpkg-${{ runner.os }}-${{ matrix.compiler-kebap-case }}
             vcpkg-${{ runner.os }}
           save-always: true
           use-private-registry: true
@@ -77,84 +94,76 @@ jobs:
           "url=https://github.com`nusername=AllRepositories`npassword=${{ secrets.ALL_REPOSITORIES_PAT }}`n" | git credential approve
 
       - name: Improve parallelism of MSBuild
+        if: ${{ matrix.compiler-kebap-case == 'msvc' }}
         run: |
           Add-Content "$env:GITHUB_ENV" 'UseMultiToolTask=true'
           Add-Content "$env:GITHUB_ENV" 'EnforceProcessCountAcrossBuilds=true'
 
-      - name: Build and test debug and release mode (MSVC)
+      - name: Build and test debug and release mode
         run: |
-          cmake --preset ci-windows-msvc
-          cmake --build --preset ci-windows-msvc-debug | Tee-Object -FilePath MSVC_Debug_build.log
-          ctest --preset ci-windows-msvc
-          cmake --build --preset ci-windows-msvc-release | Tee-Object -FilePath MSVC_Release_build.log
-          ctest --preset ci-windows-msvc
-
-      - name: Build and test debug and release mode (clang-cl)
-        run: |
-          cmake --preset ci-windows-clang-cl
-          cmake --build --preset ci-windows-clang-cl-debug | Tee-Object -FilePath Clang-cl_Debug_build.log
-          ctest --preset ci-windows-clang-cl
-          cmake --build --preset ci-windows-clang-cl-release | Tee-Object -FilePath Clang-cl_Release_build.log
-          ctest --preset ci-windows-clang-cl
+          cmake --preset ci-windows-${{ matrix.compiler-kebap-case }}
+          cmake --build --preset ci-windows-${{ matrix.compiler-kebap-case }}-debug | Tee-Object -FilePath ${{ matrix.compiler }}_Debug_build.log
+          ctest --preset ci-windows-${{ matrix.compiler-kebap-case }}
+          cmake --build --preset ci-windows-${{ matrix.compiler-kebap-case }}-release | Tee-Object -FilePath ${{ matrix.compiler }}_Release_build.log
+          ctest --preset ci-windows-${{ matrix.compiler-kebap-case }}
 
       - name: Count and report warnings
         uses: fantana21/report-warnings@v1
         with:
           build-logs: |
-            MSVC_Debug_build.log
-            MSVC_Release_build.log
-            Clang-cl_Debug_build.log
-            Clang-cl_Release_build.log
-          artifact-name: WarningsReportWindows
-          pr-comment-header: windows warnings report
+            ${{ matrix.compiler }}_Debug_build.log
+            ${{ matrix.compiler }}_Release_build.log
+          artifact-name: WarningsReport${{ matrix.compiler-pascal-case }}
+          pr-comment-header: ${{ matrix.compiler }} warnings report
 
-  test-ubuntu:
+  build-and-test-ubuntu:
     needs: check-formatting-and-spelling
-    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-24.04
+        compiler:
+          - gcc-14
+          - llvm-19
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up tools
+      - name: Set up C++ tools
+        uses: aminya/setup-cpp@v1
+        with:
+          compiler: ${{ matrix.compiler }}
+          clang-tidy: 19
+          cppcheck: true
+          gcovr: true
+
+      - name: Install valgrind
         run: |
           sudo apt update -q
-          sudo apt install -y gcc-14 g++-14
-          sudo apt install -y clang-19 clang-tidy-19 llvm-19
-          sudo apt install -y cppcheck valgrind
-          pipx install gcovr
-          sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-14 9999
-          sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-14 9999
-          sudo update-alternatives --install /usr/bin/gcov gcov /usr/bin/gcov-14 9999
-          sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-19 9999
-          sudo update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-19 9999
-          sudo update-alternatives --install /usr/bin/clang-tidy clang-tidy /usr/bin/clang-tidy-19 9999
-          sudo update-alternatives --install /usr/bin/llvm-cov llvm-cov /usr/bin/llvm-cov-19 9999
+          sudo apt install -y valgrind
 
-      - name: Print and store versions
-        shell: pwsh
+      - name: Print versions
         run: |
-          g++ --version
-          clang++ --version
-          cmake --version
-          ninja --version
-          clang-tidy --version
-          cppcheck --version
-          gcovr --version
-          gcov --version
-          llvm-cov --version
-          valgrind --version
-
-          $CLANG_VERSIONS = (clang++ --version | Select-String -Pattern '([0-9]+)\.([0-9]+)\.([0-9]+)').Matches.Groups.Value
-          "CLANG_MAJOR_VERSION=$($CLANG_VERSIONS[1])" | Out-File -FilePath $env:GITHUB_ENV -Append
+          g++ --version || true
+          clang++ --version || true
+          cmake --version || true
+          ninja --version || true
+          clang-tidy --version || true
+          cppcheck --version || true
+          gcovr --version || true
+          gcov --version || true
+          llvm-cov --version || true
+          valgrind --version || true
 
       - name: Set up vcpkg
-        id: set-up-vcpkg
         uses: fantana21/set-up-vcpkg@v1
         with:
           committish: ${{ env.VCPKG_COMMITTISH }}
-          cache-key: vcpkg-${{ runner.os }}-${{ env.VCPKG_COMMITTISH }}-${{ hashFiles('vcpkg.json', 'CMakePresets.json') }}-${{ github.sha }}
+          cache-key: vcpkg-${{ runner.os }}-${{ matrix.compiler }}-${{ hashFiles('vcpkg.json', 'CMakePresets.json') }}-${{ github.sha }}
           cache-restore-keys: |
-            vcpkg-${{ runner.os }}-${{ env.VCPKG_COMMITTISH }}-${{ hashFiles('vcpkg.json', 'CMakePresets.json') }}
-            vcpkg-${{ runner.os }}-${{ env.VCPKG_COMMITTISH }}
+            vcpkg-${{ runner.os }}-${{ matrix.compiler }}-${{ hashFiles('vcpkg.json', 'CMakePresets.json') }}
+            vcpkg-${{ runner.os }}-${{ matrix.compiler }}
             vcpkg-${{ runner.os }}
           save-always: true
           use-private-registry: true
@@ -162,96 +171,48 @@ jobs:
 
       - name: Set up credential helper for private repos
         run: |
-          git config --global credential.https://github.com/fantana21.helper '!f() { echo username=QuantNd; echo password=${{ secrets.ALL_REPOSITORIES_PAT }}; }; f'
+          git config --global credential.https://github.com/fantana21.helper '!f() { echo username=AllRepositories; echo password=${{ secrets.ALL_REPOSITORIES_PAT }}; }; f'
 
-      - name: Build and test debug and release mode (GCC)
-        id: test-gcc
+      - name: Build and test debug and release mode
+        id: test
         run: |
-          export CXX=g++
           cmake --preset ci-ubuntu
-          cmake --build --preset ci-ubuntu-debug | tee GCC_Debug_build.log
+          cmake --build --preset ci-ubuntu-debug | tee ${{ matrix.compiler }}_Debug_build.log
           ctest --preset ci-ubuntu
-          cmake --build --preset ci-ubuntu-release | tee GCC_Release_build.log
+          cmake --build --preset ci-ubuntu-release | tee ${{ matrix.compiler }}_Release_build.log
           ctest --preset ci-ubuntu
 
-      - name: Build, test, and generate coverage reports (GCC)
-        id: coverage-gcc
+      - name: Build, test, and generate coverage reports
+        id: coverage
         run: |
-          export CXX=g++
           cmake --workflow --preset ci-coverage
 
-      - name: Build and test with sanitizers (GCC)
-        id: sanitize-gcc
-        if: ${{ !cancelled() && steps.test-gcc.conclusion == 'success' }}
+      - name: Build and test with sanitizers
+        id: sanitize
+        if: ${{ !cancelled() && steps.test.conclusion == 'success' }}
         run: |
-          export CXX=g++
           cmake --workflow --preset ci-sanitize
 
-      - name: Build and test debug and release mode with Valgrind (GCC)
+      - name: Build and test debug and release mode with Valgrind
         # Running tests with Valgrind is slow, so we only do it if running them with sanitizers
         # succeeded
-        id: valgrind-gcc
-        if: ${{ !cancelled() && steps.sanitize-gcc.conclusion == 'success' }}
+        if: ${{ !cancelled() && steps.sanitize.conclusion == 'success' }}
         run: |
-          export CXX=g++
-          cmake --workflow --preset ci-valgrind
-
-      - name: Build and test debug and release mode (Clang)
-        id: test-clang
-        if: ${{ !cancelled() && steps.set-up-vcpkg.conclusion == 'success' }}
-        run: |
-          rm -rf build
-          export CXX=clang++
-          cmake --preset ci-ubuntu
-          cmake --build --preset ci-ubuntu-debug | tee Clang_Debug_build.log
-          ctest --preset ci-ubuntu
-          cmake --build --preset ci-ubuntu-release | tee Clang_Release_build.log
-          ctest --preset ci-ubuntu
-
-      - name: Build, test, and generate coverage reports (Clang)
-        id: coverage-clang
-        if: ${{ !cancelled() && steps.test-clang.conclusion == 'success' }}
-        run: |
-          export CXX=clang++
-          cmake --workflow --preset ci-coverage
-
-      - name: Build and test with sanitizers (Clang)
-        id: sanitize-clang
-        if: ${{ !cancelled() && steps.test-clang.conclusion == 'success' }}
-        run: |
-          export CXX=clang++
-          cmake --workflow --preset ci-sanitize
-
-      - name: Build and test debug and release mode with Valgrind (Clang)
-        # Running tests with Valgrind is slow, so we only do it if running them with sanitizers
-        # succeeded.
-        if: ${{ !cancelled() && steps.sanitize-clang.conclusion == 'success' }}
-        run: |
-          export CXX=clang++
           cmake --workflow --preset ci-valgrind
 
       - name: Count and report warnings
-        if: ${{ !cancelled() && steps.test-gcc.conclusion == 'success' && steps.test-clang.conclusion == 'success' }}
+        if: ${{ !cancelled() && steps.test.conclusion == 'success' }}
         uses: fantana21/report-warnings@v1
         with:
           build-logs: |
-            GCC_Debug_build.log
-            GCC_Release_build.log
-            Clang_Debug_build.log
-            Clang_Release_build.log
-          artifact-name: WarningsReportUbuntu
-          pr-comment-header: ubuntu warnings report
+            ${{ matrix.compiler }}_Debug_build.log
+            ${{ matrix.compiler }}_Release_build.log
+          artifact-name: WarningsReport${{ matrix.compiler }}
+          pr-comment-header: ${{ matrix.compiler }} warnings report
 
-      - name: Report coverage results as job summary, PR comment, and artifact (GCC)
-        if: ${{ !cancelled() && steps.coverage-gcc.conclusion == 'success' }}
+      - name: Report coverage results as job summary, PR comment, and artifact
+        if: ${{ !cancelled() && steps.coverage.conclusion == 'success' }}
         uses: fantana21/report-coverage@v1
         with:
-          pr-comment-header: gcc
-          artifact-name: CoverageReportsGcc
-
-      - name: Report coverage results as job summary, PR comment, and artifact (Clang)
-        if: ${{ !cancelled() && steps.coverage-clang.conclusion == 'success' }}
-        uses: fantana21/report-coverage@v1
-        with:
-          pr-comment-header: clang
-          artifact-name: CoverageReportsClang
+          pr-comment-header: ${{ matrix.compiler }}
+          artifact-name: CoverageReports${{ matrix.compiler }}
