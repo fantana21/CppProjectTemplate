@@ -153,6 +153,14 @@ jobs:
           cmake --build --preset ${{ matrix.preset }}-release | tee ${{ matrix.compiler }}_Release_build.log
           ctest --preset ${{ matrix.preset }}
 
+      - name: Upload build logs as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: BuildLogs${{ matrix.compiler-pascal-case }}
+          path: |
+            ${{ matrix.compiler }}_Debug_build.log
+            ${{ matrix.compiler }}_Release_build.log
+
       - name: Build, test, and generate coverage reports
         if: ${{ runner.os == 'Linux' }}
         id: coverage
@@ -177,11 +185,22 @@ jobs:
           artifact-name: CoverageReport${{ matrix.compiler-pascal-case }}
           pr-comment-header: ${{ matrix.compiler }} coverage report
 
+  report-warnings:
+    needs: build-and-test
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Download all build log artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: BuildLogs*
+          merge-multiple: true
+          path: ./BuildLogs
+
+      - name: List all build logs
+        run: ls -lR ./BuildLogs
+
       - name: Count and report warnings as job summary and PR comment
-        if: ${{ !cancelled() && steps.test.conclusion == 'success' }}
         uses: fantana21/report-warnings@v1
         with:
-          build-logs: |
-            ${{ matrix.compiler }}_Debug_build.log
-            ${{ matrix.compiler }}_Release_build.log
-          pr-comment-header: ${{ matrix.compiler }} warnings report
+          build-logs: ./BuildLogs/*.log
+          pr-comment-header: warnings report
