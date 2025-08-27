@@ -169,19 +169,19 @@ jobs:
         if: ${{ runner.os == 'Linux' && !cancelled() && steps.sanitize.conclusion == 'success' }}
         run: cmake --workflow --preset ci-valgrind
 
-      - name: Report coverage results as job summary, PR comment, and artifact
+      - name: Report coverage results as artifact and PR comment
         if: ${{ runner.os == 'Linux' && !cancelled() && steps.coverage.conclusion == 'success' }}
         uses: fantana21/report-coverage@v1
         with:
+          add-job-summary: false
           artifact-name: CoverageReport${{ matrix.compiler-pascal-case }}
-          pr-comment-header: ${{ matrix.compiler }}
+          pr-comment-header: ${{ matrix.compiler }} coverage report
 
-      - name: Count and report warnings
+      - name: Count and report warnings as job summary and PR comment
         if: ${{ !cancelled() && steps.test.conclusion == 'success' }}
         uses: fantana21/report-warnings@v1
         with:
           build-logs: |
             ${{ matrix.compiler }}_Debug_build.log
             ${{ matrix.compiler }}_Release_build.log
-          artifact-name: WarningsReport${{ matrix.compiler-pascal-case }}
           pr-comment-header: ${{ matrix.compiler }} warnings report
