@@ -152,11 +152,7 @@
         "dev-mode",
         "cpp-std"
       ],
-      "binaryDir": "${sourceDir}/build/${presetName}",
-      "cacheVariables": {
-        "VCPKG_HOST_TRIPLET": "x64-windows-static-md",
-        "VCPKG_TARGET_TRIPLET": "x64-windows-static-md"
-      }
+      "binaryDir": "${sourceDir}/build/${presetName}"
     },
     {
       "name": "ci-windows-msvc",
@@ -166,18 +162,24 @@
         "flags-msvc"
       ],
       "generator": "Visual Studio 17 2022",
-      "architecture": "x64"
+      "architecture": "x64",
+      "cacheVariables": {
+        "VCPKG_HOST_TRIPLET": "x64-windows-static-md",
+        "VCPKG_TARGET_TRIPLET": "x64-windows-static-md"
+      }
     },
     {
       "name": "ci-windows-clang-cl",
-      "description": "For building on Windows runners with clang-cl (requires a working MSVC environment)",
+      "description": "For building on Windows runners with clang-cl (requires working MSVC environment and triplet from Neumann-A/my-vcpkg-triplets)",
       "inherits": [
         "flags-clang-cl",
         "common-windows"
       ],
       "generator": "Ninja Multi-Config",
       "cacheVariables": {
-        "CMAKE_CXX_COMPILER": "clang-cl"
+        "CMAKE_CXX_COMPILER": "clang-cl",
+        "VCPKG_HOST_TRIPLET": "x64-win-llvm-static-md",
+        "VCPKG_TARGET_TRIPLET": "x64-win-llvm-static-md"
       }
     }
   ],
