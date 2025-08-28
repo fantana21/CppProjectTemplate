@@ -10,19 +10,24 @@ on:
 
 env:
   VCPKG_COMMITTISH: dd3097e305afa53f7b4312371f62058d2e665320  # 2025.07.25
+  LLVM_MAJOR_VERSION: "19"
 
 jobs:
   check-formatting-and-spelling:
     runs-on: ubuntu-24.04
+    # The env context cannot be used in the matrix definition of the build-and-test job, so we
+    # pass it via an output of this job
+    outputs:
+      LLVM_MAJOR_VERSION: ${{ env.LLVM_MAJOR_VERSION}}
     steps:
       - uses: actions/checkout@v4
 
       - name: Set up tools
         run: |
           sudo apt update -q
-          sudo apt install -y clang-format-19
+          sudo apt install -y clang-format-${{ env.LLVM_MAJOR_VERSION}}
           pipx install cmakelang codespell
-          sudo update-alternatives --install /usr/bin/clang-format clang-format /usr/bin/clang-format-19 9999
+          sudo update-alternatives --install /usr/bin/clang-format clang-format /usr/bin/clang-format-${{ env.LLVM_MAJOR_VERSION}} 9999
 
       - name: Print versions
         run: |
@@ -30,7 +35,7 @@ jobs:
           pipx --version
           cmake --version
           clang-format --version
-          clang-format-19 --version
+          clang-format-${{ env.LLVM_MAJOR_VERSION }} --version
           cmake-format --version
           codespell --version
 
@@ -68,7 +73,7 @@ jobs:
             compiler-pascal-case: Gcc
             os: ubuntu-24.04
           - compiler: Clang
-            compiler-setup-cpp: llvm-19
+            compiler-setup-cpp: llvm-${{ needs.check-formatting-and-spelling.outputs.LLVM_MAJOR_VERSION }}
             preset: "ci-ubuntu"
             compiler-pascal-case: Clang
             os: ubuntu-24.04
@@ -87,7 +92,7 @@ jobs:
         uses: aminya/setup-cpp@v1
         with:
           compiler: ${{ matrix.compiler-setup-cpp }}
-          clang-tidy: 19
+          clang-tidy: ${{ env.LLVM_MAJOR_VERSION}}
           cppcheck: true
           gcovr: true
 
