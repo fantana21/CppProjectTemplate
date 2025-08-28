@@ -82,14 +82,6 @@ jobs:
         with:
           vcvarsall: true
 
-      - name: Set up custom vcpkg triplets
-        if: ${{ matrix.compiler == 'clang-cl' }}
-        run: |
-          git clone https://github.com/Neumann-A/my-vcpkg-triplets.git
-          cd my-vcpkg-triplets
-          git checkout e5f3f2d06430fa475feccbb34a5d61023807b854
-          "VCPKG_OVERLAY_TRIPLETS=${{ github.workspace }}/my-vcpkg-triplets" >> $env:GITHUB_ENV
-
       - name: Set up C++ compiler and tools
         if: ${{ runner.os == 'Linux' }}
         uses: aminya/setup-cpp@v1
@@ -133,6 +125,19 @@ jobs:
           save-always: true
           use-private-registry: true
           private-registry-pat: ${{ secrets.VCPKG_REGISTRY_PAT }}
+
+      # Without the triplet vcpkg would use cl (it does not respect CMAKE_CXX_COMPILER). Without
+      # explicitly setting LLVMInstallDir vcpkg would use the wrong clang-cl (the one from the
+      # stand-alone LLVM installation instead of the one from Visual Studio).
+      - name: Set up triplets and LLVMInstallDir for clang-cl
+        if: ${{ matrix.compiler == 'clang-cl' }}
+        run: |
+          git clone https://github.com/Neumann-A/my-vcpkg-triplets.git
+          cd my-vcpkg-triplets
+          git checkout e5f3f2d06430fa475feccbb34a5d61023807b854
+          "VCPKG_OVERLAY_TRIPLETS=${{ github.workspace }}/my-vcpkg-triplets" >> $env:GITHUB_ENV
+          $LLVMInstallDir = (Get-Command clang-cl).Source | Split-Path | Split-Path
+          "LLVMInstallDir=$LLVMInstallDir" >> $env:GITHUB_ENV
 
       - name: Pre-seed credentials for private repos
         if: ${{ runner.os == 'Windows' }}
