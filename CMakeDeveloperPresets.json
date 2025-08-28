@@ -62,7 +62,9 @@
       "generator": "Ninja Multi-Config",
       "cacheVariables": {
         "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
-        "VCPKG_CHAINLOAD_TOOLCHAIN_FILE": "$env{WINDOWS_TOOLCHAIN_ROOT}/Windows.MSVC.toolchain.cmake"
+        "VCPKG_CHAINLOAD_TOOLCHAIN_FILE": "$env{WINDOWS_TOOLCHAIN_ROOT}/Windows.MSVC.toolchain.cmake",
+        "VCPKG_HOST_TRIPLET": "x64-windows-static-md",
+        "VCPKG_TARGET_TRIPLET": "x64-windows-static-md"
       }
     },
     {

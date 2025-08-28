@@ -82,6 +82,14 @@ jobs:
         with:
           vcvarsall: true
 
+      - name: Set up custom vcpkg triplets
+        if: ${{ matrix.compiler == 'clang-cl' }}
+        run: |
+          git clone https://github.com/Neumann-A/my-vcpkg-triplets.git
+          cd my-vcpkg-triplets
+          git checkout e5f3f2d06430fa475feccbb34a5d61023807b854
+          "VCPKG_OVERLAY_TRIPLETS=${{ github.workspace }}/my-vcpkg-triplets" >> $env:GITHUB_ENV
+
       - name: Set up C++ compiler and tools
         if: ${{ runner.os == 'Linux' }}
         uses: aminya/setup-cpp@v1
