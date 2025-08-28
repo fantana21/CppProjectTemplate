@@ -1,4 +1,4 @@
-#include <CppProjectTemplate/Library.hpp>
+#include <CppProjectTemplate/Person.hpp>
 #include <CppProjectTemplate/Square.hpp>
 
 #include <NamedType/named_type_impl.hpp>
@@ -24,8 +24,8 @@ auto main() -> int
 {
     try
     {
-        auto const library = cpt::Library{};
-        auto const message = "Hello from " + library.Name() + "!";
+        auto person = cpt::Person{};
+        auto message = "Hello " + person.Name() + "!";
         std::cout << message << "\n";
         std::cout << "Square(2) = " << cpt::Square(2) << "\n";
         auto const number = Number(41);
