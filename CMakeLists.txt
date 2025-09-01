@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.31)
 
-include(CMake/Prelude.cmake)
+include(CMake/InSourceBuildGuard.cmake)
 include(CMake/MetadataFromVcpkg.cmake)
 
 project(
