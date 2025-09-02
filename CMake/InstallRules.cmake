@@ -5,7 +5,7 @@ include(GNUInstallDirs)
 set(package CppProjectTemplate)
 
 install(
-    TARGETS CppProjectTemplate_Main CppProjectTemplate_Person CppProjectTemplate_Square
+    TARGETS CppProjectTemplate_App CppProjectTemplate_Person CppProjectTemplate_Square
     EXPORT ${package}Targets
     # cmake-format: off
     FILE_SET HEADERS COMPONENT CppProjectTemplate_Development

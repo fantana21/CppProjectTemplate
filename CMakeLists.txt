@@ -26,7 +26,7 @@ find_package(QuantNd CONFIG REQUIRED)
 
 # ---- Declare targets ----
 
-add_and_set_up_executable(CppProjectTemplate_Main)
+add_and_set_up_executable(CppProjectTemplate_App)
 add_and_set_up_library(CppProjectTemplate_Person STATIC)
 add_and_set_up_library(CppProjectTemplate_Square INTERFACE)
 

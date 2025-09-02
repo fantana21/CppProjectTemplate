@@ -1,6 +1,6 @@
-target_sources(CppProjectTemplate_Main PRIVATE Main.cpp)
+target_sources(CppProjectTemplate_App PRIVATE Main.cpp)
 target_link_libraries(
-    CppProjectTemplate_Main
+    CppProjectTemplate_App
     PRIVATE CppProjectTemplate::Person CppProjectTemplate::Square NamedType QuantNd::QuantNd
 )
 
