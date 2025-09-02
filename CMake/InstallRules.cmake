@@ -17,7 +17,7 @@ install(
 
 # Allow package maintainers to freely override the path for the configs
 set(CppProjectTemplate_INSTALL_CMAKEDIR
-    "${CMAKE_INSTALL_DATADIR}/${package}"
+    "share/${package}"
     CACHE PATH "Location of CMake package configuration files relative to the install prefix"
 )
 mark_as_advanced(CppProjectTemplate_INSTALL_CMAKEDIR)
