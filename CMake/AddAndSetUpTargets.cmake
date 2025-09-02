@@ -1,5 +1,3 @@
-# TODO: Think about adding a cache variable or something to control the C++ standard version.
-
 # add_and_set_up_library(<name> <type>)
 #
 # - <name> must be of the form <ProjectPrefix>_<Rest>
@@ -93,6 +91,5 @@ function(_set_include_directories_and_cxx_standard target scope)
     target_include_directories(
         ${target} ${warning_guard} ${scope} "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>"
     )
-    target_compile_features(${target} ${scope} cxx_std_23)
-    set_property(TARGET ${target} PROPERTY CXX_EXTENSIONS OFF)
+    target_compile_features(${target} ${scope} ${default_cxx_standard_feature})
 endfunction()

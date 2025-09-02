@@ -11,10 +11,7 @@ project(
     LANGUAGES CXX
 )
 
-# Disable scanning for modules because we don't use them and this causes errors when running clang
-# tools while compiling with GCC
-set(CMAKE_CXX_SCAN_FOR_MODULES OFF)
-
+include(CMake/LanguageStandard.cmake)
 include(CMake/OptionsAndVariables.cmake)
 include(CMake/AddAndSetUpTargets.cmake)
 
