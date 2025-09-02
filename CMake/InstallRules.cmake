@@ -11,14 +11,14 @@ install(
     FILE_SET HEADERS COMPONENT CppProjectTemplate_Development
     # cmake-format: on
     RUNTIME COMPONENT CppProjectTemplate_Runtime
-    ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}/${package}" #
+    ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}/${package}"
             COMPONENT CppProjectTemplate_Development
 )
 
 # Allow package maintainers to freely override the path for the configs
 set(CppProjectTemplate_INSTALL_CMAKEDIR
     "${CMAKE_INSTALL_DATADIR}/${package}"
-    CACHE PATH "Location of CMake package config files relative to the install prefix"
+    CACHE PATH "Location of CMake package configuration files relative to the install prefix"
 )
 mark_as_advanced(CppProjectTemplate_INSTALL_CMAKEDIR)
 

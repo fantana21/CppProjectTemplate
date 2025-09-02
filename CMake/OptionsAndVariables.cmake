@@ -1,4 +1,4 @@
-# This file continas user options and variables. Developer-specific options and variables should be
+# This file contains user options and variables. Developer-specific options and variables should be
 # placed in CMake/DeveloperMode.cmake.
 
 if(PROJECT_IS_TOP_LEVEL)
