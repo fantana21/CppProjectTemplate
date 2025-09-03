@@ -26,7 +26,7 @@ jobs:
         run: |
           sudo apt update -q
           sudo apt install -y clang-format-${{ env.LLVM_MAJOR_VERSION}}
-          pipx install cmakelang codespell
+          pipx install gersemi codespell
           sudo update-alternatives --install /usr/bin/clang-format clang-format /usr/bin/clang-format-${{ env.LLVM_MAJOR_VERSION}} 9999
 
       - name: Print versions
@@ -36,7 +36,7 @@ jobs:
           cmake --version
           clang-format --version
           clang-format-${{ env.LLVM_MAJOR_VERSION }} --version
-          cmake-format --version
+          gersemi --version
           codespell --version
 
       - name: Check code formatting

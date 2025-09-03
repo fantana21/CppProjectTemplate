@@ -163,9 +163,8 @@ to figure out how to tell the linker where to find `clang_rt.profile-x86_64.lib`
 
 ### `format-check` and `format-fix`
 
-These targets run the clang-format and cmake-format tools on the codebase to check
-formatting errors and to fix them respectively. See
-[`FormatCpp.cmake`](CMake/FormatCpp.cmake) and
+These targets run the clang-format and gersemi tools on the codebase to check formatting
+errors and to fix them respectively. See [`FormatCpp.cmake`](CMake/FormatCpp.cmake) and
 [`FormatCMake.cmake`](CMake/FormatCMake.cmake) for more details.
 
 

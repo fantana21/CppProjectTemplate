@@ -8,44 +8,39 @@ endmacro()
 
 default(FIX NO)
 if(FIX)
-    set(flag -i)
+    set(flag --in-place)
 else()
     set(flag --check)
 endif()
 
-# Here we glob all CMake files that should be formatted
-file(GLOB_RECURSE files CMake/*.cmake CppProjectTemplate/CMakeLists.txt Tests/CMakeLists.txt)
-# GLOB_RECURSE needs a directory so we have to manually add the top-level CMakeLists.txt
-file(GLOB top_level_cml_file CMakeLists.txt)
-list(APPEND files "${top_level_cml_file}")
-message("Formatting the following files:")
-foreach(file IN LISTS files)
-    message("  ${file}")
+set(files_and_directories "CMakeLists.txt" "CMake/" "CppProjectTemplate/" "Tests/")
+message("Formatting the following files and directories:")
+foreach(entry IN LISTS files_and_directories)
+    message("  ${entry}")
 endforeach()
 
-set(badly_formatted "")
-set(output "")
-string(LENGTH "${CMAKE_SOURCE_DIR}/" path_prefix_length)
-foreach(file IN LISTS files)
-    execute_process(
-        COMMAND cmake-format "${flag}" "${file}"
-        WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
-        RESULT_VARIABLE result
-        ERROR_VARIABLE error_output
-    )
-    if(NOT FIX AND NOT (result EQUAL "0" OR result EQUAL "1"))
-        message("${error_output}")
-        message(FATAL_ERROR "'${file}': formatter returned with ${result}")
-    endif()
-    if(NOT FIX AND result EQUAL "1")
-        string(SUBSTRING "${file}" "${path_prefix_length}" -1 relative_file)
-        list(APPEND badly_formatted "${relative_file}")
-    endif()
-    set(error_output "")
-endforeach()
+execute_process(
+    # TODO: Treat warnings as errors?
+    COMMAND gersemi ${flag} ${files_and_directories}
+    WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
+    RESULT_VARIABLE result
+    ERROR_VARIABLE error_output
+)
 
-if(NOT badly_formatted STREQUAL "")
-    list(JOIN badly_formatted "\n" bad_list)
+if(NOT FIX AND NOT (result EQUAL "0" OR result EQUAL "1"))
+    message("${error_output}")
+    message(FATAL_ERROR "'${file}': formatter returned with ${result}")
+endif()
+
+if(NOT FIX AND result EQUAL "1")
+    string(REGEX MATCHALL "([^\n\r]+) would be reformatted" reformatted_lines "${error_output}")
+    set(badly_formatted_files "")
+    foreach(line IN LISTS reformatted_lines)
+        string(REGEX REPLACE "^(.+) would be reformatted$" "\\1" file "${line}")
+        file(RELATIVE_PATH file "${CMAKE_SOURCE_DIR}" "${file}")
+        list(APPEND badly_formatted_files "${file}")
+    endforeach()
+    list(JOIN badly_formatted_files "\n" bad_list)
     message("The following files are badly formatted:\n\n${bad_list}\n")
     message(FATAL_ERROR "Run again with FIX=YES to fix these files.")
 endif()
