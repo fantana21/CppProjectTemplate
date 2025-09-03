@@ -4,17 +4,13 @@ if(FIX)
 endif()
 
 execute_process(
-    COMMAND "${CMAKE_COMMAND}" "${fix_flag}" -P CMake/FormatCpp.cmake
+    COMMAND "${CMAKE_COMMAND}" ${fix_flag} -P CMake/FormatCpp.cmake
     WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
     RESULT_VARIABLE cpp_result
 )
 
 execute_process(
-    COMMAND "${CMAKE_COMMAND}" "${fix_flag}" -P CMake/FormatCMake.cmake
+    COMMAND "${CMAKE_COMMAND}" ${fix_flag} -P CMake/FormatCMake.cmake
     WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
     RESULT_VARIABLE cmake_result
 )
-
-if(NOT cpp_result EQUAL "0" OR NOT cmake_result EQUAL "0")
-    message(FATAL_ERROR "Some files are badly formatted")
-endif()

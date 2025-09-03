@@ -9,15 +9,21 @@ endmacro()
 default(FIX NO)
 if(FIX)
     set(flag --in-place)
+    set(action "Formatting")
 else()
     set(flag --check)
+    set(action "Checking")
 endif()
 
-set(files_and_directories "CMakeLists.txt" "CMake/" "CppProjectTemplate/" "Tests/")
-message("Formatting the following files and directories:")
-foreach(entry IN LISTS files_and_directories)
-    message("  ${entry}")
-endforeach()
+set(files_and_directories
+    "${CMAKE_SOURCE_DIR}/CMakeLists.txt"
+    "${CMAKE_SOURCE_DIR}/CMake/"
+    "${CMAKE_SOURCE_DIR}/CppProjectTemplate/"
+    "${CMAKE_SOURCE_DIR}/Tests/"
+)
+list(JOIN files_and_directories "\n  " files_and_directories_list)
+message("${action} the following CMake files and directories:")
+message("  ${files_and_directories_list}\n")
 
 execute_process(
     # TODO: Treat warnings as errors?
@@ -29,7 +35,7 @@ execute_process(
 
 if(NOT FIX AND NOT (result EQUAL "0" OR result EQUAL "1"))
     message("${error_output}")
-    message(FATAL_ERROR "'${file}': formatter returned with ${result}")
+    message(FATAL_ERROR "CMake formatter returned ${result}")
 endif()
 
 if(NOT FIX AND result EQUAL "1")
@@ -37,10 +43,10 @@ if(NOT FIX AND result EQUAL "1")
     set(badly_formatted_files "")
     foreach(line IN LISTS reformatted_lines)
         string(REGEX REPLACE "^(.+) would be reformatted$" "\\1" file "${line}")
-        file(RELATIVE_PATH file "${CMAKE_SOURCE_DIR}" "${file}")
         list(APPEND badly_formatted_files "${file}")
     endforeach()
-    list(JOIN badly_formatted_files "\n" bad_list)
-    message("The following files are badly formatted:\n\n${bad_list}\n")
+    list(JOIN badly_formatted_files "\n  " bad_list)
+    message("The following files are badly formatted:")
+    message("  ${bad_list}\n")
     message(FATAL_ERROR "Run again with FIX=YES to fix these files.")
 endif()
