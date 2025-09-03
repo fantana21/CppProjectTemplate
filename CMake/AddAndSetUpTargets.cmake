@@ -1,14 +1,15 @@
-# Add a library, set its export name (name without prefix), include directories and C++ standard,
-# and create an alias target.
-#
 # add_and_set_up_library(<name> <type>)
+#
+# - <name> must be of the form <ProjectPrefix>_<Rest>
+#
+# Add a library according to our CMake conventions, setting its output name, export name, include
+# directories and C++ standard, as well as creating an alias target.
 function(add_and_set_up_library name type)
-    _split_off_prefix(${name} prefix name_without_prefix)
     add_library(${name} ${type})
-    set_property(TARGET ${name} PROPERTY EXPORT_NAME ${name_without_prefix})
-    if(prefix)
-        add_library(${prefix}::${name_without_prefix} ALIAS ${name})
-    endif()
+    _split_off_project_prefix(${name} prefix rest)
+    add_library(${prefix}::${rest} ALIAS ${name})
+    set_property(TARGET ${name} PROPERTY OUTPUT_NAME ${rest})
+    set_property(TARGET ${name} PROPERTY EXPORT_NAME ${rest})
     if(type STREQUAL INTERFACE)
         set(scope INTERFACE)
     else()
@@ -17,53 +18,72 @@ function(add_and_set_up_library name type)
     _set_include_directories_and_cxx_standard(${name} ${scope})
 endfunction()
 
-# Add an executable and set its output name, include directories, and C++ standard.
-#
-# - Default output name: <name-without-prefix>
-#
 # add_and_set_up_executable(<name> [OUTPUT_NAME <output_name>])
+#
+# - <name> must be of the form <ProjectPrefix>_<Rest>
+# - default output name = <Rest>
+#
+# Add an executable according to our CMake conventions, setting its output name, include
+# directories, and C++ standard.
 function(add_and_set_up_executable name)
-    cmake_parse_arguments(THE "" "OUTPUT_NAME" "" ${ARGN})
-    _split_off_prefix(${name} prefix name_without_prefix)
+    cmake_parse_arguments(EXECUTABLE "" "OUTPUT_NAME" "" ${ARGN})
+    _split_off_project_prefix(${name} prefix rest)
     add_executable(${name})
-    if(NOT THE_OUTPUT_NAME)
-        set(THE_OUTPUT_NAME ${name_without_prefix})
+    if(NOT EXECUTABLE_OUTPUT_NAME)
+        set(EXECUTABLE_OUTPUT_NAME ${rest})
     endif()
-    set_property(TARGET ${name} PROPERTY OUTPUT_NAME ${THE_OUTPUT_NAME})
+    set_property(TARGET ${name} PROPERTY OUTPUT_NAME ${EXECUTABLE_OUTPUT_NAME})
     _set_include_directories_and_cxx_standard(${name} PRIVATE)
 endfunction()
 
-# Add a test executable and set its output name, sources, include directories, and C++ standard.
-#
-# - Default output name: <name-without-prefix>Test
-# - Default sources: <name-without-prefix>.test.cpp
-#
 # add_and_set_up_test(<name> [OUTPUT_NAME <output_name>] [SOURCES <sources>...])
+#
+# - <name> must be of the form <ProjectPrefix>Tests_<Rest>
+# - default output name = <Rest>Test
+# - default sources     = <Rest>.test.cpp
+#
+# Add a test executable according to our CMake conventions, setting its output name, sources,
+# include directories, and C++ standard.
 function(add_and_set_up_test name)
-    cmake_parse_arguments(THE "" "OUTPUT_NAME" "SOURCES" ${ARGN})
-    _split_off_prefix(${name} prefix name_without_prefix)
-    if(NOT THE_SOURCES)
-        set(THE_SOURCES ${name_without_prefix}.test.cpp)
+    cmake_parse_arguments(TEST "" "OUTPUT_NAME" "SOURCES" ${ARGN})
+    _remove_test_prefix(${name} rest)
+    if(NOT TEST_SOURCES)
+        set(TEST_SOURCES ${rest}.test.cpp)
     endif()
-    add_executable(${name} ${THE_SOURCES})
-    if(NOT THE_OUTPUT_NAME)
-        set(THE_OUTPUT_NAME ${name_without_prefix}Test)
+    add_executable(${name} ${TEST_SOURCES})
+    if(NOT TEST_OUTPUT_NAME)
+        set(TEST_OUTPUT_NAME ${rest}Test)
     endif()
-    set_property(TARGET ${name} PROPERTY OUTPUT_NAME ${THE_OUTPUT_NAME})
+    set_property(TARGET ${name} PROPERTY OUTPUT_NAME ${TEST_OUTPUT_NAME})
     _set_include_directories_and_cxx_standard(${name} PRIVATE)
 endfunction()
 
-function(_split_off_prefix string prefix rest)
-    string(FIND ${string} "_" position)
-    if(position EQUAL -1)
-        set(prefix_ "")
-        set(rest_ ${string})
-    else()
-        string(SUBSTRING ${string} 0 ${position} prefix_)
-        math(EXPR position "${position} + 1")
-        string(SUBSTRING ${string} ${position} -1 rest_)
+function(_split_off_project_prefix name prefix rest)
+    string(REPLACE "_" ";" name_parts ${name})
+    list(LENGTH name_parts n_name_parts)
+    if(NOT n_name_parts EQUAL 2)
+        message(
+            FATAL_ERROR "Cannot split off project-specific prefix. '${name}' does not follow the "
+                        "required format <ProjectPrefix>_<Rest>"
+        )
     endif()
+    list(GET name_parts 0 prefix_)
+    list(GET name_parts 1 rest_)
     set(${prefix} ${prefix_} PARENT_SCOPE)
+    set(${rest} ${rest_} PARENT_SCOPE)
+endfunction()
+
+function(_remove_test_prefix name rest)
+    string(REPLACE "_" ";" name_parts ${name})
+    list(LENGTH name_parts n_name_parts)
+    list(GET name_parts 0 prefix)
+    if(NOT (n_name_parts EQUAL 2 AND prefix MATCHES ".+Tests$"))
+        message(
+            FATAL_ERROR "Cannot remove test prefix. '${name}' does not follow the required format "
+                        "<ProjectPrefix>Tests_<Rest>"
+        )
+    endif()
+    list(GET name_parts 1 rest_)
     set(${rest} ${rest_} PARENT_SCOPE)
 endfunction()
 
@@ -71,6 +91,5 @@ function(_set_include_directories_and_cxx_standard target scope)
     target_include_directories(
         ${target} ${warning_guard} ${scope} "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>"
     )
-    target_compile_features(${target} ${scope} cxx_std_23)
-    set_property(TARGET ${target} PROPERTY CXX_EXTENSIONS OFF)
+    target_compile_features(${target} ${scope} ${default_cxx_standard_feature})
 endfunction()

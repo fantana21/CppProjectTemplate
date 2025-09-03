@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.31)
 
-include(CMake/Prelude.cmake)
+include(CMake/InSourceBuildGuard.cmake)
 include(CMake/MetadataFromVcpkg.cmake)
 
 project(
@@ -11,10 +11,7 @@ project(
     LANGUAGES CXX
 )
 
-# Disable scanning for modules because we don't use them and this causes errors when running clang
-# tools while compiling with GCC
-set(CMAKE_CXX_SCAN_FOR_MODULES OFF)
-
+include(CMake/LanguageStandard.cmake)
 include(CMake/OptionsAndVariables.cmake)
 include(CMake/AddAndSetUpTargets.cmake)
 
@@ -26,9 +23,9 @@ find_package(QuantNd CONFIG REQUIRED)
 
 # ---- Declare targets ----
 
-add_and_set_up_library(CppProjectTemplate_Library STATIC)
+add_and_set_up_executable(CppProjectTemplate_App)
+add_and_set_up_library(CppProjectTemplate_Person STATIC)
 add_and_set_up_library(CppProjectTemplate_Square INTERFACE)
-add_and_set_up_executable(CppProjectTemplate_Main)
 
 add_subdirectory(CppProjectTemplate)
 
