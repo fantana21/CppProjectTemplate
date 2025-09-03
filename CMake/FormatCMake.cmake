@@ -1,12 +1,9 @@
 cmake_minimum_required(VERSION 3.14)
 
-macro(default name)
-    if(NOT DEFINED "${name}")
-        set("${name}" "${ARGN}")
-    endif()
-endmacro()
+if(NOT DEFINED FIX)
+    set(FIX NO)
+endif()
 
-default(FIX NO)
 if(FIX)
     set(flag --in-place)
     set(action "Formatting")
@@ -26,27 +23,33 @@ message("${action} the following CMake files and directories:")
 message("  ${files_and_directories_list}\n")
 
 execute_process(
-    # TODO: Treat warnings as errors?
-    COMMAND gersemi ${flag} ${files_and_directories}
+    COMMAND gersemi ${flag} --warnings-as-errors --no-cache ${files_and_directories}
     WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
     RESULT_VARIABLE result
     ERROR_VARIABLE error_output
 )
 
-if(NOT FIX AND NOT (result EQUAL "0" OR result EQUAL "1"))
+if(result EQUAL "0")
+    return()
+endif()
+
+if(NOT result EQUAL "1" OR (result EQUAL "1" AND error_output MATCHES "Warning: "))
     message("${error_output}")
     message(FATAL_ERROR "CMake formatter returned ${result}")
 endif()
 
-if(NOT FIX AND result EQUAL "1")
+# If we have no warnings, only some badly formatted files, print them in a nice list with the same
+# formatting as FormatCpp.cmake
+if(NOT FIX)
     string(REGEX MATCHALL "([^\n\r]+) would be reformatted" reformatted_lines "${error_output}")
-    set(badly_formatted_files "")
     foreach(line IN LISTS reformatted_lines)
         string(REGEX REPLACE "^(.+) would be reformatted$" "\\1" file "${line}")
         list(APPEND badly_formatted_files "${file}")
     endforeach()
-    list(JOIN badly_formatted_files "\n  " bad_list)
-    message("The following files are badly formatted:")
-    message("  ${bad_list}\n")
-    message(FATAL_ERROR "Run again with FIX=YES to fix these files.")
+    if(badly_formatted_files)
+        list(JOIN badly_formatted_files "\n  " bad_list)
+        message("The following files are badly formatted:")
+        message("  ${bad_list}\n")
+        message(FATAL_ERROR "Run again with FIX=YES to fix these files.")
+    endif()
 endif()

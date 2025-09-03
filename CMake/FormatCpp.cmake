@@ -1,12 +1,8 @@
 cmake_minimum_required(VERSION 3.14)
 
-macro(default name)
-    if(NOT DEFINED "${name}")
-        set("${name}" "${ARGN}")
-    endif()
-endmacro()
-
-default(FIX NO)
+if(NOT DEFINED FIX)
+    set(FIX NO)
+endif()
 
 set(flag --output-replacements-xml)
 set(args OUTPUT_VARIABLE output)
