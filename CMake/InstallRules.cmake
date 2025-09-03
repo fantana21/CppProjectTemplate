@@ -7,18 +7,18 @@ set(package CppProjectTemplate)
 install(
     TARGETS CppProjectTemplate_App CppProjectTemplate_Person CppProjectTemplate_Square
     EXPORT ${package}Targets
-    # cmake-format: off
-    FILE_SET HEADERS COMPONENT CppProjectTemplate_Development
-    # cmake-format: on
     RUNTIME COMPONENT CppProjectTemplate_Runtime
-    ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}/${package}"
-            COMPONENT CppProjectTemplate_Development
+    ARCHIVE
+        DESTINATION "${CMAKE_INSTALL_LIBDIR}/${package}"
+        COMPONENT CppProjectTemplate_Development
+    FILE_SET HEADERS COMPONENT CppProjectTemplate_Development
 )
 
 # Allow package maintainers to freely override the path for the configs
 set(CppProjectTemplate_INSTALL_CMAKEDIR
     "share/${package}"
-    CACHE PATH "Location of CMake package configuration files relative to the install prefix"
+    CACHE PATH
+    "Location of CMake package configuration files relative to the install prefix"
 )
 mark_as_advanced(CppProjectTemplate_INSTALL_CMAKEDIR)
 

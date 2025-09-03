@@ -12,5 +12,11 @@ if(CCACHE_PROGRAM)
         # Use the following sloppiness settings when using precompiled headers
         # CCACHE_SLOPPINESS=pch_defines,time_macros
     )
-    set(CMAKE_CXX_COMPILER_LAUNCHER ${CMAKE_COMMAND} -E env ${ccacheEnv} ${CCACHE_PROGRAM})
+    set(CMAKE_CXX_COMPILER_LAUNCHER
+        ${CMAKE_COMMAND}
+        -E
+        env
+        ${ccacheEnv}
+        ${CCACHE_PROGRAM}
+    )
 endif()

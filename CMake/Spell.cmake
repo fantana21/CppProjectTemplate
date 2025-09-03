@@ -14,7 +14,9 @@ if(FIX)
 endif()
 
 execute_process(
-    COMMAND codespell ${flag} WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}" RESULT_VARIABLE result
+    COMMAND codespell ${flag}
+    WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
+    RESULT_VARIABLE result
 )
 
 if(result EQUAL "65")
