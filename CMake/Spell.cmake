@@ -1,12 +1,8 @@
 cmake_minimum_required(VERSION 3.14)
 
-macro(default name)
-    if(NOT DEFINED "${name}")
-        set("${name}" "${ARGN}")
-    endif()
-endmacro()
-
-default(FIX NO)
+if(NOT DEFINED FIX)
+    set(FIX NO)
+endif()
 
 set(flag "")
 if(FIX)
@@ -14,7 +10,9 @@ if(FIX)
 endif()
 
 execute_process(
-    COMMAND codespell ${flag} WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}" RESULT_VARIABLE result
+    COMMAND codespell ${flag}
+    WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
+    RESULT_VARIABLE result
 )
 
 if(result EQUAL "65")
@@ -22,5 +20,5 @@ if(result EQUAL "65")
 elseif(result EQUAL "64")
     message(FATAL_ERROR "Spell checker printed the usage info. Bad arguments?")
 elseif(NOT result EQUAL "0")
-    message(FATAL_ERROR "Spell checker returned with ${result}")
+    message(FATAL_ERROR "Spell checker returned ${result}")
 endif()

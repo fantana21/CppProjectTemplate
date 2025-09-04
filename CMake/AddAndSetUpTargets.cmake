@@ -63,8 +63,9 @@ function(_split_off_project_prefix name prefix rest)
     list(LENGTH name_parts n_name_parts)
     if(NOT n_name_parts EQUAL 2)
         message(
-            FATAL_ERROR "Cannot split off project-specific prefix. '${name}' does not follow the "
-                        "required format <ProjectPrefix>_<Rest>"
+            FATAL_ERROR
+            "Cannot split off project-specific prefix. '${name}' does not follow the required "
+            "format <ProjectPrefix>_<Rest>"
         )
     endif()
     list(GET name_parts 0 prefix_)
@@ -79,8 +80,9 @@ function(_remove_test_prefix name rest)
     list(GET name_parts 0 prefix)
     if(NOT (n_name_parts EQUAL 2 AND prefix MATCHES ".+Tests$"))
         message(
-            FATAL_ERROR "Cannot remove test prefix. '${name}' does not follow the required format "
-                        "<ProjectPrefix>Tests_<Rest>"
+            FATAL_ERROR
+            "Cannot remove test prefix. '${name}' does not follow the required format "
+            "<ProjectPrefix>Tests_<Rest>"
         )
     endif()
     list(GET name_parts 1 rest_)
@@ -89,7 +91,10 @@ endfunction()
 
 function(_set_include_directories_and_cxx_standard target scope)
     target_include_directories(
-        ${target} ${warning_guard} ${scope} "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>"
+        ${target}
+        ${warning_guard}
+        ${scope}
+        "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>"
     )
     target_compile_features(${target} ${scope} ${default_cxx_standard_feature})
 endfunction()

@@ -6,7 +6,8 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
     set(GCOV_EXECUTABLE "gcov-${GCC_MAJOR_VERSION}")
 else()
     message(
-        FATAL_ERROR "Unsupported compiler for generating coverage info: ${CMAKE_CXX_COMPILER_ID}"
+        FATAL_ERROR
+        "Unsupported compiler for generating coverage info: ${CMAKE_CXX_COMPILER_ID}"
     )
 endif()
 message("Selected Gcov executable: '${GCOV_EXECUTABLE}'")
@@ -28,7 +29,7 @@ set(GENERATE_COVERAGE_REPORTS
     "${PROJECT_BINARY_DIR}/Coverage.xml"
     --cobertura-pretty
     CACHE STRING
-          "; separated command to generate a text, HTML, and XML report for the 'coverage' target"
+    "; separated command to generate a text, HTML, and XML report for the 'coverage' target"
 )
 
 add_custom_target(

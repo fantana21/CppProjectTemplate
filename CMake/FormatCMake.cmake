@@ -1,51 +1,55 @@
 cmake_minimum_required(VERSION 3.14)
 
-macro(default name)
-    if(NOT DEFINED "${name}")
-        set("${name}" "${ARGN}")
-    endif()
-endmacro()
-
-default(FIX NO)
-if(FIX)
-    set(flag -i)
-else()
-    set(flag --check)
+if(NOT DEFINED FIX)
+    set(FIX NO)
 endif()
 
-# Here we glob all CMake files that should be formatted
-file(GLOB_RECURSE files CMake/*.cmake CppProjectTemplate/CMakeLists.txt Tests/CMakeLists.txt)
-# GLOB_RECURSE needs a directory so we have to manually add the top-level CMakeLists.txt
-file(GLOB top_level_cml_file CMakeLists.txt)
-list(APPEND files "${top_level_cml_file}")
-message("Formatting the following files:")
-foreach(file IN LISTS files)
-    message("  ${file}")
-endforeach()
+if(FIX)
+    set(flag --in-place)
+    set(action "Formatting")
+else()
+    set(flag --check)
+    set(action "Checking")
+endif()
 
-set(badly_formatted "")
-set(output "")
-string(LENGTH "${CMAKE_SOURCE_DIR}/" path_prefix_length)
-foreach(file IN LISTS files)
-    execute_process(
-        COMMAND cmake-format "${flag}" "${file}"
-        WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
-        RESULT_VARIABLE result
-        ERROR_VARIABLE error_output
-    )
-    if(NOT FIX AND NOT (result EQUAL "0" OR result EQUAL "1"))
-        message("${error_output}")
-        message(FATAL_ERROR "'${file}': formatter returned with ${result}")
-    endif()
-    if(NOT FIX AND result EQUAL "1")
-        string(SUBSTRING "${file}" "${path_prefix_length}" -1 relative_file)
-        list(APPEND badly_formatted "${relative_file}")
-    endif()
-    set(error_output "")
-endforeach()
+set(files_and_directories
+    "${CMAKE_SOURCE_DIR}/CMakeLists.txt"
+    "${CMAKE_SOURCE_DIR}/CMake/"
+    "${CMAKE_SOURCE_DIR}/CppProjectTemplate/"
+    "${CMAKE_SOURCE_DIR}/Tests/"
+)
+list(JOIN files_and_directories "\n  " files_and_directories_list)
+message("${action} the following CMake files and directories:")
+message("  ${files_and_directories_list}\n")
 
-if(NOT badly_formatted STREQUAL "")
-    list(JOIN badly_formatted "\n" bad_list)
-    message("The following files are badly formatted:\n\n${bad_list}\n")
-    message(FATAL_ERROR "Run again with FIX=YES to fix these files.")
+execute_process(
+    COMMAND gersemi ${flag} --warnings-as-errors --no-cache ${files_and_directories}
+    WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
+    RESULT_VARIABLE result
+    ERROR_VARIABLE error_output
+)
+
+if(result EQUAL "0")
+    return()
+endif()
+
+if(NOT result EQUAL "1" OR (result EQUAL "1" AND error_output MATCHES "Warning: "))
+    message("${error_output}")
+    message(FATAL_ERROR "CMake formatter returned ${result}")
+endif()
+
+# If we have no warnings, only some badly formatted files, print them in a nice list with the same
+# formatting as FormatCpp.cmake
+if(NOT FIX)
+    string(REGEX MATCHALL "([^\n\r]+) would be reformatted" reformatted_lines "${error_output}")
+    foreach(line IN LISTS reformatted_lines)
+        string(REGEX REPLACE "^(.+) would be reformatted$" "\\1" file "${line}")
+        list(APPEND badly_formatted_files "${file}")
+    endforeach()
+    if(badly_formatted_files)
+        list(JOIN badly_formatted_files "\n  " bad_list)
+        message("The following files are badly formatted:")
+        message("  ${bad_list}\n")
+        message(FATAL_ERROR "Run again with FIX=YES to fix these files.")
+    endif()
 endif()

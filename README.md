@@ -34,8 +34,8 @@ preferences. The following is a non-exhaustive list of changes.
   `ON` by default.
 - Rename linter scripts and targets since they only format.
 - Add scripts and targets for formatting CMake code with
-  [cmake-format](https://cmake-format.readthedocs.io/en/latest/cmake-format.html). There
-  are now six format-related targets: `format[-cpp|-cmake][-fix]`
+  [gersemi](https://github.com/BlankSpruce/gersemi). There are now six format-related
+  targets: `format[-cpp|-cmake][-fix]`
 - Remove `Docs` folder and everything related to Code documentation apart from the
   top-level Markdown files.
 - Use [gcovr](https://gcovr.com/en/stable/) instead of

@@ -1,48 +1,46 @@
 cmake_minimum_required(VERSION 3.14)
 
-macro(default name)
-    if(NOT DEFINED "${name}")
-        set("${name}" "${ARGN}")
-    endif()
-endmacro()
-
-default(FIX NO)
+if(NOT DEFINED FIX)
+    set(FIX NO)
+endif()
 
 set(flag --output-replacements-xml)
 set(args OUTPUT_VARIABLE output)
 if(FIX)
     set(flag -i)
     set(args "")
+    set(action "Formatting")
+else()
+    set(action "Checking")
 endif()
 
 # Here we glob all C++ files that should be formatted
 file(GLOB_RECURSE files CppProjectTemplate/*.[chi]pp Tests/*.[chi]pp)
-message("Formatting the following files:")
-foreach(file IN LISTS files)
-    message("  ${file}")
-endforeach()
+list(JOIN files "\n  " file_list)
+message("${action} the following C++ files:")
+message("  ${file_list}\n")
 
 set(badly_formatted "")
 set(output "")
-string(LENGTH "${CMAKE_SOURCE_DIR}/" path_prefix_length)
 foreach(file IN LISTS files)
     execute_process(
         COMMAND clang-format --style=file "${flag}" "${file}"
         WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
-        RESULT_VARIABLE result ${args}
+        RESULT_VARIABLE result
+        ${args}
     )
     if(NOT result EQUAL "0")
-        message(FATAL_ERROR "'${file}': formatter returned with ${result}")
+        message(FATAL_ERROR "'${file}': formatter returned ${result}")
     endif()
     if(NOT FIX AND output MATCHES "\n<replacement offset")
-        string(SUBSTRING "${file}" "${path_prefix_length}" -1 relative_file)
-        list(APPEND badly_formatted "${relative_file}")
+        list(APPEND badly_formatted "${file}")
     endif()
     set(output "")
 endforeach()
 
 if(NOT badly_formatted STREQUAL "")
-    list(JOIN badly_formatted "\n" bad_list)
-    message("The following files are badly formatted:\n\n${bad_list}\n")
+    list(JOIN badly_formatted "\n  " bad_list)
+    message("The following files are badly formatted:")
+    message("  ${bad_list}\n")
     message(FATAL_ERROR "Run again with FIX=YES to fix these files.")
 endif()
