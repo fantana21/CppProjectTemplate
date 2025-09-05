@@ -14,6 +14,7 @@ endif()
 
 set(files_and_directories
     "${CMAKE_SOURCE_DIR}/CMakeLists.txt"
+    "${CMAKE_SOURCE_DIR}/CTestConfig.cmake"
     "${CMAKE_SOURCE_DIR}/CMake/"
     "${CMAKE_SOURCE_DIR}/CppProjectTemplate/"
     "${CMAKE_SOURCE_DIR}/Tests/"
