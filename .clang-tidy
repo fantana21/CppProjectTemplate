@@ -1,5 +1,5 @@
 ---
-# For clang-tidy 19
+# For clang-tidy 20
 #
 # Enable all the things! Except not really. We don't use/develop for
 #
@@ -72,7 +72,7 @@ Checks: "*,\
   -performance-enum-size,\
   -readability-math-missing-parentheses,\
   -readability-static-accessed-through-instance,\
-  -bugprone-narrowing-conversions,\
+  -cert-arr39-c,\
   -cert-con36-c,\
   -cert-con54-cpp,\
   -cert-ctr56-cpp,\
@@ -119,7 +119,7 @@ Checks: "*,\
   -clang-analyzer-cplusplus.NewDelete,\
   -clang-analyzer-cplusplus.NewDeleteLeaks,\
   -clang-analyzer-cplusplus.PlacementNew,\
-  -clang-analyzer-cplusplus.PureVirtualCall,\
+  -clang-analyzer-cplusplus.SelfAssignment,\
   -clang-analyzer-cplusplus.StringChecker,\
   -clang-analyzer-deadcode.DeadStores,\
   -clang-analyzer-fuchsia.HandleChecker,\
@@ -132,7 +132,6 @@ Checks: "*,\
   -clang-analyzer-optin.cplusplus.UninitializedObject,\
   -clang-analyzer-optin.cplusplus.VirtualCall,\
   -clang-analyzer-optin.mpi.MPI-Checker,\
-  -clang-analyzer-optin.osx.OSObjectCStyleCast,\
   -clang-analyzer-optin.osx.cocoa.localizability.EmptyLocalizationContextChecker,\
   -clang-analyzer-optin.osx.cocoa.localizability.NonLocalizedStringChecker,\
   -clang-analyzer-optin.performance.GCDAntipattern,\
@@ -140,9 +139,7 @@ Checks: "*,\
   -clang-analyzer-optin.portability.UnixAPI,\
   -clang-analyzer-optin.taint.TaintedAlloc,\
   -clang-analyzer-osx.API,\
-  -clang-analyzer-osx.MIG,\
   -clang-analyzer-osx.NumberObjectConversion,\
-  -clang-analyzer-osx.OSObjectRetainCount,\
   -clang-analyzer-osx.ObjCProperty,\
   -clang-analyzer-osx.SecKeychainAPI,\
   -clang-analyzer-osx.cocoa.AtSync,\
@@ -196,9 +193,6 @@ Checks: "*,\
   -clang-analyzer-unix.Vfork,\
   -clang-analyzer-unix.cstring.BadSizeArg,\
   -clang-analyzer-unix.cstring.NullArg,\
-  -clang-analyzer-valist.CopyToSelf,\
-  -clang-analyzer-valist.Uninitialized,\
-  -clang-analyzer-valist.Unterminated,\
   -clang-analyzer-webkit.NoUncountedMemberChecker,\
   -clang-analyzer-webkit.RefCntblBaseVirtualDtor,\
   -clang-analyzer-webkit.UncountedLambdaCapturesChecker,\
@@ -207,6 +201,7 @@ Checks: "*,\
   -cppcoreguidelines-c-copy-assignment-signature,\
   -cppcoreguidelines-explicit-virtual-functions,\
   -cppcoreguidelines-macro-to-enum,\
+  -cppcoreguidelines-narrowing-conversions,\
   -cppcoreguidelines-noexcept-destructor,\
   -cppcoreguidelines-noexcept-move-operations,\
   -cppcoreguidelines-noexcept-swap,\

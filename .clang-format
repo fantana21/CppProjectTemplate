@@ -1,9 +1,9 @@
 ---
-# For clang-format 19
+# For clang-format 20
 Language: Cpp
 AccessModifierOffset: -4
 AlignAfterOpenBracket: Align
-AlignArrayOfStructures: Left
+AlignArrayOfStructures: Right
 AlignConsecutiveAssignments: false
 AlignConsecutiveBitFields: Consecutive
 AlignConsecutiveDeclarations: false
@@ -12,6 +12,7 @@ AlignConsecutiveShortCaseStatements:
   Enabled:          false
   AcrossEmptyLines: false
   AcrossComments:   false
+  AlignCaseArrows:  false
   AlignCaseColons:  false
 AlignEscapedNewlines: DontAlign
 AlignOperands: AlignAfterOperator
@@ -21,8 +22,9 @@ AlignTrailingComments:
 AllowAllArgumentsOnNextLine: true
 AllowAllParametersOfDeclarationOnNextLine: true
 AllowBreakBeforeNoexceptSpecifier: OnlyWithParen
-# Empty does now work with while(true) {} so I chose Always
+# Empty does not work with while(true) {} so I chose Always
 AllowShortBlocksOnASingleLine: Always
+AllowShortCaseExpressionOnASingleLine: false
 AllowShortCaseLabelsOnASingleLine: false
 AllowShortCompoundRequirementOnASingleLine: true
 AllowShortEnumsOnASingleLine: false
@@ -30,13 +32,13 @@ AllowShortFunctionsOnASingleLine: None
 AllowShortIfStatementsOnASingleLine: Never
 AllowShortLambdasOnASingleLine: All
 AllowShortLoopsOnASingleLine: false
+AllowShortNamespacesOnASingleLine: false
 AlwaysBreakAfterDefinitionReturnType: None
-AlwaysBreakAfterReturnType: None
 AlwaysBreakBeforeMultilineStrings: true
 AttributeMacros:
   - ''
 BinPackArguments: false
-BinPackParameters: false
+BinPackParameters: OnePerLine
 BitFieldColonSpacing: Both
 BraceWrapping:
   AfterCaseLabel:        true
@@ -67,6 +69,7 @@ BreakBeforeConceptDeclarations: Always
 BreakBeforeBraces: Custom
 BreakBeforeInlineASMColon: OnlyMultiline
 BreakBeforeTernaryOperators: true
+BreakBinaryOperations: Never
 BreakConstructorInitializers: BeforeColon
 BreakFunctionDefinitionParameters: false
 BreakInheritanceList: AfterComma
@@ -97,20 +100,21 @@ IncludeCategories:
   # C stdandard library
   - Regex: '^<(assert|complex|ctype|ctype|fenv|float|inttypes|iso646|limits|locale|math|setjmp|signal|stdalign|stdarg|stdatomic|stdatomic|stddef|stdint|stdio|stdlib|stdnoreturn|string|tgmath|threads|time|uchar|wchar|wctype)\.h>'
     Priority: 4
-  # C++ stdandard library: <*> without a dot
+  # C++ stdandard library: <*> without extension
   - Regex: '^<[a-z_]+>'
     Priority: 3
-  # CppProjectTemplate header files <CppProjectTemplate/*.hpp> without underscores
+  # CppProjectTemplate header files <CppProjectTemplate/*.hpp> without underscores or hyphens
   - Regex: '^<CppProjectTemplate(\/[A-Za-z0-9]+)+\.hpp>'
     Priority: 1
-  # C and C++ headers from external libraries: <**/*.(h|hh|hpp|h++)>
-  - Regex: '^<([A-Za-z0-9_-]+\/)*[A-Za-z0-9_-]+\.(h|hh|hpp|h\+\+)>'
+  # C and C++ headers from external libraries: <**/*.(h|hh|hpp|h++)> with dots in filename
+  - Regex: '^<([A-Za-z0-9_-]+\/)*[A-Za-z0-9_.-]+\.(h|hh|hpp|h\+\+)>'
     Priority: 2
 IncludeIsMainRegex: '$'
 IncludeIsMainSourceRegex: '(\.ipp)$'
 IndentAccessModifiers: false
 IndentCaseBlocks: false
 IndentCaseLabels: true
+IndentExportBlock: true
 IndentExternBlock: NoIndent
 IndentGotoLabels: true
 IndentPPDirectives: BeforeHash
@@ -133,6 +137,7 @@ KeepEmptyLines:
   AtEndOfFile: false
   AtStartOfBlock: false
   AtStartOfFile: false
+KeepFormFeed: false
 LambdaBodyIndentation: Signature
 LineEnding: DeriveLF
 MacroBlockBegin: ''
@@ -147,7 +152,8 @@ ObjCSpaceAfterProperty: false
 ObjCSpaceBeforeProtocolList: true
 PackConstructorInitializers: NextLine
 PenaltyBreakAssignment: 2
-PenaltyBreakBeforeFirstCallParameter: 1
+PenaltyBreakBeforeFirstCallParameter: 19
+PenaltyBreakBeforeMemberAccess: 150
 PenaltyBreakComment: 300
 PenaltyBreakFirstLessLess: 120
 PenaltyBreakOpenParenthesis: 0
@@ -198,8 +204,9 @@ RawStringFormats:
     CanonicalDelimiter: ''
     BasedOnStyle: google
 ReferenceAlignment: Pointer
-ReflowComments: true
+ReflowComments: Always
 RemoveBracesLLVM: false
+RemoveEmptyLinesInUnwrappedLines: true
 RemoveParentheses: Leave
 RemoveSemicolon: false
 RequiresClausePosition: OwnLine
@@ -264,4 +271,5 @@ WhitespaceSensitiveMacros:
   - BOOST_PP_STRINGIZE
   - NS_SWIFT_NAME
   - CF_SWIFT_NAME
+WrapNamespaceBodyWithEmptyLines: Never
 ...
