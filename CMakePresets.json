@@ -101,7 +101,10 @@
         "common-linux",
         "clang-tidy",
         "cppcheck"
-      ]
+      ],
+      "cacheVariables": {
+        "CMAKE_VERIFY_INTERFACE_HEADER_SETS": "ON"
+      }
     },
     {
       "name": "coverage",
@@ -152,7 +155,10 @@
         "dev-mode",
         "cpp-std"
       ],
-      "binaryDir": "${sourceDir}/build/${presetName}"
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "cacheVariables": {
+        "CMAKE_VERIFY_INTERFACE_HEADER_SETS": "ON"
+      }
     },
     {
       "name": "ci-windows-msvc",
@@ -187,12 +193,20 @@
     {
       "name": "ci-ubuntu-debug",
       "configurePreset": "ci-ubuntu",
-      "configuration": "Debug"
+      "configuration": "Debug",
+      "targets": [
+        "all",
+        "all_verify_interface_header_sets"
+      ]
     },
     {
       "name": "ci-ubuntu-release",
       "configurePreset": "ci-ubuntu",
-      "configuration": "Release"
+      "configuration": "Release",
+      "targets": [
+        "all",
+        "all_verify_interface_header_sets"
+      ]
     },
     {
       "name": "ci-ubuntu-debug-valgrind",
@@ -229,22 +243,38 @@
     {
       "name": "ci-windows-msvc-debug",
       "configurePreset": "ci-windows-msvc",
-      "configuration": "Debug"
+      "configuration": "Debug",
+      "targets": [
+        "ALL_BUILD",
+        "all_verify_interface_header_sets"
+      ]
     },
     {
       "name": "ci-windows-msvc-release",
       "configurePreset": "ci-windows-msvc",
-      "configuration": "Release"
+      "configuration": "Release",
+      "targets": [
+        "ALL_BUILD",
+        "all_verify_interface_header_sets"
+      ]
     },
     {
       "name": "ci-windows-clang-cl-debug",
       "configurePreset": "ci-windows-clang-cl",
-      "configuration": "Debug"
+      "configuration": "Debug",
+      "targets": [
+        "all",
+        "all_verify_interface_header_sets"
+      ]
     },
     {
       "name": "ci-windows-clang-cl-release",
       "configurePreset": "ci-windows-clang-cl",
-      "configuration": "Release"
+      "configuration": "Release",
+      "targets": [
+        "all",
+        "all_verify_interface_header_sets"
+      ]
     }
   ],
   "testPresets": [

@@ -18,7 +18,8 @@
       ],
       "cacheVariables": {
         "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
-        "CMAKE_CXX_COMPILER": "g++"
+        "CMAKE_CXX_COMPILER": "g++",
+        "CMAKE_VERIFY_INTERFACE_HEADER_SETS": "ON"
       }
     },
     {
