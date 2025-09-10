@@ -241,7 +241,7 @@ Checks: "*,\
   -llvm-qualified-auto,\
   "
 WarningsAsErrors: ''
-HeaderFilterRegex: '.*\.[hi]pp$'
+HeaderFilterRegex: '.*CppProjectTemplate.*'
 FormatStyle: 'file'
 CheckOptions:
   - key: 'bugprone-argument-comment.StrictMode'
