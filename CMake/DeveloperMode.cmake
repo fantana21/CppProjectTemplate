@@ -10,11 +10,6 @@ if(ENABLE_COVERAGE)
     include(CMake/Coverage.cmake)
 endif()
 
-option(CppProjectTemplate_ENABLE_CLANG_TIDY_CACHE "Speed up reanalysis with clang-tidy-cache" ON)
-if(CppProjectTemplate_ENABLE_CLANG_TIDY_CACHE)
-    include(CMake/ClangTidyCache.cmake)
-endif()
-
 # Further options for developers go here
 
 include(CMake/FormatTargets.cmake)

@@ -1,5 +1,6 @@
-# This file contains user options and variables. Developer-specific options and variables should be
-# placed in CMake/DeveloperMode.cmake.
+# This file defines all user-configurable options and variables for the project. It also includes
+# developer-specific options and variables that must be set before any targets are created.
+# Additional developer-specific options and variables should be placed in CMake/DeveloperMode.cmake.
 
 if(PROJECT_IS_TOP_LEVEL)
     # Developer mode enables targets and code paths in the CMake scripts that are only relevant for
@@ -13,7 +14,16 @@ if(PROJECT_IS_TOP_LEVEL)
     endif()
 endif()
 
-# ---- Warning guard ----
+if(CppProjectTemplate_DEVELOPER_MODE)
+    option(
+        CppProjectTemplate_ENABLE_CLANG_TIDY_CACHE
+        "Speed up reanalysis with clang-tidy-cache"
+        ON
+    )
+    if(CppProjectTemplate_ENABLE_CLANG_TIDY_CACHE)
+        include(CMake/ClangTidyCache.cmake)
+    endif()
+endif()
 
 # target_include_directories() with the SYSTEM modifier will request the compiler to omit warnings
 # from the provided paths, if the compiler supports that. This is to provide a user experience
