@@ -6,12 +6,11 @@ endif()
 
 set(flag --output-replacements-xml)
 set(args OUTPUT_VARIABLE output)
+set(action "Checking")
 if(FIX)
     set(flag -i)
     set(args "")
     set(action "Formatting")
-else()
-    set(action "Checking")
 endif()
 
 # Here we glob all C++ files that should be formatted
