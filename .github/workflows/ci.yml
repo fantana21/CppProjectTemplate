@@ -119,11 +119,10 @@ jobs:
         uses: fantana21/set-up-vcpkg@v1
         with:
           committish: ${{ env.VCPKG_COMMITTISH }}
-          cache-key: vcpkg-${{ matrix.os }}-${{ matrix.compiler }}-${{ hashFiles('vcpkg.json', 'CMakePresets.json') }}-${{ github.sha }}
+          cache-key: vcpkg-${{ matrix.os }}-${{ matrix.compiler }}-${{ env.VCPKG_COMMITTISH }}-${{ hashFiles('vcpkg.json', 'CMakePresets.json') }}-${{ github.sha }}
           cache-restore-keys: |
-            vcpkg-${{ matrix.os }}-${{ matrix.compiler }}-${{ hashFiles('vcpkg.json', 'CMakePresets.json') }}
-            vcpkg-${{ matrix.os }}-${{ matrix.compiler }}
-            vcpkg-${{ matrix.os }}
+            vcpkg-${{ matrix.os }}-${{ matrix.compiler }}-${{ env.VCPKG_COMMITTISH }}-${{ hashFiles('vcpkg.json', 'CMakePresets.json') }}
+            vcpkg-${{ matrix.os }}-${{ matrix.compiler }}-${{ env.VCPKG_COMMITTISH }}
           save-always: true
           use-private-registry: true
           private-registry-pat: ${{ secrets.VCPKG_REGISTRY_PAT }}
