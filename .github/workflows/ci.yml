@@ -9,8 +9,8 @@ on:
       - main
 
 env:
+  LLVM_MAJOR_VERSION: '20'
   VCPKG_COMMITTISH: dd3097e305afa53f7b4312371f62058d2e665320  # 2025.07.25
-  LLVM_MAJOR_VERSION: "20"
 
 jobs:
   check-formatting-and-spelling:
@@ -92,6 +92,13 @@ jobs:
           clang-tidy: ${{ runner.os == 'Linux' && env.LLVM_MAJOR_VERSION || false }}
           cppcheck: ${{ runner.os == 'Linux' }}
           gcovr: ${{ runner.os == 'Linux' }}
+
+      - name: Ensure libstdc++ from at least GCC 14 is used
+        if: ${{ runner.os == 'Linux' }}
+        # __GLIBCXX__ is only defined for libstdc++, __cpp_lib_print only since GCC 14
+        run: |
+          echo "#include <version>" | clang++ -std=c++23 -xc++ -dM -E - | grep "#define __GLIBCXX__ "
+          echo "#include <version>" | clang++ -std=c++23 -xc++ -dM -E - | grep "#define __cpp_lib_print "
 
       - name: Install valgrind
         if: ${{ runner.os == 'Linux' }}
