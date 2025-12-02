@@ -1,7 +1,7 @@
 [codespell]
-builtin = clear,rare,en-GB_to_en-US,names,informal,code
+builtin = clear,rare,informal,code,names,en-GB_to_en-US
 check-filenames =
 check-hidden =
-skip = */.git,*/build,*/prefix,.clang-format,compile_commands.json
+skip = .cache,.git,.vscode,build,prefix,.clang-format,compile_commands.json
 quiet-level = 2
 ignore-words = .codespellignore
