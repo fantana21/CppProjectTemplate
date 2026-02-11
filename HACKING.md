@@ -12,7 +12,7 @@ Build system targets that are only useful for developers of this project are hid
 and other developer targets and options available. Not enabling this option means that you
 are a consumer of this project, and thus you have no need for these targets and options.
 
-Developer mode is always set to on in CI workflows.
+Developer mode is always enabled in CI workflows.
 
 
 ## Presets
@@ -26,9 +26,9 @@ compilers and other tools.)
 As a developer, you should create a `CMakeUserPresets.json` file at the root of the
 project. To get you started more quickly
 [`CMakeDeveloperPresets.json`](CMakeDeveloperPresets.json) already contains a convenient
-set of configure, build, test, and workflow presets for you. Just include it in your
-user preset file and optionally create aliases with shorter names for those you use
-often. The following shows an example `CMakeUserPresets.json`.
+set of configure, build, test, and workflow presets for you. Just include it in your user
+preset file and optionally create aliases with shorter names for those you use often. The
+following shows an example `CMakeUserPresets.json`.
 
 <details>
 <summary>CMakeUserPresets.json</summary>
@@ -156,9 +156,10 @@ These are targets you may invoke using the build command from above, with an add
 
 Available if `ENABLE_COVERAGE` is enabled. This target processes the output of the
 previously run tests when built with coverage configuration. It generates plain text,
-Markdown, HTML, and XML coverage reports. See [Coverage.cmake](CMake/Coverage.cmake) for
-more details. Note that this target currently only works on Linux. On Windows I have yet
-to figure out how to tell the linker where to find `clang_rt.profile-x86_64.lib`.
+Markdown, HTML, and XML coverage reports. See
+[Coverage.cmake](Infrastructure/CMake/Coverage.cmake) for more details. Note that this
+target currently only works on Linux. On Windows I have yet to figure out how to tell the
+linker where to find `clang_rt.profile-x86_64.lib`.
 
 
 ### `format-check` and `format-fix`
@@ -171,4 +172,4 @@ errors and to fix them respectively. See [`FormatCpp.cmake`](CMake/FormatCpp.cma
 ### `spell-check` and `spell-fix`
 
 These targets run the codespell tool on the codebase to check errors and to fix them
-respectively. See [`Spell.cmake`](CMake/Spell.cmake) for more details.
+respectively. See [`Spell.cmake`](Infrastructure/CMake/Spell.cmake) for more details.

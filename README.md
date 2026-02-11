@@ -26,6 +26,9 @@ preferences. The following is a non-exhaustive list of changes.
 - Increase minimum required CMake version and get rid of some code that became obsolete
   because of that.
 - Use our private vcpkg registry.
+- Move project-independent CMake code to our [Infrastructure
+  repository](https://github.com/fantana21/Infrastructure) and add it as a submodule. This
+  makes it easier to maintain and improve the code.
 - Use [doctest](https://github.com/doctest/doctest) instead of
   [Catch2](https://github.com/catchorg/Catch2).
 - Support [ccache](https://ccache.dev/) and
@@ -42,10 +45,10 @@ preferences. The following is a non-exhaustive list of changes.
   [LCOV](https://github.com/linux-test-project/lcov) for generating coverage reports,
   since gcovr is also available on Windows.
 - Run tests with Valgrind on Ubuntu runners.
-- Provide `add_and_set_up_xxx()` functions which wrap most boilerplate code that appears
-  when adding targets. Libraries, e.g., get a target name prefix, an export name and an
-  alias according to best practices. The functions also allow to easily set properties,
-  like include directories and compile features for all targets.
+- Provide `add_fantana_xxx()` functions which wrap most boilerplate code that appears when
+  adding targets. Libraries, e.g., get a target name prefix, an export name and an alias
+  according to best practices. The functions also allow to easily set properties, like
+  include directories and compile features for all targets.
 - Adapt configuration files for clang-format and clang-tidy to personal preferences. Also,
   add a separate clang-tidy configuration for tests, because magic numbers, e.g., are very
   common and not an issue there.
