@@ -1,2 +1,2 @@
-definitions: [./CMake/]
+definitions: [./CMake/, ./Infrastructure/CMake/]
 line_length: 100

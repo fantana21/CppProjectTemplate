@@ -10,7 +10,7 @@ if(PROJECT_IS_TOP_LEVEL)
 
     option(CppProjectTemplate_ENABLE_CCACHE "Speed up recompilation with ccache" ON)
     if(CppProjectTemplate_ENABLE_CCACHE)
-        include(CMake/CCache.cmake)
+        include(Infrastructure/CMake/CCache.cmake)
     endif()
 endif()
 
@@ -21,7 +21,7 @@ if(CppProjectTemplate_DEVELOPER_MODE)
         ON
     )
     if(CppProjectTemplate_ENABLE_CLANG_TIDY_CACHE)
-        include(CMake/ClangTidyCache.cmake)
+        include(Infrastructure/CMake/ClangTidyCache.cmake)
     endif()
 endif()
 
