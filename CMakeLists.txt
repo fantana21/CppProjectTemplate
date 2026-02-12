@@ -1,7 +1,9 @@
 cmake_minimum_required(VERSION 3.31)
 
-include(CMake/InSourceBuildGuard.cmake)
-include(CMake/MetadataFromVcpkg.cmake)
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/Infrastructure/CMake")
+
+include(Infrastructure/CMake/InSourceBuildGuard.cmake)
+include(Infrastructure/CMake/MetadataFromVcpkg.cmake)
 
 project(
     CppProjectTemplate
@@ -13,7 +15,7 @@ project(
 
 include(CMake/LanguageStandard.cmake)
 include(CMake/OptionsAndVariables.cmake)
-include(CMake/AddAndSetUpTargets.cmake)
+include(AddFantanaTargets)
 
 # ---- Find dependencies ----
 
@@ -23,9 +25,9 @@ find_package(QuantNd CONFIG REQUIRED)
 
 # ---- Declare targets ----
 
-add_and_set_up_executable(CppProjectTemplate_App)
-add_and_set_up_library(CppProjectTemplate_Person STATIC)
-add_and_set_up_library(CppProjectTemplate_Square INTERFACE)
+add_fantana_executable(CppProjectTemplate_App)
+add_fantana_library(CppProjectTemplate_Person STATIC)
+add_fantana_library(CppProjectTemplate_Square INTERFACE)
 
 add_subdirectory(CppProjectTemplate)
 

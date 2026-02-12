@@ -1,5 +1,5 @@
-# Our add_and_set_up_*() functions set the C++ standard via this compile feature for each target.
-# This is better than setting CMAKE_CXX_STANDARD because it's propagated as a usage requirement.
+# Our add_fantana_*() functions set the C++ standard via this compile feature for each target. This
+# is better than setting CMAKE_CXX_STANDARD because it's propagated as a usage requirement.
 set(default_cxx_standard_feature cxx_std_23)
 # Always enforce the language constraint
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
