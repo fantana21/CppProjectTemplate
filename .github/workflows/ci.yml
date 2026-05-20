@@ -169,7 +169,10 @@ jobs:
       - name: Build and test debug and release mode
         shell: bash
         id: test
+        # Without `set -o pipefail`, the build would succeed even if the build commands fail,
+        # because `tee` would succeed as long as it can write to the log file
         run: |
+          set -o pipefail
           cmake --preset ${{ matrix.preset }}
           cmake --build --preset ${{ matrix.preset }}-debug | tee ${{ matrix.compiler }}_Debug_build.log
           ctest --preset ${{ matrix.preset }}
