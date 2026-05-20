@@ -8,7 +8,7 @@
 # - Android
 # - Boost
 # - Darwin (Apple platforms)
-# - Fuchisa (but the inheritance checks are use)
+# - Fuchsia (but the inheritance checks are useful)
 # - Google Test
 # - Objective-C (google-objc)
 # - Linux kernel
@@ -28,6 +28,8 @@
 #   doesn't sound like an important check.
 # - google-readability-todo: We don't require names and/or bug numbers in TODO comments.
 # - google-runtime-int: We don't require using std::int32_t, etc. instead of int, long, ...
+# - hicpp-signed-bitwise: It's not useful because it checks the wrong things. See
+#   https://stackoverflow.com/a/58845898.
 # - misc-const-correctness: It's not about const-correctness, but about const-ness of local
 #   variables and I am not on the const-all-the-things bandwagon.
 # - misc-header-include-cycle: Triggers in our .ipp files. For some reason I can't disable the
@@ -65,6 +67,7 @@ Checks: "*,\
   fuchsia-virtual-inheritance,\
   -google-readability-todo,\
   -google-runtime-int,\
+  -hicpp-signed-bitwise,\
   -misc-const-correctness,\
   -misc-header-include-cycle,\
   -modernize-use-designated-initializers,\
