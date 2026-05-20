@@ -256,7 +256,7 @@ SpacesInParensOptions:
   InEmptyParentheses:      false
   Other:                   false
 SpacesInSquareBrackets: false
-Standard: Auto
+Standard: Latest
 StatementAttributeLikeMacros:
   - Q_EMIT
 StatementMacros:
