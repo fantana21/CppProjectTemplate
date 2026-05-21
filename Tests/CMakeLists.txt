@@ -1,24 +1,23 @@
 # ---- Dependencies ----
 
-find_package(doctest CONFIG REQUIRED)
-include(doctest)
-include(../Infrastructure/CMake/DoctestWithMain.cmake)
+find_package(Catch2 CONFIG REQUIRED)
+include(Catch)
 
 # ---- Tests ----
 
 add_fantana_test(CppProjectTemplateTests_Person)
 target_link_libraries(
     CppProjectTemplateTests_Person
-    PRIVATE CppProjectTemplate::Person doctest::doctestWithMain
+    PRIVATE Catch2::Catch2WithMain CppProjectTemplate::Person
 )
-doctest_discover_tests(CppProjectTemplateTests_Person)
+catch_discover_tests(CppProjectTemplateTests_Person)
 
 add_fantana_test(CppProjectTemplateTests_Square)
 target_link_libraries(
     CppProjectTemplateTests_Square
-    PRIVATE CppProjectTemplate::Square doctest::doctestWithMain
+    PRIVATE Catch2::Catch2WithMain CppProjectTemplate::Square
 )
-doctest_discover_tests(CppProjectTemplateTests_Square)
+catch_discover_tests(CppProjectTemplateTests_Square)
 
 # ---- End-of-file commands ----
 

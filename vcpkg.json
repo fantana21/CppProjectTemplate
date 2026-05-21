@@ -6,7 +6,7 @@
   "dependencies": [
     {
       "name": "fmt",
-      "version>=": "10.2.1#1"
+      "version>=": "12.1.0"
     },
     {
       "name": "namedtype",
@@ -14,7 +14,7 @@
     },
     {
       "name": "quantnd",
-      "version>=": "0.1.0"
+      "version>=": "0.6.0"
     }
   ],
   "features": {
@@ -22,8 +22,8 @@
       "description": "Dependencies for testing",
       "dependencies": [
         {
-          "name": "doctest",
-          "version>=": "2.4.11"
+          "name": "catch2",
+          "version>=": "3.14.0"
         }
       ]
     }
