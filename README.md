@@ -29,8 +29,6 @@ preferences. The following is a non-exhaustive list of changes.
 - Move project-independent CMake code to our [Infrastructure
   repository](https://github.com/fantana21/Infrastructure) and add it as a submodule. This
   makes it easier to maintain and improve the code.
-- Use [doctest](https://github.com/doctest/doctest) instead of
-  [Catch2](https://github.com/catchorg/Catch2).
 - Support [ccache](https://ccache.dev/) and
   [clang-tidy-cache](https://github.com/matus-chochlik/ctcache). The options
   `CppProjectTemplate_ENABLE_CCACHE` and `CppProjectTemplate_ENABLE_CLANG_TIDY_CACHE` are

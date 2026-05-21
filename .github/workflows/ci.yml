@@ -10,6 +10,7 @@ on:
 
 env:
   LLVM_MAJOR_VERSION: '20'
+  # TODO: Upgrade this and the dependencies in vcpkg.json
   VCPKG_COMMITTISH: dd3097e305afa53f7b4312371f62058d2e665320  # 2025.07.25
 
 jobs:
