@@ -64,7 +64,8 @@ jobs:
           - compiler: MSVC
             preset: ci-windows-msvc
             compiler-pascal-case: Msvc
-            os: windows-2025
+            # windows-2025 only has Visual Studio 2026 since June 2026
+            os: windows-2022
           - compiler: clang-cl
             compiler-setup-cpp: llvm-${{ needs.check-formatting-and-spelling.outputs.LLVM_MAJOR_VERSION }}
             preset: ci-windows-clang-cl
