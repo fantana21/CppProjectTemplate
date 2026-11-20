@@ -14,7 +14,7 @@ env:
 
 jobs:
   check-formatting-and-spelling:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     # The env context cannot be used in the matrix definition of the build-and-test job, so we
     # pass it via an output of this job
     outputs:
@@ -74,12 +74,12 @@ jobs:
             compiler-setup-cpp: gcc-14
             preset: "ci-ubuntu"
             compiler-pascal-case: Gcc
-            os: ubuntu-24.04
+            os: ubuntu-26.04
           - compiler: Clang
             compiler-setup-cpp: llvm-${{ needs.check-formatting-and-spelling.outputs.LLVM_MAJOR_VERSION }}
             preset: "ci-ubuntu"
             compiler-pascal-case: Clang
-            os: ubuntu-24.04
+            os: ubuntu-26.04
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -213,7 +213,7 @@ jobs:
 
   report-warnings:
     needs: build-and-test
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       - name: Download all build log artifacts
         uses: actions/download-artifact@v4
