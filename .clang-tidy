@@ -1,5 +1,5 @@
 ---
-# For clang-tidy 20
+# For clang-tidy 22
 #
 # Enable all the things! Except not really. We don't use/develop for
 #
@@ -8,20 +8,32 @@
 # - Android
 # - Boost
 # - Darwin (Apple platforms)
-# - Fuchsia (but the inheritance checks are useful)
+# - Fuchsia (but the virtual inheritance check is useful)
 # - Google Test
-# - Objective-C (google-objc)
+# - Objective-C
 # - Linux kernel
 # - LLVM
 # - LLVM-libc
 # - MPI
 # - OpenMP
+# - WebKit
+# - Zircon (Fuchsia kernel)
+#
+# This includes the corresponding clang-analyzer checks (fuchsia, optin.mpi, optin.osx, osx,
+# webkit).
 #
 # We also disable some specific checks that we don't like:
 #
 # - avoid-c-arrays: C arrays are fine if used only locally.
 # - bugprone-implicit-widening-of-multiplication-result: I am not sure anymore but I think this is
 #   too noisy.
+# - clang-analyzer-cplusplus.NewDeleteLeaks: We don't use raw new or delete and we have Valgrind
+#   anyway.
+# - clang-analyzer-nullability: We don't use Clang's nullability annotations (_Nonnull, etc.).
+# - clang-analyzer-optin.performance.GCDAntipattern: Grand Central Dispatch is Apple-only.
+# - clang-analyzer-optin.performance.Padding: Too noisy since it flags every struct with excess
+#   padding.
+# - clang-analyzer-security.FloatLoopCounter: Duplicate of bugprone-float-loop-counter.
 # - clang-diagnostic-unused-command-line-argument: I don't remember why I disabled this, but it
 #   doesn't sound like an important check.
 # - google-readability-todo: We don't require names and/or bug numbers in TODO comments.
@@ -37,17 +49,29 @@
 # - namespace-comment: We don't use namespace comments.
 # - performance-enum-size: The added noise outweighs the potential performance gains of reduced enum
 #   sizes in desktop applications. For embedded systems, this check should be enabled.
+# - portability-avoid-pragma-once: We use #pragma once everywhere.
+# - readability-braces-around-statements: clang-format ensures that we always use braces.
+# - readability-inconsistent-ifelse-braces: clang-format ensures that we always use braces.
 # - readability-math-missing-parentheses: We are not that stupid.
 # - readability-static-accessed-through-instance: Accessing a static member through an instance is
 #   too convenient to give up.
+# - readability-uppercase-literal-suffix: clang-format ensures that we always use lowercase
+#   suffixes.
 #
-# The rest are all alias checks according to the documentation of clang-tidy 19.1.0. Apparently,
-# they run like normal checks, so they do unnecessary duplicate work.
+# The rest are all alias checks according to the documentation of clang-tidy 22.1.0. Apparently,
+# they run like normal checks, so they do unnecessary duplicate work. The clang-analyzer checks are
+# also listed as aliases, but only because they redirect to the Clang Static Analyzer. They don't
+# duplicate other clang-tidy checks and we don't run the analyzer separately, so we keep them.
 Checks: "*,\
   -abseil-*,\
   -altera-*,\
   -android-*,\
   -boost-*,\
+  -clang-analyzer-fuchsia.*,\
+  -clang-analyzer-optin.mpi.*,\
+  -clang-analyzer-optin.osx.*,\
+  -clang-analyzer-osx.*,\
+  -clang-analyzer-webkit.*,\
   -darwin-*,\
   -fuchsia-*,\
   -*googletest*,\
@@ -56,11 +80,17 @@ Checks: "*,\
   -llvm-*,\
   -llvmlibc-*,\
   -mpi-*,\
+  -objc-*,\
   -openmp-*,\
+  -zircon-*,\
   -*avoid-c-arrays,\
   -bugprone-implicit-widening-of-multiplication-result,\
+  -clang-analyzer-cplusplus.NewDeleteLeaks,\
+  -clang-analyzer-nullability.*,\
+  -clang-analyzer-optin.performance.GCDAntipattern,\
+  -clang-analyzer-optin.performance.Padding,\
+  -clang-analyzer-security.FloatLoopCounter,\
   -clang-diagnostic-unused-command-line-argument,\
-  fuchsia-multiple-inheritance,\
   fuchsia-virtual-inheritance,\
   -google-readability-todo,\
   -google-runtime-int,\
@@ -70,8 +100,12 @@ Checks: "*,\
   -modernize-use-designated-initializers,\
   -*namespace-comment*,\
   -performance-enum-size,\
+  -portability-avoid-pragma-once,\
+  -readability-braces-around-statements,\
+  -readability-inconsistent-ifelse-braces,\
   -readability-math-missing-parentheses,\
   -readability-static-accessed-through-instance,\
+  -readability-uppercase-literal-suffix,\
   -cert-arr39-c,\
   -cert-con36-c,\
   -cert-con54-cpp,\
@@ -79,123 +113,39 @@ Checks: "*,\
   -cert-dcl03-c,\
   -cert-dcl16-c,\
   -cert-dcl37-c,\
+  -cert-dcl50-cpp,\
   -cert-dcl51-cpp,\
   -cert-dcl54-cpp,\
+  -cert-dcl58-cpp,\
   -cert-dcl59-cpp,\
+  -cert-env33-c,\
   -cert-err09-cpp,\
+  -cert-err34-c,\
+  -cert-err52-cpp,\
+  -cert-err58-cpp,\
+  -cert-err60-cpp,\
   -cert-err61-cpp,\
   -cert-exp42-c,\
   -cert-fio38-c,\
+  -cert-flp30-c,\
   -cert-flp37-c,\
   -cert-int09-c,\
+  -cert-mem57-cpp,\
   -cert-msc24-c,\
   -cert-msc30-c,\
   -cert-msc32-c,\
   -cert-msc33-c,\
+  -cert-msc50-cpp,\
+  -cert-msc51-cpp,\
   -cert-msc54-cpp,\
   -cert-oop11-cpp,\
   -cert-oop54-cpp,\
+  -cert-oop57-cpp,\
+  -cert-oop58-cpp,\
   -cert-pos44-c,\
   -cert-pos47-c,\
   -cert-sig30-c,\
   -cert-str34-c,\
-  -clang-analyzer-core.BitwiseShift,\
-  -clang-analyzer-core.CallAndMessage,\
-  -clang-analyzer-core.DivideZero,\
-  -clang-analyzer-core.NonNullParamChecker,\
-  -clang-analyzer-core.NullDereference,\
-  -clang-analyzer-core.StackAddressEscape,\
-  -clang-analyzer-core.UndefinedBinaryOperatorResult,\
-  -clang-analyzer-core.VLASize,\
-  -clang-analyzer-core.uninitialized.ArraySubscript,\
-  -clang-analyzer-core.uninitialized.Assign,\
-  -clang-analyzer-core.uninitialized.Branch,\
-  -clang-analyzer-core.uninitialized.CapturedBlockVariable,\
-  -clang-analyzer-core.uninitialized.NewArraySize,\
-  -clang-analyzer-core.uninitialized.UndefReturn,\
-  -clang-analyzer-cplusplus.ArrayDelete,\
-  -clang-analyzer-cplusplus.InnerPointer,\
-  -clang-analyzer-cplusplus.Move,\
-  -clang-analyzer-cplusplus.NewDelete,\
-  -clang-analyzer-cplusplus.NewDeleteLeaks,\
-  -clang-analyzer-cplusplus.PlacementNew,\
-  -clang-analyzer-cplusplus.SelfAssignment,\
-  -clang-analyzer-cplusplus.StringChecker,\
-  -clang-analyzer-deadcode.DeadStores,\
-  -clang-analyzer-fuchsia.HandleChecker,\
-  -clang-analyzer-nullability.NullPassedToNonnull,\
-  -clang-analyzer-nullability.NullReturnedFromNonnull,\
-  -clang-analyzer-nullability.NullableDereferenced,\
-  -clang-analyzer-nullability.NullablePassedToNonnull,\
-  -clang-analyzer-nullability.NullableReturnedFromNonnull,\
-  -clang-analyzer-optin.core.EnumCastOutOfRange,\
-  -clang-analyzer-optin.cplusplus.UninitializedObject,\
-  -clang-analyzer-optin.cplusplus.VirtualCall,\
-  -clang-analyzer-optin.mpi.MPI-Checker,\
-  -clang-analyzer-optin.osx.cocoa.localizability.EmptyLocalizationContextChecker,\
-  -clang-analyzer-optin.osx.cocoa.localizability.NonLocalizedStringChecker,\
-  -clang-analyzer-optin.performance.GCDAntipattern,\
-  -clang-analyzer-optin.performance.Padding,\
-  -clang-analyzer-optin.portability.UnixAPI,\
-  -clang-analyzer-optin.taint.TaintedAlloc,\
-  -clang-analyzer-osx.API,\
-  -clang-analyzer-osx.NumberObjectConversion,\
-  -clang-analyzer-osx.ObjCProperty,\
-  -clang-analyzer-osx.SecKeychainAPI,\
-  -clang-analyzer-osx.cocoa.AtSync,\
-  -clang-analyzer-osx.cocoa.AutoreleaseWrite,\
-  -clang-analyzer-osx.cocoa.ClassRelease,\
-  -clang-analyzer-osx.cocoa.Dealloc,\
-  -clang-analyzer-osx.cocoa.IncompatibleMethodTypes,\
-  -clang-analyzer-osx.cocoa.Loops,\
-  -clang-analyzer-osx.cocoa.MissingSuperCall,\
-  -clang-analyzer-osx.cocoa.NSAutoreleasePool,\
-  -clang-analyzer-osx.cocoa.NSError,\
-  -clang-analyzer-osx.cocoa.NilArg,\
-  -clang-analyzer-osx.cocoa.NonNilReturnValue,\
-  -clang-analyzer-osx.cocoa.ObjCGenerics,\
-  -clang-analyzer-osx.cocoa.RetainCount,\
-  -clang-analyzer-osx.cocoa.RunLoopAutoreleaseLeak,\
-  -clang-analyzer-osx.cocoa.SelfInit,\
-  -clang-analyzer-osx.cocoa.SuperDealloc,\
-  -clang-analyzer-osx.cocoa.UnusedIvars,\
-  -clang-analyzer-osx.cocoa.VariadicMethodTypes,\
-  -clang-analyzer-osx.coreFoundation.CFError,\
-  -clang-analyzer-osx.coreFoundation.CFNumber,\
-  -clang-analyzer-osx.coreFoundation.CFRetainRelease,\
-  -clang-analyzer-osx.coreFoundation.containers.OutOfBounds,\
-  -clang-analyzer-osx.coreFoundation.containers.PointerSizedValues,\
-  -clang-analyzer-security.FloatLoopCounter,\
-  -clang-analyzer-security.PutenvStackArray,\
-  -clang-analyzer-security.SetgidSetuidOrder,\
-  -clang-analyzer-security.cert.env.InvalidPtr,\
-  -clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling,\
-  -clang-analyzer-security.insecureAPI.UncheckedReturn,\
-  -clang-analyzer-security.insecureAPI.bcmp,\
-  -clang-analyzer-security.insecureAPI.bcopy,\
-  -clang-analyzer-security.insecureAPI.bzero,\
-  -clang-analyzer-security.insecureAPI.decodeValueOfObjCType,\
-  -clang-analyzer-security.insecureAPI.getpw,\
-  -clang-analyzer-security.insecureAPI.gets,\
-  -clang-analyzer-security.insecureAPI.mkstemp,\
-  -clang-analyzer-security.insecureAPI.mktemp,\
-  -clang-analyzer-security.insecureAPI.rand,\
-  -clang-analyzer-security.insecureAPI.strcpy,\
-  -clang-analyzer-security.insecureAPI.vfork,\
-  -clang-analyzer-unix.API,\
-  -clang-analyzer-unix.BlockInCriticalSection,\
-  -clang-analyzer-unix.Errno,\
-  -clang-analyzer-unix.Malloc,\
-  -clang-analyzer-unix.MallocSizeof,\
-  -clang-analyzer-unix.MismatchedDeallocator,\
-  -clang-analyzer-unix.StdCLibraryFunctions,\
-  -clang-analyzer-unix.Stream,\
-  -clang-analyzer-unix.Vfork,\
-  -clang-analyzer-unix.cstring.BadSizeArg,\
-  -clang-analyzer-unix.cstring.NullArg,\
-  -clang-analyzer-webkit.NoUncountedMemberChecker,\
-  -clang-analyzer-webkit.RefCntblBaseVirtualDtor,\
-  -clang-analyzer-webkit.UncountedLambdaCapturesChecker,\
   -cppcoreguidelines-avoid-c-arrays,\
   -cppcoreguidelines-avoid-magic-numbers,\
   -cppcoreguidelines-c-copy-assignment-signature,\
@@ -208,7 +158,10 @@ Checks: "*,\
   -cppcoreguidelines-non-private-member-variables-in-classes,\
   -cppcoreguidelines-use-default-member-init,\
   -fuchsia-header-anon-namespaces,\
+  -fuchsia-multiple-inheritance,\
+  -google-build-namespaces,\
   -google-readability-braces-around-statements,\
+  -google-readability-casting,\
   -google-readability-function-size,\
   -google-readability-namespace-comments,\
   -hicpp-avoid-c-arrays,\
@@ -240,152 +193,76 @@ Checks: "*,\
   -llvm-else-after-return,\
   -llvm-qualified-auto,\
   "
-WarningsAsErrors: ''
-HeaderFilterRegex: '.*CppProjectTemplate.*'
+
 FormatStyle: 'file'
+HeaderFilterRegex: '.*CppProjectTemplate.*'
+WarningsAsErrors: ''
+
 CheckOptions:
-  - key: 'bugprone-argument-comment.StrictMode'
-    value: 'true'
 # Prefer using enum classes with 2 values for parameters instead of bools
   - key: 'bugprone-argument-comment.CommentBoolLiterals'
     value: 'true'
+  - key: 'bugprone-argument-comment.StrictMode'
+    value: 'true'
   - key: 'bugprone-misplaced-widening-cast.CheckImplicitCasts'
+    value: 'true'
+  - key: 'bugprone-narrowing-conversions.PedanticMode'
     value: 'true'
   - key: 'bugprone-sizeof-expression.WarnOnSizeOfIntegerExpression'
     value: 'true'
   - key: 'bugprone-suspicious-string-compare.WarnOnLogicalNotComparison'
     value: 'true'
-  - key: 'readability-simplify-boolean-expr.ChainedConditionalReturn'
-    value: 'true'
-  - key: 'readability-simplify-boolean-expr.ChainedConditionalAssignment'
-    value: 'true'
-  - key: 'readability-uniqueptr-delete-release.PreferResetCall'
-    value: 'true'
   - key: 'cppcoreguidelines-init-variables.MathHeader'
     value: '<cmath>'
-  - key: 'cppcoreguidelines-narrowing-conversions.PedanticMode'
-    value: 'true'
   - key: 'cppcoreguidelines-pro-type-member-init.UseAssignment'
+    value: 'true'
+  - key: 'modernize-use-trailing-return-type.TransformLambdas'
+    value: 'none'
+  - key: 'readability-else-after-return.WarnOnConditionVariables'
     value: 'true'
   - key: 'readability-else-after-return.WarnOnUnfixable'
     value: 'true'
-  - key: 'readability-else-after-return.WarnOnConditionVariables'
-    value: 'true'
-  - key: 'readability-identifier-naming.IgnoreMainLikeFunctions'
-    value: 'true'
-  - key: 'readability-inconsistent-declaration-parameter-name.Strict'
-    value: 'true'
-  - key: 'readability-qualified-auto.AddConstToQualified'
-    value: 'true'
-  - key: 'readability-redundant-access-specifiers.CheckFirstDeclaration'
-    value: 'true'
-# For variables of generic type T, common physical quantities
-  - key: 'readability-identifier-length.IgnoredVariableNames'
-    value: '^(t|T|p|dt|x|y|z|g|v|i|r)$'
+# For parameters of generic type T and common physical quantities
   - key: 'readability-identifier-length.IgnoredParameterNames'
-    value: '^(t|T|p|dt|x|y|z|v|r)$'
-# These seem to be the most common identifier styles
-  - key: 'readability-identifier-naming.AbstractClassCase'
-    value: 'CamelCase'
+    value: '^(t|T|p|dt|x|y|z|g|v|r)$'
+# For variables of generic type T, common physical quantities, and a generic index
+  - key: 'readability-identifier-length.IgnoredVariableNames'
+    value: '^(t|T|p|dt|x|y|z|g|v|r|i)$'
+# Unset, more specific options (e.g., LocalConstantPointerCase) fall back to the more general ones
   - key: 'readability-identifier-naming.ClassCase'
     value: 'CamelCase'
-  - key: 'readability-identifier-naming.ClassConstantCase'
-    value: 'camelBack'
-  - key: 'readability-identifier-naming.ClassMemberCase'
-    value: 'camelBack'
-  - key: 'readability-identifier-naming.ClassMethodCase'
-    value: 'CamelCase'
-  - key: 'readability-identifier-naming.ConstantCase'
-    value: 'camelBack'
-  - key: 'readability-identifier-naming.ConstantMemberCase'
-    value: 'camelBack'
-  - key: 'readability-identifier-naming.ConstantParameterCase'
-    value: 'camelBack'
-  - key: 'readability-identifier-naming.ConstantPointerParameterCase'
-    value: 'camelBack'
-  - key: 'readability-identifier-naming.ConstexprFunctionCase'
-    value: 'CamelCase'
-  - key: 'readability-identifier-naming.ConstexprMethodCase'
-    value: 'CamelCase'
-  - key: 'readability-identifier-naming.ConstexprVariableCase'
-    value: 'camelBack'
   - key: 'readability-identifier-naming.EnumCase'
     value: 'CamelCase'
   - key: 'readability-identifier-naming.EnumConstantCase'
     value: 'camelBack'
   - key: 'readability-identifier-naming.FunctionCase'
     value: 'CamelCase'
-  - key: 'readability-identifier-naming.GlobalConstantCase'
-    value: 'camelBack'
-  - key: 'readability-identifier-naming.GlobalConstantPointerCase'
-    value: 'camelBack'
-  - key: 'readability-identifier-naming.GlobalFunctionCase'
-    value: 'CamelCase'
-  - key: 'readability-identifier-naming.GlobalPointerCase'
-    value: 'camelBack'
-  - key: 'readability-identifier-naming.GlobalVariableCase'
-    value: 'camelBack'
-    # Namespaces should actually be all lower case without underscores
-  - key: 'readability-identifier-naming.InlineNamespaceCase'
-    value: 'camelBack'
-  - key: 'readability-identifier-naming.LocalConstantCase'
-    value: 'camelBack'
-  - key: 'readability-identifier-naming.LocalConstantPointerCase'
-    value: 'camelBack'
-  - key: 'readability-identifier-naming.LocalPointerCase'
-    value: 'camelBack'
-  - key: 'readability-identifier-naming.LocalVariableCase'
-    value: 'camelBack'
+  - key: 'readability-identifier-naming.IgnoreMainLikeFunctions'
+    value: 'true'
   - key: 'readability-identifier-naming.MacroDefinitionCase'
     value: 'UPPER_CASE'
   - key: 'readability-identifier-naming.MemberCase'
     value: 'camelBack'
-  - key: 'readability-identifier-naming.MethodCase'
-    value: 'CamelCase'
     # Namespaces should actually be all lower case without underscores
   - key: 'readability-identifier-naming.NamespaceCase'
     value: 'camelBack'
   - key: 'readability-identifier-naming.ParameterCase'
     value: 'camelBack'
-  - key: 'readability-identifier-naming.ParameterPackCase'
-    value: 'camelBack'
-  - key: 'readability-identifier-naming.PointerParameterCase'
-    value: 'camelBack'
   - key: 'readability-identifier-naming.PrivateMemberCase'
     value: 'camelBack'
   - key: 'readability-identifier-naming.PrivateMemberSuffix'
     value: '_'
-  - key: 'readability-identifier-naming.PrivateMethodCase'
-    value: 'CamelCase'
   - key: 'readability-identifier-naming.ProtectedMemberCase'
     value: 'camelBack'
   - key: 'readability-identifier-naming.ProtectedMemberSuffix'
     value: '_'
-  - key: 'readability-identifier-naming.ProtectedMethodCase'
-    value: 'CamelCase'
-  - key: 'readability-identifier-naming.PublicMemberCase'
-    value: 'camelBack'
-  - key: 'readability-identifier-naming.PublicMethodCase'
-    value: 'CamelCase'
-  - key: 'readability-identifier-naming.ScopedEnumConstantCase'
-    value: 'camelBack'
-  - key: 'readability-identifier-naming.StaticConstantCase'
-    value: 'camelBack'
-  - key: 'readability-identifier-naming.StaticVariableCase'
-    value: 'camelBack'
   - key: 'readability-identifier-naming.StructCase'
     value: 'CamelCase'
   - key: 'readability-identifier-naming.TemplateParameterCase'
     value: 'CamelCase'
-  - key: 'readability-identifier-naming.TemplateTemplateParameterCase'
-    value: 'CamelCase'
-  - key: 'readability-identifier-naming.TypeTemplateParameterIgnoredRegexp'
-    value: 'expr-type'
   - key: 'readability-identifier-naming.TypeAliasCase'
     value: 'CamelCase'
   - key: 'readability-identifier-naming.TypedefCase'
-    value: 'CamelCase'
-  - key: 'readability-identifier-naming.TypeTemplateParameterCase'
     value: 'CamelCase'
   - key: 'readability-identifier-naming.UnionCase'
     value: 'CamelCase'
@@ -393,6 +270,16 @@ CheckOptions:
     value: 'camelBack'
   - key: 'readability-identifier-naming.VariableCase'
     value: 'camelBack'
-  - key: 'readability-identifier-naming.VirtualMethodCase'
-    value: 'CamelCase'
+  - key: 'readability-inconsistent-declaration-parameter-name.Strict'
+    value: 'true'
+  - key: 'readability-qualified-auto.AddConstToQualified'
+    value: 'true'
+  - key: 'readability-redundant-access-specifiers.CheckFirstDeclaration'
+    value: 'true'
+  - key: 'readability-simplify-boolean-expr.ChainedConditionalAssignment'
+    value: 'true'
+  - key: 'readability-simplify-boolean-expr.ChainedConditionalReturn'
+    value: 'true'
+  - key: 'readability-uniqueptr-delete-release.PreferResetCall'
+    value: 'true'
 ...
