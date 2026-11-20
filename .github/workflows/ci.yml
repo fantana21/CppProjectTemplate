@@ -9,7 +9,7 @@ on:
       - main
 
 env:
-  LLVM_MAJOR_VERSION: '20'
+  LLVM_MAJOR_VERSION: '22'
   VCPKG_COMMITTISH: 56bb2411609227288b70117ead2c47585ba07713  # 2026.04.27
 
 jobs:
@@ -71,7 +71,7 @@ jobs:
             compiler-pascal-case: ClangCl
             os: windows-2025
           - compiler: GCC
-            compiler-setup-cpp: gcc-14
+            compiler-setup-cpp: gcc-15
             preset: "ci-ubuntu"
             compiler-pascal-case: Gcc
             os: ubuntu-26.04
@@ -97,12 +97,11 @@ jobs:
           cppcheck: ${{ runner.os == 'Linux' }}
           gcovr: ${{ runner.os == 'Linux' }}
 
-      - name: Ensure libstdc++ from at least GCC 14 is used
-        if: ${{ runner.os == 'Linux' }}
-        # __GLIBCXX__ is only defined for libstdc++, __cpp_lib_print only since GCC 14
+      - name: Ensure Clang uses libstdc++ from GCC 15
+        if: ${{ matrix.compiler == 'Clang' }}
+        # _GLIBCXX_RELEASE is only defined for libstdc++ and contains the GCC major version
         run: |
-          echo "#include <version>" | clang++ -std=c++23 -xc++ -dM -E - | grep "#define __GLIBCXX__ "
-          echo "#include <version>" | clang++ -std=c++23 -xc++ -dM -E - | grep "#define __cpp_lib_print "
+          echo "#include <version>" | clang++ -std=c++23 -xc++ -dM -E - | grep -x "#define _GLIBCXX_RELEASE 15"
 
       - name: Install valgrind
         if: ${{ runner.os == 'Linux' }}
