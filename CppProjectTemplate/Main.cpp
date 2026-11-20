@@ -1,6 +1,5 @@
 #include <CppProjectTemplate/Person.hpp>
 #include <CppProjectTemplate/Square.hpp>
-
 #include <NamedType/named_type_impl.hpp>
 #include <NamedType/underlying_functionalities.hpp>
 #include <QuantNd/Utility.hpp>
@@ -31,7 +30,7 @@ auto main() -> int
         auto const number = Number(41);
         std::cout << Increment(number) << "\n";
         std::cout << "quantnd::allAreEqual<1, 1, 1> = " << quantnd::allAreEqual<1, 1, 1> << "\n";
-        auto aaa = 1U;
+        auto aaa = 1u;
         auto bbb = 2;
         auto ccc = aaa + bbb;
     }
